@@ -1,0 +1,11 @@
+Tasks:
+In execution, pop arguments from stack and add it to name table.
+Then, return will push to stack.
+After execution, current_value of the method exp node will be updated.
+Type changes for some reason.
+ListNode da class type yaptin. Var eklerken buna dikkat et.
+You found that the class instance is not in the right scope.
+Handle property.
+Hanlde arguments.
+Handle inheritance.
+Handle array length.

@@ -1,0 +1,538 @@
+In file included from parser.y:4:0:
+AST.h:1:37: warning: useless storage class specifier in empty declaration
+ typedef enum bin_op {ADD, SUB, MUL, DIV};
+                                     ^~~
+AST.h:2:31: warning: useless storage class specifier in empty declaration
+ typedef enum un_op {EXC, PLU, MIN};
+                               ^~~
+AST.h:3:25: warning: useless storage class specifier in empty declaration
+ typedef enum type {INT, STR};
+                         ^~~
+AST.h:30:5: error: expected ‘;’, identifier or ‘(’ before ‘int’
+     int int_value;
+     ^~~
+AST.h:52:40: error: unknown type name ‘LinkedList’
+ struct exp_node * create_id_leaf_value(LinkedList * name_table, char* ID, int value);
+                                        ^~~~~~~~~~
+AST.h:53:34: error: unknown type name ‘LinkedList’
+ struct exp_node * create_id_leaf(LinkedList * name_table, char* ID);
+                                  ^~~~~~~~~~
+AST.h:54:35: error: unknown type name ‘LinkedList’
+ struct exp_node * create_int_leaf(LinkedList * name_table, int value);
+                                   ^~~~~~~~~~
+AST.h:55:38: error: unknown type name ‘LinkedList’
+ struct exp_node * create_string_leaf(LinkedList * name_table, char *string);
+                                      ^~~~~~~~~~
+parser.y:21:22: error: redeclaration of enumerator ‘INT’
+   typedef enum Type {INT, STR};
+                      ^~~
+In file included from parser.y:4:0:
+AST.h:3:20: note: previous definition of ‘INT’ was here
+ typedef enum type {INT, STR};
+                    ^~~
+parser.y:21:27: error: redeclaration of enumerator ‘STR’
+   typedef enum Type {INT, STR};
+                           ^~~
+In file included from parser.y:4:0:
+AST.h:3:25: note: previous definition of ‘STR’ was here
+ typedef enum type {INT, STR};
+                         ^~~
+parser.y:21:27: warning: useless storage class specifier in empty declaration
+   typedef enum Type {INT, STR};
+                           ^~~
+y.tab.c:173:5: error: redeclaration of enumerator ‘EXC’
+     EXC = 300,
+     ^~~
+In file included from parser.y:4:0:
+AST.h:2:21: note: previous definition of ‘EXC’ was here
+ typedef enum un_op {EXC, PLU, MIN};
+                     ^~~
+parser.y: In function ‘yyparse’:
+parser.y:65:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == $3.type)
+                        ^
+                        ->
+parser.y:65:50: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == $3.type)
+                                                  ^
+                                                  ->
+parser.y:68:5: error: ‘exp_node’ undeclared (first use in this function)
+     exp_node->type = $1.type;
+     ^~~~~~~~
+parser.y:68:5: note: each undeclared identifier is reported only once for each function it appears in
+parser.y:68:40: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     exp_node->type = $1.type;
+                                        ^
+                                        ->
+parser.y:79:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                        ^
+                        ->
+parser.y:79:57: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                                                         ^
+                                                         ->
+parser.y:92:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                        ^
+                        ->
+parser.y:92:57: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                                                         ^
+                                                         ->
+parser.y:94:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value && $3.value;
+                   ^
+                   ->
+parser.y:94:46: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value && $3.value;
+                                              ^
+                                              ->
+parser.y:94:73: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value && $3.value;
+                                                                         ^
+                                                                         ->
+parser.y:95:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type = INT;
+                   ^
+                   ->
+parser.y:105:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                        ^
+                        ->
+parser.y:105:57: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                                                         ^
+                                                         ->
+parser.y:107:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value || $3.value;
+                   ^
+                   ->
+parser.y:107:46: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value || $3.value;
+                                              ^
+                                              ->
+parser.y:107:73: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value || $3.value;
+                                                                         ^
+                                                                         ->
+parser.y:108:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type = INT;
+                   ^
+                   ->
+parser.y:118:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                        ^
+                        ->
+parser.y:118:57: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                                                         ^
+                                                         ->
+parser.y:120:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value <= $3.value;
+                   ^
+                   ->
+parser.y:120:46: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value <= $3.value;
+                                              ^
+                                              ->
+parser.y:120:73: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value <= $3.value;
+                                                                         ^
+                                                                         ->
+parser.y:121:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type = INT;
+                   ^
+                   ->
+parser.y:131:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                        ^
+                        ->
+parser.y:131:57: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                                                         ^
+                                                         ->
+parser.y:133:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value >= $3.value;
+                   ^
+                   ->
+parser.y:133:46: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value >= $3.value;
+                                              ^
+                                              ->
+parser.y:133:73: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value >= $3.value;
+                                                                         ^
+                                                                         ->
+parser.y:134:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type = INT;
+                   ^
+                   ->
+parser.y:144:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                        ^
+                        ->
+parser.y:144:57: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                                                         ^
+                                                         ->
+parser.y:146:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value == $3.value;
+                   ^
+                   ->
+parser.y:146:46: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value == $3.value;
+                                              ^
+                                              ->
+parser.y:146:73: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value == $3.value;
+                                                                         ^
+                                                                         ->
+parser.y:147:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type = INT;
+                   ^
+                   ->
+parser.y:157:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                        ^
+                        ->
+parser.y:157:57: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                                                         ^
+                                                         ->
+parser.y:159:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value != $3.value;
+                   ^
+                   ->
+parser.y:159:46: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value != $3.value;
+                                              ^
+                                              ->
+parser.y:159:73: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value != $3.value;
+                                                                         ^
+                                                                         ->
+parser.y:160:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type = INT;
+                   ^
+                   ->
+parser.y:169:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                        ^
+                        ->
+parser.y:169:57: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                                                         ^
+                                                         ->
+parser.y:171:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value * $3.value;
+                   ^
+                   ->
+parser.y:171:46: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value * $3.value;
+                                              ^
+                                              ->
+parser.y:171:72: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value * $3.value;
+                                                                        ^
+                                                                        ->
+parser.y:172:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type = INT;
+                   ^
+                   ->
+parser.y:182:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                        ^
+                        ->
+parser.y:182:57: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                                                         ^
+                                                         ->
+parser.y:184:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value / $3.value;
+                   ^
+                   ->
+parser.y:184:46: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value / $3.value;
+                                              ^
+                                              ->
+parser.y:184:72: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value / $3.value;
+                                                                        ^
+                                                                        ->
+parser.y:185:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type = INT;
+                   ^
+                   ->
+parser.y:195:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                        ^
+                        ->
+parser.y:195:57: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                                                         ^
+                                                         ->
+parser.y:197:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value < $3.value;
+                   ^
+                   ->
+parser.y:197:46: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value < $3.value;
+                                              ^
+                                              ->
+parser.y:197:72: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value < $3.value;
+                                                                        ^
+                                                                        ->
+parser.y:198:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type = INT;
+                   ^
+                   ->
+parser.y:208:24: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                        ^
+                        ->
+parser.y:208:57: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.type == INT && $3.type == INT)
+                                                         ^
+                                                         ->
+parser.y:210:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value > $3.value;
+                   ^
+                   ->
+parser.y:210:46: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value > $3.value;
+                                              ^
+                                              ->
+parser.y:210:72: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $1.value > $3.value;
+                                                                        ^
+                                                                        ->
+parser.y:211:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type = INT;
+                   ^
+                   ->
+parser.y:220:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.value = $$.value != 0 ? 0 : 1;
+                 ^
+                 ->
+parser.y:220:40: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.value = $$.value != 0 ? 0 : 1;
+                                        ^
+                                        ->
+parser.y:224:23: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($2.type == INT)
+                       ^
+                       ->
+parser.y:226:18: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+    $$.value = $2.value;
+                  ^
+                  ->
+parser.y:226:44: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+    $$.value = $2.value;
+                                            ^
+                                            ->
+parser.y:227:18: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+    $$.type = INT;
+                  ^
+                  ->
+parser.y:237:23: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($2.type == INT)
+                       ^
+                       ->
+parser.y:239:18: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+    $$.value = $2.value * -1;
+                  ^
+                  ->
+parser.y:239:44: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+    $$.value = $2.value * -1;
+                                            ^
+                                            ->
+parser.y:240:18: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+    $$.type = INT;
+                  ^
+                  ->
+parser.y:249:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.value = 1;
+                 ^
+                 ->
+parser.y:250:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.type = INT;
+                 ^
+                 ->
+parser.y:254:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.value = 0;
+                 ^
+                 ->
+parser.y:255:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.type = INT;
+                 ^
+                 ->
+parser.y:264:24: error: ‘(yyvsp + 18446744073709551608)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($2.type == INT)
+                        ^
+                        ->
+parser.y:266:18: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+    $$.value = $2.value;
+                  ^
+                  ->
+parser.y:266:45: error: ‘(yyvsp + 18446744073709551608)->nonTer’ is a pointer; did you mean to use ‘->’?
+    $$.value = $2.value;
+                                             ^
+                                             ->
+parser.y:267:18: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+    $$.type = INT;
+                  ^
+                  ->
+parser.y:272:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.text = $1;
+                 ^
+                 ->
+parser.y:273:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.type = STR;
+                 ^
+                 ->
+parser.y:278:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.value = $1;
+                 ^
+                 ->
+parser.y:279:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.type = INT;
+                 ^
+                 ->
+parser.y:283:28: error: ‘(yyvsp + 18446744073709551608)->nonTer’ is a pointer; did you mean to use ‘->’?
+   switch($3.type)
+                            ^
+                            ->
+parser.y:286:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $3.value;
+                   ^
+                   ->
+parser.y:286:46: error: ‘(yyvsp + 18446744073709551608)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = $3.value;
+                                              ^
+                                              ->
+parser.y:287:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type =  INT;
+                   ^
+                   ->
+parser.y:290:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = atoi(extractString($3.text));
+                   ^
+                   ->
+parser.y:290:65: error: ‘(yyvsp + 18446744073709551608)->nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.value = atoi(extractString($3.text));
+                                                                 ^
+                                                                 ->
+parser.y:291:19: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+     $$.type = INT;
+                   ^
+                   ->
+parser.y:369:58: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+    llist_addWithValue(&nameTable, var, $4.value);
+                                                          ^
+                                                          ->
+parser.y:386:58: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+    llist_addWithValue(&nameTable, var, $4.value);
+                                                          ^
+                                                          ->
+parser.y:406:58: error: ‘yyvsp->nonTer’ is a pointer; did you mean to use ‘->’?
+     llist_addWithValue(&nameTable, var, $4.value);
+                                                          ^
+                                                          ->
+parser.y:472:28: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   switch($3.type)
+                            ^
+                            ->
+parser.y:475:48: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+    case INT : printf("%d\n", $3.value); break;
+                                                ^
+                                                ->
+parser.y:478:49: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     char* str = extractString($3.text);
+                                                 ^
+                                                 ->
+parser.y:490:28: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+   switch($3.type)
+                            ^
+                            ->
+parser.y:494:36: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     printf("%d", $3.value);
+                                    ^
+                                    ->
+parser.y:498:49: error: ‘(yyvsp + 18446744073709551600)->nonTer’ is a pointer; did you mean to use ‘->’?
+     char* str = extractString($3.text);
+                                                 ^
+                                                 ->
+parser.y:509:24: error: ‘(yyvsp + 18446744073709551592)->nonTer’ is a pointer; did you mean to use ‘->’?
+   if($1.text == NULL) return;
+                        ^
+                        ->
+parser.y:509:39: warning: ‘return’ with no value, in function returning non-void
+   if($1.text == NULL) return;
+                                       ^     
+y.tab.c:1304:1: note: declared here
+ yyparse (void)
+ ^~~~~~~
+parser.y:510:34: error: ‘(yyvsp + 18446744073709551592)->nonTer’ is a pointer; did you mean to use ‘->’?
+   char * var = $1.text;
+                                  ^
+                                  ->
+parser.y:519:6: warning: ‘return’ with no value, in function returning non-void
+      return;
+      ^~~~~~
+y.tab.c:1304:1: note: declared here
+ yyparse (void)
+ ^~~~~~~
+parser.y:521:53: error: ‘(yyvsp + 18446744073709551608)->nonTer’ is a pointer; did you mean to use ‘->’?
+   llist_addValue(&nameTable, var, $3.value);
+                                                     ^
+                                                     ->
+parser.y:543:20: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   if($$.type == STR)
+                    ^
+                    ->
+parser.y:545:4: warning: ‘return’ with no value, in function returning non-void
+    return;
+    ^~~~~~
+y.tab.c:1304:1: note: declared here
+ yyparse (void)
+ ^~~~~~~
+parser.y:548:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.text = var;
+                 ^
+                 ->
+parser.y:557:6: warning: ‘return’ with no value, in function returning non-void
+      return;
+      ^~~~~~
+y.tab.c:1304:1: note: declared here
+ yyparse (void)
+ ^~~~~~~
+parser.y:560:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.value = val;
+                 ^
+                 ->
+parser.y:561:17: error: ‘yyval.nonTer’ is a pointer; did you mean to use ‘->’?
+   $$.type = INT;
+                 ^
+                 ->
+In file included from parser.l:5:0:
+parser.y:21:27: warning: useless storage class specifier in empty declaration
+   typedef enum Type {INT, STR};
+                           ^~~
+parser.l: In function ‘yylex’:
+parser.l:230:21: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+  yylval.integer_val = atoi(yytext);
+                     ^
+LinkedList.c: In function ‘llist_find’:
+LinkedList.c:90:20: warning: comparison between pointer and integer
+   if(n->real_value == NULL)
+                    ^~
+LinkedList.c: In function ‘llist_read’:
+LinkedList.c:341:20: warning: passing argument 2 of ‘llist_add’ makes pointer from integer without a cast [-Wint-conversion]
+     llist_add(list,n);
+                    ^
+LinkedList.c:45:6: note: expected ‘char *’ but argument is of type ‘int’
+ void llist_add(LinkedList * list, char* value) {
+      ^~~~~~~~~
+make: *** [interpret] Error 1
