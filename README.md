@@ -1,2 +1,0 @@
-# MiniJavaCompiler
-Mini java compiler
