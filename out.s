@@ -6,14 +6,16 @@ print_str_format: .asciz "%s"
 bool_true: .asciz "true"
 bool_false: .asciz "false"
 .section .text
+.global _start
 .balign 4
+_start: 
 push {fp}
 mov fp, sp
 ldr r2, =0
 str r2, [fp, #-8]
-ldr r2, =1413600832
+ldr r2, =263824960
 str r2, [fp, #-12]
-ldr r2, =1413600672
+ldr r2, =263824800
 str r2, [fp, #-16]
 sub sp, sp, #16
 ldr r0, [fp, #-16]
