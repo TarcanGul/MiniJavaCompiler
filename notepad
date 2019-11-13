@@ -9,3 +9,9 @@ Handle property.
 Hanlde arguments.
 Handle inheritance.
 Handle array length.
+
+P3:
+Do decl_codegen
+All you have to do in id's is to determine offset, store that value in stack and you would recall in assembly.
+Command line
+You started good. Finish the execute assembly instructions, then move into expressions.

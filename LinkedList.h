@@ -12,6 +12,7 @@ struct ListNode {
 	char * class_id;
 	struct ListNode * next;
 	enum symbol_type symbol_type;
+	int offset;
 };
 
 typedef struct ListNode ListNode;

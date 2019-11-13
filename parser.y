@@ -56,6 +56,14 @@
   scope_t * global_scope;
  
   program_t * program;
+
+  FILE * gen_file;
+
+  char ** data_section = NULL;
+  char ** text_section = NULL;
+  
+  int method_first_codegen(stmt_node_t * list);
+  static int temp_counter = 0;
 %}
 
 %union
@@ -1365,7 +1373,7 @@ class_t * get_class_info(char * id)
 }
 
 
-/* Execute statements */
+/* Execute statements. This is where the code generated for statements. */
 int execute(stmt_node_t * list)
 {
   if(list == NULL) return 0;
@@ -1404,6 +1412,12 @@ int execute(stmt_node_t * list)
  
 
   assert(current_scope != NULL);
+  add_to(text_section, "push {fr}\n");
+  add_to(text_section, "mov fp, sp\n");
+  int current_method_size = method_first_codegen(list); 
+  char alloc_method[40];
+  sprintf(alloc_method, "sub sp, sp, #%d\n", current_method_size);
+  add_to(text_section, alloc_method);
   while(current)
   {
     switch(current->type)
@@ -1414,11 +1428,10 @@ int execute(stmt_node_t * list)
 	    {
 	      if(current->arg_is_expr)
 	      {
-		traverse((struct exp_node *) current->arg);
+		expr_codegen((struct exp_node *) current->arg);
 	      }
 	      if(current->invoke != s_invoke)
 	          current->invoke(current->arg);
-
 	    }
 	    break;
 	}
@@ -1496,7 +1509,7 @@ int execute(stmt_node_t * list)
   {
     current_scope = prev_scope;
   }
-
+  add_to(text_section, "pop {pc}");
 
 }
 
@@ -1575,14 +1588,10 @@ int traverse(struct exp_node * root)
     }*/
     if(root->is_id && !root->is_property)
     {
-	     ListNode * node =  llist_find_node(current_scope->name_table, root->data.var_name);	
-	     if(node == NULL)
-	     {
-		type_error(root->line_num);
-		return 1;
-	     }
-	     root->current_value = node->real_value;
-	     root->type = node->type;
+	     //ListNode * node =  llist_find_node(current_scope->name_table, root->data.var_name);
+	     //symbol_codegen(root);	
+	     //root->current_value = node->real_value;
+	     //root->type = node->type;
 	     return 0;
     }
     else if(!root->is_leaf && !root->is_array_entry)
@@ -1784,7 +1793,10 @@ void s_print(void * arg)
 	switch(type)
 	{
 
-		case INT : printf("%d", *((int*) value)); break;
+		case INT : 
+		{
+			printf("%d", *((int*) value)); break;
+		} 
 		case STR :
 		{
 
@@ -1819,9 +1831,7 @@ void s_println(void * arg)
 	ListNode * list_node;
 	if(node->is_id)
 	{
-		//list_node = llist_find_node(current_scope->name_table, node->data.var_name);
-		//type = list_node->type;
-		//value = list_node->real_value;
+		//Do address computation.
 		type = node->type;
 		value = node->current_value;
 	}
@@ -1835,30 +1845,35 @@ void s_println(void * arg)
 		value = node->current_value;
 		type = node->type;
 	}
-	assert(value != NULL);
+	//assert(value != NULL);
 	switch(type)
 	{
 
-		case INT : printf("%d\n", *((int*) value)); break;
+		case INT : 
+		{
+			add_to(text_section, "ldr r0, =print_int_format\n");
+			char print_arg[40];
+			sprintf(print_arg, "mov r1, #%d\n", value);
+			add_to(text_section, print_arg);
+			add_to(text_section, "bl printf\n");		
+		} break;
 		case STR :
 		{ 
-			if(node->is_array_entry)
-			{
-				char * str = *(char **) value;
-				printf("%s\n", str);
-			}
-			else
-			{
-				char * str = (char *) value;
-				printf("%s\n", str);
-			}
-
+			add_to(text_section, "ldr r0, =print_str_format\n");
+			char print_arg[40];
+			//sprintf(print_arg, "mov r1, #%d\n", value);
+			//fprintf(gen_file, print_arg)
+			//fprintf(gen_file, "bl printf\n");		
 			break;
 		}
 		case BOOL :
 		{
-			char * to_print = *(int*) value == 0 ? "false" : "true";
-			printf("%s\n", to_print);
+			char * to_print = *(int*) value == 0 ? "bool_false" : "bool_true";
+			add_to(text_section, "ldr r0, =print_str_format\n");
+			char print_arg[40];
+			sprintf(print_arg, "ldr r1, =%s\n", to_print);
+			add_to(text_section, print_arg);
+			add_to(text_section, "bl printf\n");		
 			break;
 		}	
 		default: type_error(node->line_num); break; 
@@ -2329,6 +2344,7 @@ void s_decl(void * abstract_arg)
     if(assign == NULL)
     {
       add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, NULL);
+      //add_to(text_section, "") What to do when assign is null?
     }
     else
     {
@@ -2359,6 +2375,7 @@ void s_decl(void * abstract_arg)
 	else
 	{
 		add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, assign->current_value);
+
 	}
 
       }
@@ -2485,15 +2502,8 @@ int traverse_for_errors(stmt_node_t * list)
     }
     current = current->next;
   }
-  /*if(current_scope->parent != NULL)
-  {
-	current_scope = current_scope->parent;
-  } 
-  else
-  {
-  	current_scope = global_scope; 
-  }*/
-  if(prev_scope != NULL)
+  
+if(prev_scope != NULL)
   {
     current_scope = prev_scope;
   }
@@ -2510,11 +2520,15 @@ int check_stmt_errors(stmt_node_t * stmt)
 	  while(current_link)
 	  {
 	    struct exp_node * current_node = current_link -> current;
-	    if(current_node->data.left->type != current_node->data.right->type)
+	    if(current_node->data.right != NULL)
 	    {
-		type_error(current_node->line_num);
-		return 1;
+	      if(current_node->data.left->type != current_node->data.right->type)
+	      {
+		  type_error(current_node->line_num);
+		  return 1;
+	      }
 	    }
+
 	    traverse(current_node->data.right);
 	    current_link = current_link->next;
 	  }
@@ -2602,6 +2616,206 @@ struct exp_node * stack_pop()
   return result;
 }
 
+//Add to data section in assembly.
+//Section can be data_section or text_section.
+void add_to(char ** section, char * str)
+{
+  if(* section == NULL)
+  {
+	int len = strlen(str);
+	* section = (char *) malloc((len + 1) * sizeof(char));
+	strncpy(* section, str, len);
+	(*section)[len] = 0;
+  }
+  else
+  {
+	int add_len = strlen(str);
+	int cur_len = strlen(* section);
+	* section = (char *) realloc(* section, (add_len + cur_len + 1) * sizeof(char));
+	strncpy(&(* section)[cur_len], str, add_len);
+	(* section)[cur_len + add_len] = 0;
+  }
+}
+
+
+void init_data_section()
+{
+	add_to(data_section, "println_int_format: .asciz \"%%d\\n\"\n");
+	add_to(data_section, "print_int_format: .asciz \"%%d\"\n");
+	add_to(data_section, "println_str_format: .asciz \"%%s\\n\"\n");
+	add_to(data_section, "print_str_format: .asciz \"%%s\"\n");
+	add_to(data_section, "bool_true: .asciz \"true\"\n");
+	add_to(data_section, "bool_false: .asciz \"false\"\n");
+}
+
+char * create_temp()
+{
+   char num_string[30];
+   sprintf(num_string, "%d", temp_counter);
+   int len = strlen(num_string);
+   char * var_name = (char *) malloc((len + 3) * sizeof(len));
+   sprintf(var_name, "_t%s", num_string);
+   char data_decl[50];
+   sprintf(data_decl, "%s: .word 0\n");
+   add_to(data_section, data_decl);
+   temp_counter++;
+   return var_name;
+}
+
+//The value of the symbol will be stored in r0.
+void symbol_codegen(ListNode * id_node)
+{
+  assert(id_node);
+  char assembly_load[20];
+  int offset = id_node->offset;
+  sprintf(assembly_load, "ldr r0, [fp, #%d]\n", -1 * offset);
+  add_to(text_section, assembly_load);
+  add_to(text_section, "ldr r0, [r0]\n");
+}
+
+void expr_codegen(struct exp_node * node)
+{
+  if(node == NULL) return;
+
+  if(node->is_leaf)
+  {
+  	if(node->is_id)
+  	{
+		ListNode * entry = llist_find_node(current_scope->name_table, node->data.var_name);
+		symbol_codegen(entry);
+  	}
+	else
+	{
+		switch(node->type)
+		{
+		  case BOOL:
+		  case INT:
+		  {
+		    int value = * (int * ) node->data.value; 
+		    char command[50];
+		    sprintf(command, "mov r0, #%d\n", value);
+		    add_to(text_section, command);
+		  }
+		}
+	}
+
+  }
+  else
+  {
+	struct exp_node * left = node->data.left;
+	struct exp_node * right = node->data.right;
+	//r0 has the final value of the expression.
+	expr_codegen(left);
+	add_to(text_section, "mov r1, r0\n");
+	expr_codegen(right);
+	char operation[50];
+	char store_temp[50];
+	char * var = create_temp();
+        //r0 have right operand, r1 have left operand.
+	switch(node->operation)
+	{
+		
+		case ADD:  
+			add_to(text_section,"add r0, r0, r1\n");
+			break;
+		case SUB:  
+			add_to(text_section,"sub r0, r0, r1\n");
+			break;
+		case MUL:  
+			add_to(text_section,"mul r0, r0, r1\n");
+			break;
+		case DIV:  
+			break;
+		case NGT:
+			break; 
+		case PLU:
+			break;
+		case MIN:
+			break;  
+		case AND:
+			//root->type = BOOL; 
+			break;
+		case OR:
+			//root->type = BOOL; 
+			break;
+		case SME:
+			//root->type = BOOL; 
+			break;
+		case LRE:
+			//root->type = BOOL; 
+			break;
+		case EQU:
+			//root->type = BOOL; 
+			break;
+		case NEQ:
+			//root->type = BOOL; 
+			break;
+		case LE:
+			//root->type = BOOL; 
+			break;
+		case GR:
+			//root->type = BOOL; 
+			break;
+		case IN: 
+		{
+			break;
+		}
+		case ASGN: return 1;
+                case UNDEF: return 1;
+	
+		default: /*type_error();*/ break;	
+	}
+
+	sprintf(store_temp, "str r0, =%s\n", var);
+	add_to(text_section, store_temp);
+  }
+}
+
+//Calculates how much memory we need for the method local variables. Also updates the offset for each variable.
+//This method has to be used in the second pass. (Assumes the name table is populated.)
+int method_first_codegen(stmt_node_t * list)
+{
+  assert(list->type == LIST);
+  //Iterate over list's name table. 
+  LinkedList * name_table = list->scope->name_table;
+  ListNode * it = name_table->head;
+  int current_offset = 4; //Start from four offset because at the bottom of the stack we want to have the frame pointer.
+  while(it)
+  {
+    switch(it->type)
+    {
+	case BOOL:
+	case INT:
+	{
+		current_offset += 4;
+		break;
+	}
+	case STR:
+	{
+		//TODO: Allocate for strings.
+	        //current_offset += strlen(it->real_value);
+		break;
+	}
+	case CLASS:
+	{
+		//TODO: Allocate for objects
+		break;
+	}
+	default: assert(0);
+    }
+    it->offset = current_offset;
+    char command[50];
+    sprintf(command, "ldr r2, =%d\n", it->real_value); 
+    add_to(text_section, command);
+    char command2[50];
+    sprintf(command2, "str r2, [fp, %d]\n", -1 * current_offset); 
+    add_to(text_section, command2);
+    it = it->next;
+  }
+  //For every variable, update their offset.
+  return current_offset;
+}
+
 int main(int argc, char** argv)
 {
   #ifdef MYDEBUG
@@ -2618,8 +2832,25 @@ int main(int argc, char** argv)
   traverse_for_errors(main_stmt_list);
   construct_name_table = 0; //Stop doing the name tables.
   current_scope = main_stmt_list->scope;
+
   if(!type_violation_found)
   {
+    gen_file = fopen("out.s", "w+");
+
+     data_section = (char **) malloc(sizeof(char *));
+     text_section = (char **) malloc(sizeof(char *));
+     * data_section = NULL;
+     * text_section = NULL;
     execute(main_stmt_list);
+    fprintf(gen_file, ".section .data\n");
+    init_data_section();
+    if(data_section != NULL) fprintf(gen_file, *data_section);
+    fprintf(gen_file, ".section .text\n");
+    fprintf(gen_file, ".balign 4\n");
+    if(text_section != NULL) fprintf(gen_file, *text_section);
+    if(data_section != NULL) free(data_section);
+    if(text_section != NULL) free(text_section);
+
   }
+  fclose(gen_file);
 }
