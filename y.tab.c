@@ -3387,7 +3387,7 @@ int execute(stmt_node_t * list)
  
 
   assert(current_scope != NULL);
-  add_to(text_section, "push {fr}\n");
+  add_to(text_section, "push {fp}\n");
   add_to(text_section, "mov fp, sp\n");
   int current_method_size = method_first_codegen(list); 
   char alloc_method[40];

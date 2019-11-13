@@ -7,13 +7,13 @@ bool_true: .asciz "true"
 bool_false: .asciz "false"
 .section .text
 .balign 4
-push {fr}
+push {fp}
 mov fp, sp
 ldr r2, =0
 str r2, [fp, -8]
-ldr r2, =-165300672
+ldr r2, =-854931904
 str r2, [fp, -12]
-ldr r2, =-165300832
+ldr r2, =-854932064
 str r2, [fp, -16]
 sub sp, sp, #16
 ldr r0, [fp, #-16]
