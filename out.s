@@ -10,11 +10,11 @@ bool_false: .asciz "false"
 push {fp}
 mov fp, sp
 ldr r2, =0
-str r2, [fp, -8]
-ldr r2, =-854931904
-str r2, [fp, -12]
-ldr r2, =-854932064
-str r2, [fp, -16]
+str r2, [fp, #-8]
+ldr r2, =1413600832
+str r2, [fp, #-12]
+ldr r2, =1413600672
+str r2, [fp, #-16]
 sub sp, sp, #16
 ldr r0, [fp, #-16]
 ldr r0, [r0]
