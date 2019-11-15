@@ -3,6 +3,7 @@ x: .word 1
 y: .word 100
 z: .word 0
 _t0: .word 0
+_t1: .word 0
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
 println_str_format: .asciz "%s\n"
@@ -31,14 +32,13 @@ ldr r0, =println_int_format
 bl printf
 ldr r0, [fp, #-12]
 mov r1, r0
-ldr r0, =println_int_format
-bl printf
-ldr r0, [fp, #-16]
+mov r0, #2
+mul r0, r0, r1
+str r0, =_t0
 mov r1, r0
-mov r0, #3
-mov r4, #3
-str r4, [fp, #-16]
-ldr r0, [fp, #-16]
+mov r0, #2
+add r0, r0, r1
+str r0, =_t1
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
