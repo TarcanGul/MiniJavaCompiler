@@ -43,7 +43,8 @@ mul r0, r0, r1
 ldr r4, =_t0
 str r0, [r4]
 ldr r4, =(null)
-ldr r1, [r4]mov r0, #2
+ldr r1, [r4]
+mov r0, #2
 add r0, r0, r1
 ldr r4, =_t1
 str r0, [r4]
@@ -57,22 +58,27 @@ sub r0, r1, r0
 ldr r4, =_t2
 str r0, [r4]
 ldr r4, =(null)
-ldr r1, [r4]mov r0, #16
+ldr r1, [r4]
+mov r0, #16
 mul r0, r0, r1
 ldr r4, =_t3
 str r0, [r4]
 ldr r4, =(null)
-ldr r0, [r4]mov r4, r0
+ldr r0, [r4]
+mov r4, r0
 str r4, [fp, #-20]
 ldr r0, [fp, #-20]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, [fp, #-8]
-cmp r0, #1_true0:
+cmp r0, #1
+_true0:
 ldr r0, =println_str_format
-ldr r1, =bool_true_false0:
+ldr r1, =bool_true
+_false0:
 ldr r0, =println_str_format
-ldr r1, =bool_false_endif0:
+ldr r1, =bool_false
+_endif0:
 mov sp, fp
 pop {fp, pc}
