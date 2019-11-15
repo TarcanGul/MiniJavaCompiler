@@ -17,29 +17,28 @@ push {fp, lr}
 mov fp, sp
 sub sp, sp, #16
 ldr r2, =z
+ldr r2, [r2]
 str r2, [fp, #-8]
 ldr r2, =y
+ldr r2, [r2]
 str r2, [fp, #-12]
 ldr r2, =x
+ldr r2, [r2]
 str r2, [fp, #-16]
 ldr r0, [fp, #-16]
-ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, [fp, #-12]
-ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, [fp, #-16]
-ldr r0, [r0]
 mov r1, r0
 mov r0, #3
 mov r4, #3
 str r4, [fp, #-16]
 ldr r0, [fp, #-16]
-ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
