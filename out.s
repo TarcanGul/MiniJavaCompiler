@@ -4,6 +4,9 @@ y: .word 100
 z: .word 0
 _t0: .word 0
 _t1: .word 0
+_t2: .word 0
+_t3: .word 0
+_t4: .word 0
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
 println_str_format: .asciz "%s\n"
@@ -41,6 +44,23 @@ mov r0, #2
 add r0, r0, r1
 ldr r4, =_t1
 str r0, [r4]
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
+mov r0, #4
+mov r1, r0
+mov r0, #5
+sub r0, r1, r0
+ldr r4, =_t2
+str r0, [r4]
+mov r1, r0
+mov r0, #16
+mul r0, r0, r1
+ldr r4, =_t3
+str r0, [r4]
+mov r4, r0
+str r4, [fp, #-16]
+ldr r0, [fp, #-16]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
