@@ -2,7 +2,7 @@
 x: .word 1
 y: .word 100
 z: .word 0
-(null): .word 0
+_t0: .word 0
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
 println_str_format: .asciz "%s\n"
