@@ -1,6 +1,6 @@
 .section .data
-x: .word 46036384
-y: .word 46036544
+x: .word 1602135456
+y: .word 1602135616
 z: .word 0
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
@@ -9,9 +9,9 @@ print_str_format: .asciz "%s"
 bool_true: .asciz "true"
 bool_false: .asciz "false"
 .section .text
-.global _start
+.global main
 .balign 4
-_start: 
+main: 
 push {fp}
 mov fp, sp
 sub sp, sp, #16
