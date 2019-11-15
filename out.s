@@ -24,12 +24,12 @@ str r2, [fp, #-16]
 ldr r0, [fp, #-16]
 ldr r0, [r0]
 mov r1, r0
-ldr r0, =print_int_format
+ldr r0, =println_int_format
 bl printf
 ldr r0, [fp, #-12]
 ldr r0, [r0]
 mov r1, r0
-ldr r0, =print_int_format
+ldr r0, =println_int_format
 bl printf
 mov sp, fp
 pop {fp, pc}
