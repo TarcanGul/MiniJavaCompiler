@@ -36,7 +36,7 @@ ldr r0, [fp, #-16]
 ldr r0, [r0]
 mov r1, r0
 mov r0, #3
-ldr r4, =x
+ldr r4, 3
 str r4, [fp, #-16]
 ldr r0, [fp, #-16]
 ldr r0, [r0]
