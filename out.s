@@ -34,11 +34,13 @@ ldr r0, [fp, #-12]
 mov r1, r0
 mov r0, #2
 mul r0, r0, r1
-str r0, =_t0
+ldr r4, =_t0
+str r0, [r4]
 mov r1, r0
 mov r0, #2
 add r0, r0, r1
-str r0, =_t1
+ldr r4, =_t1
+str r0, [r4]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
