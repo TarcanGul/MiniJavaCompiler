@@ -2,6 +2,7 @@
 x: .word 1
 y: .word 100
 z: .word 0
+abra: .word 1
 _t0: .word 0
 _t1: .word 0
 _t2: .word 0
