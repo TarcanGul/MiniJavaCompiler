@@ -1,6 +1,6 @@
 .section .data
-x: .word 1602135456
-y: .word 1602135616
+x: .word 1
+y: .word 100
 z: .word 0
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
@@ -12,7 +12,7 @@ bool_false: .asciz "false"
 .global main
 .balign 4
 main: 
-push {fp}
+push {fp, lr}
 mov fp, sp
 sub sp, sp, #16
 ldr r2, =z
@@ -31,4 +31,5 @@ ldr r0, [r0]
 mov r1, r0
 ldr r0, =print_int_format
 bl printf
-pop {pc}
+mov sp, fp
+pop {fp, pc}
