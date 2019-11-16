@@ -219,7 +219,7 @@ ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =#0
 cmp r0, r1
-blt _false4
+bgt _false4
 _true4:
 mov r0, #1
 b _endif4
@@ -270,7 +270,7 @@ ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =#0
 cmp r0, r1
-blt _false5
+bgt _false5
 _true5:
 mov r0, #1
 b _endif5
