@@ -5,6 +5,7 @@ z: .word 0
 abra: .word 1
 hello: .word 0
 _strlt0: .asciz "This line should be printed. A bunch of expressions:"
+_strlt1: .asciz "Reassigned string"
 _t0: .word 0
 _t1: .word 0
 _t2: .word 0
@@ -14,13 +15,14 @@ _t5: .word 0
 _t6: .word 0
 _t7: .word 0
 _t8: .word 0
-rr: .word 5
 _t9: .word 0
-i: .word 5
+rr: .word 5
 _t10: .word 0
+i: .word 5
 _t11: .word 0
 _t12: .word 0
 _t13: .word 0
+_t14: .word 0
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
 println_str_format: .asciz "%s\n"
@@ -90,6 +92,15 @@ ldr r0, [fp, #-12]
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
+ldr r0, =_strlt1
+ldr r4, =_strlt1
+mov r0, r4
+mov r4, r0
+str r4, [fp, #-12]
+ldr r0, [fp, #-12]
+mov r1, r0
+ldr r0, =println_str_format
+bl printf
 ldr r0, [fp, #-28]
 mov r1, r0
 ldr r0, =println_int_format
@@ -98,13 +109,13 @@ ldr r0, [fp, #-24]
 mov r1, r0
 ldr r0, =#2
 mul r0, r0, r1
-ldr r4, =_t0
+ldr r4, =_t1
 str r0, [r4]
-ldr r4, =_t0
+ldr r4, =_t1
 ldr r1, [r4]
 ldr r0, =#2
 add r0, r0, r1
-ldr r4, =_t1
+ldr r4, =_t2
 str r0, [r4]
 mov r1, r0
 ldr r0, =println_int_format
@@ -113,15 +124,15 @@ ldr r0, =#4
 mov r1, r0
 ldr r0, [fp, #-28]
 sub r0, r1, r0
-ldr r4, =_t2
+ldr r4, =_t3
 str r0, [r4]
-ldr r4, =_t2
+ldr r4, =_t3
 ldr r1, [r4]
 ldr r0, =#16
 mul r0, r0, r1
-ldr r4, =_t3
+ldr r4, =_t4
 str r0, [r4]
-ldr r4, =_t3
+ldr r4, =_t4
 ldr r0, [r4]
 mov r4, r0
 mov r4, r0
@@ -151,13 +162,13 @@ ldr r0, =#4
 mov r1, r0
 ldr r0, =#4
 mul r0, r0, r1
-ldr r4, =_t5
+ldr r4, =_t6
 str r0, [r4]
-ldr r4, =_t5
+ldr r4, =_t6
 ldr r1, [r4]
 ldr r0, =#4
 mul r0, r0, r1
-ldr r4, =_t6
+ldr r4, =_t7
 str r0, [r4]
 mov r1, r0
 ldr r0, =print_int_format
@@ -166,7 +177,7 @@ ldr r0, =#1
 mov r1, r0
 ldr r0, =#0
 and r0, r0, r1
-ldr r4, =_t7
+ldr r4, =_t8
 str r0, [r4]
 cmp r0, #1
 bne _false1
@@ -184,7 +195,7 @@ ldr r0, [fp, #-16]
 mov r1, r0
 ldr r0, =#0
 orr r0, r0, r1
-ldr r4, =_t8
+ldr r4, =_t9
 str r0, [r4]
 cmp r0, #0
 beq _false2
@@ -256,7 +267,7 @@ str r2, [fp, #-24]
 ldr r0, =#959
 mov r1, r0
 neg r0, r0
-ldr r4, =_t9
+ldr r4, =_t10
 str r0, [r4]
 mov r1, r0
 ldr r0, =println_int_format
@@ -276,7 +287,7 @@ _true4:
 mov r0, #1
 b _endif4
 _endif4:
-ldr r4, =_t10
+ldr r4, =_t11
 str r0, [r4]
 cmp r0, #0
 beq _endwhile0
@@ -310,9 +321,9 @@ ldr r0, [fp, #-28]
 mov r1, r0
 ldr r0, =#1
 sub r0, r1, r0
-ldr r4, =_t11
+ldr r4, =_t12
 str r0, [r4]
-ldr r4, =_t11
+ldr r4, =_t12
 ldr r0, [r4]
 mov r4, r0
 mov r4, r0
@@ -329,7 +340,7 @@ _true5:
 mov r0, #1
 b _endif5
 _endif5:
-ldr r4, =_t13
+ldr r4, =_t14
 str r0, [r4]
 cmp r0, #0
 bne _while0
