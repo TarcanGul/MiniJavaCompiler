@@ -164,14 +164,14 @@ ldr r0, =println_str_format
 bl printf
 ldr r0, =_strlt1
 ldr r4, =_strlt1
-mov r0, r4
+ldr r0, [r4]
 mov r4, r0
 str r4, [fp, #-20]
 ldr r0, [fp, #-20]
 mov r1, r0
 ldr r0, =_strlt2
 ldr r4, =_strlt2
-mov r0, r4
+ldr r0, [r4]
 mov r2, r0
 mov r0, r1
 mov r1, r2
