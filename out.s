@@ -39,7 +39,6 @@ ldr r2, =i
 ldr r2, [r2]
 str r2, [fp, #-8]
 ldr r2, =hello
-ldr r2, [r2]
 str r2, [fp, #-12]
 ldr r2, =abra
 ldr r2, [r2]
@@ -207,7 +206,6 @@ ldr r2, =abra
 ldr r2, [r2]
 str r2, [fp, #-24]
 ldr r2, =hello
-ldr r2, [r2]
 str r2, [fp, #-28]
 ldr r0, =#1000
 mov r1, r0
@@ -250,7 +248,6 @@ ldr r2, =abra
 ldr r2, [r2]
 str r2, [fp, #-20]
 ldr r2, =hello
-ldr r2, [r2]
 str r2, [fp, #-24]
 ldr r0, =#959
 mov r1, r0
@@ -295,7 +292,6 @@ ldr r2, =abra
 ldr r2, [r2]
 str r2, [fp, #-20]
 ldr r2, =hello
-ldr r2, [r2]
 str r2, [fp, #-24]
 ldr r2, =i
 ldr r2, [r2]
