@@ -218,7 +218,7 @@ _endif2:
 ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =#0
-cmp r1, r0
+cmp r0, r1
 bgt _false4
 _true4:
 mov r0, #1
@@ -267,7 +267,7 @@ str r4, [fp, #-24]
 ldr r0, [fp, #-24]
 mov r1, r0
 ldr r0, =#0
-cmp r1, r0
+cmp r0, r1
 bgt _false5
 _true5:
 mov r0, #1
