@@ -3,6 +3,7 @@ x: .word 1
 y: .word 100
 z: .word 0
 abra: .word 1
+hello: .word 0
 _strlt0: .asciz "This line should be printed. A bunch of expressions:"
 _t0: .word 0
 _t1: .word 0
@@ -37,6 +38,9 @@ sub sp, sp, #24
 ldr r2, =i
 ldr r2, [r2]
 str r2, [fp, #-8]
+ldr r2, =hello
+ldr r2, [r2]
+str r2, [fp, #-8]
 ldr r2, =abra
 ldr r2, [r2]
 str r2, [fp, #-12]
@@ -49,7 +53,37 @@ str r2, [fp, #-20]
 ldr r2, =x
 ldr r2, [r2]
 str r2, [fp, #-24]
+mov r0, #6
+bl malloc
+ldr r4, =hello
+str r0, [r4]
+mov r1, #104
+ldr r4, =hello
+ldr r4, [r4]
+str r1, [r4, #0]
+mov r1, #101
+ldr r4, =hello
+ldr r4, [r4]
+str r1, [r4, #1]
+mov r1, #108
+ldr r4, =hello
+ldr r4, [r4]
+str r1, [r4, #2]
+mov r1, #108
+ldr r4, =hello
+ldr r4, [r4]
+str r1, [r4, #3]
+mov r1, #111
+ldr r4, =hello
+ldr r4, [r4]
+str r1, [r4, #4]
+mov r1, #0
+str r1, [r4, #5]
 ldr r0, =_strlt0
+mov r1, r0
+ldr r0, =println_str_format
+bl printf
+ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
@@ -170,6 +204,9 @@ str r2, [fp, #-20]
 ldr r2, =abra
 ldr r2, [r2]
 str r2, [fp, #-24]
+ldr r2, =hello
+ldr r2, [r2]
+str r2, [fp, #-24]
 ldr r0, =#1000
 mov r1, r0
 ldr r0, =println_int_format
@@ -208,6 +245,9 @@ ldr r2, =z
 ldr r2, [r2]
 str r2, [fp, #-16]
 ldr r2, =abra
+ldr r2, [r2]
+str r2, [fp, #-20]
+ldr r2, =hello
 ldr r2, [r2]
 str r2, [fp, #-20]
 ldr r0, =#959
@@ -250,6 +290,9 @@ ldr r2, =z
 ldr r2, [r2]
 str r2, [fp, #-16]
 ldr r2, =abra
+ldr r2, [r2]
+str r2, [fp, #-20]
+ldr r2, =hello
 ldr r2, [r2]
 str r2, [fp, #-20]
 ldr r2, =i
