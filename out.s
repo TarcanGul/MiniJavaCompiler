@@ -173,7 +173,7 @@ ldr r2, [r2]
 str r2, [fp, #-20]
 mov r0, #959
 mov r1, r0
-mul r0, r0, #-1
+neg r0, r0
 ldr r4, =_t9
 str r0, [r4]
 mov r1, r0
