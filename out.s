@@ -80,7 +80,8 @@ str r1, [r4, #4]
 mov r1, #0
 str r1, [r4, #5]
 ldr r4, =hello
-mov r0, r4
+ldr r4, [r4]
+str r4, [fp, #-12]
 ldr r0, =_strlt0
 mov r1, r0
 ldr r0, =println_str_format
