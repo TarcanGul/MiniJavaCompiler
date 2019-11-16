@@ -12,6 +12,7 @@ _t5: .word 0
 _t6: .word 0
 _t7: .word 0
 _t8: .word 0
+rr: .word 5
 _t9: .word 0
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
@@ -60,7 +61,7 @@ ldr r0, =println_int_format
 bl printf
 ldr r0, =#4
 mov r1, r0
-ldr r0, =#5
+ldr r0, [fp, #-20]
 sub r0, r1, r0
 ldr r4, =_t2
 str r0, [r4]
@@ -73,8 +74,12 @@ str r0, [r4]
 ldr r4, =_t3
 ldr r0, [r4]
 mov r4, r0
-str r4, [fp, #-20]
+str r4, [fp, #-12]
 ldr r0, [fp, #-20]
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
+ldr r0, [fp, #-12]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
@@ -135,20 +140,40 @@ beq _false2
 _true2:
 push {fp}
 mov fp, sp
-sub sp, sp, #20
-ldr r2, =x
+sub sp, sp, #24
+ldr r2, =rr
 ldr r2, [r2]
 str r2, [fp, #-8]
-ldr r2, =y
+ldr r2, =x
 ldr r2, [r2]
 str r2, [fp, #-12]
-ldr r2, =z
+ldr r2, =y
 ldr r2, [r2]
 str r2, [fp, #-16]
-ldr r2, =abra
+ldr r2, =z
 ldr r2, [r2]
 str r2, [fp, #-20]
+ldr r2, =abra
+ldr r2, [r2]
+str r2, [fp, #-24]
 ldr r0, =#1000
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
+ldr r0, [fp, #-24]
+cmp r0, #1
+bne _false3
+_true3:
+ldr r0, =println_str_format
+ldr r1, =bool_true
+bl printf
+b _endif3
+_false3:
+ldr r0, =println_str_format
+ldr r1, =bool_false
+bl printf
+_endif3:
+ldr r0, =#5
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
