@@ -172,6 +172,9 @@ mov r1, r0
 ldr r0, =_strlt2
 ldr r4, =_strlt2
 mov r0, r4
+mov r2, r0
+mov r0, r1
+mov r1, r2
 swp r0, r1
 bl strcat
 ldr r4, =_t6
