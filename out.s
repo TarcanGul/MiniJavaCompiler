@@ -34,25 +34,25 @@ main:
 push {lr}
 push {fp}
 mov fp, sp
-sub sp, sp, #24
+sub sp, sp, #28
 ldr r2, =i
 ldr r2, [r2]
 str r2, [fp, #-8]
 ldr r2, =hello
 ldr r2, [r2]
-str r2, [fp, #-8]
+str r2, [fp, #-12]
 ldr r2, =abra
 ldr r2, [r2]
-str r2, [fp, #-12]
+str r2, [fp, #-16]
 ldr r2, =z
 ldr r2, [r2]
-str r2, [fp, #-16]
+str r2, [fp, #-20]
 ldr r2, =y
 ldr r2, [r2]
-str r2, [fp, #-20]
+str r2, [fp, #-24]
 ldr r2, =x
 ldr r2, [r2]
-str r2, [fp, #-24]
+str r2, [fp, #-28]
 mov r0, #6
 bl malloc
 ldr r4, =hello
@@ -79,19 +79,21 @@ ldr r4, [r4]
 str r1, [r4, #4]
 mov r1, #0
 str r1, [r4, #5]
+ldr r4, =hello
+mov r0, r4
 ldr r0, =_strlt0
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
-ldr r0, [fp, #-8]
+ldr r0, [fp, #-12]
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
-ldr r0, [fp, #-24]
+ldr r0, [fp, #-28]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, [fp, #-20]
+ldr r0, [fp, #-24]
 mov r1, r0
 ldr r0, =#2
 mul r0, r0, r1
@@ -108,7 +110,7 @@ ldr r0, =println_int_format
 bl printf
 ldr r0, =#4
 mov r1, r0
-ldr r0, [fp, #-24]
+ldr r0, [fp, #-28]
 sub r0, r1, r0
 ldr r4, =_t2
 str r0, [r4]
@@ -122,16 +124,16 @@ ldr r4, =_t3
 ldr r0, [r4]
 mov r4, r0
 mov r4, r0
-str r4, [fp, #-16]
-ldr r0, [fp, #-24]
+str r4, [fp, #-20]
+ldr r0, [fp, #-28]
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
+ldr r0, [fp, #-20]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, [fp, #-16]
-mov r1, r0
-ldr r0, =println_int_format
-bl printf
-ldr r0, [fp, #-12]
 cmp r0, #1
 bne _false0
 _true0:
@@ -177,7 +179,7 @@ ldr r0, =print_str_format
 ldr r1, =bool_false
 bl printf
 _endif1:
-ldr r0, [fp, #-12]
+ldr r0, [fp, #-16]
 mov r1, r0
 ldr r0, =#0
 orr r0, r0, r1
@@ -188,7 +190,7 @@ beq _false2
 _true2:
 push {fp}
 mov fp, sp
-sub sp, sp, #24
+sub sp, sp, #28
 ldr r2, =rr
 ldr r2, [r2]
 str r2, [fp, #-8]
@@ -206,7 +208,7 @@ ldr r2, [r2]
 str r2, [fp, #-24]
 ldr r2, =hello
 ldr r2, [r2]
-str r2, [fp, #-24]
+str r2, [fp, #-28]
 ldr r0, =#1000
 mov r1, r0
 ldr r0, =println_int_format
@@ -234,7 +236,7 @@ b _endif2
 _false2:
 push {fp}
 mov fp, sp
-sub sp, sp, #20
+sub sp, sp, #24
 ldr r2, =x
 ldr r2, [r2]
 str r2, [fp, #-8]
@@ -249,7 +251,7 @@ ldr r2, [r2]
 str r2, [fp, #-20]
 ldr r2, =hello
 ldr r2, [r2]
-str r2, [fp, #-20]
+str r2, [fp, #-24]
 ldr r0, =#959
 mov r1, r0
 neg r0, r0
@@ -279,7 +281,7 @@ cmp r0, #0
 beq _endwhile0
 push {fp}
 mov fp, sp
-sub sp, sp, #24
+sub sp, sp, #28
 ldr r2, =x
 ldr r2, [r2]
 str r2, [fp, #-8]
@@ -294,16 +296,16 @@ ldr r2, [r2]
 str r2, [fp, #-20]
 ldr r2, =hello
 ldr r2, [r2]
-str r2, [fp, #-20]
+str r2, [fp, #-24]
 ldr r2, =i
 ldr r2, [r2]
-str r2, [fp, #-24]
+str r2, [fp, #-28]
 _while0:
 ldr r0, =#420
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, [fp, #-24]
+ldr r0, [fp, #-28]
 mov r1, r0
 ldr r0, =#1
 sub r0, r1, r0
@@ -313,8 +315,8 @@ ldr r4, =_t11
 ldr r0, [r4]
 mov r4, r0
 mov r4, r0
-str r4, [fp, #-24]
-ldr r0, [fp, #-24]
+str r4, [fp, #-28]
+ldr r0, [fp, #-28]
 mov r1, r0
 ldr r0, =#0
 cmp r1, r0
