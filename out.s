@@ -3,7 +3,7 @@ x: .word 1
 y: .word 100
 z: .word 0
 abra: .word 1
-_strlt0: "This line should be printed. A bunch of expressions:"
+_strlt0: .asciz "This line should be printed. A bunch of expressions:"
 _t0: .word 0
 _t1: .word 0
 _t2: .word 0
