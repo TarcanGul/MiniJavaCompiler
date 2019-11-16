@@ -10,6 +10,7 @@ _t3: .word 0
 _t4: .word 0
 _t5: .word 0
 _t6: .word 0
+_t7: .word 0
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
 println_str_format: .asciz "%s\n"
@@ -103,6 +104,11 @@ mov r1, r0
 ldr r0, =print_int_format
 bl printf
 mov r0, #1
+mov r1, r0
+mov r0, #0
+and r0, r0, r1
+ldr r4, =_t7
+str r0, [r4]
 cmp r0, #1
 bne _false1
 _true1:
