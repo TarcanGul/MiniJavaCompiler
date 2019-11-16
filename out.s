@@ -23,7 +23,8 @@ bool_false: .asciz "false"
 .global main
 .balign 4
 main: 
-push {fp, lr}
+push {lr}
+push {fp}
 mov fp, sp
 sub sp, sp, #20
 ldr r2, =abra
@@ -123,7 +124,6 @@ ldr r0, =print_str_format
 ldr r1, =bool_false
 bl printf
 _endif1:
-ldr r0, =println_str_format
 ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =#0
@@ -133,7 +133,7 @@ str r0, [r4]
 cmp r0, #0
 beq _false2
 _true2:
-push {fp, lr}
+push {fp}
 mov fp, sp
 sub sp, sp, #20
 ldr r2, =x
@@ -153,10 +153,10 @@ mov r1, r0
 ldr r0, =println_int_format
 bl printf
 mov sp, fp
-pop {fp, pc}
+pop {fp}
 b _endif2
 _false2:
-push {fp, lr}
+push {fp}
 mov fp, sp
 sub sp, sp, #20
 ldr r2, =x
@@ -180,7 +180,8 @@ mov r1, r0
 ldr r0, =println_int_format
 bl printf
 mov sp, fp
-pop {fp, pc}
+pop {fp}
 _endif2:
 mov sp, fp
-pop {fp, pc}
+pop {fp}
+pop {pc}
