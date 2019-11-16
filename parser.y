@@ -9,6 +9,8 @@
   #define GLOBAL_STACK_SIZE 200
 
 
+  int g_label_counter[5] = {0};
+
   extern int yylex();
   extern int yylineno;
   extern FILE* yyin;
@@ -61,8 +63,10 @@
 
   char ** data_section = NULL;
   char ** text_section = NULL;
-  
-  int method_first_codegen(stmt_node_t * list);
+  int calc_method_size(stmt_node_t * list);
+  void method_first_codegen(stmt_node_t * list);
+  char * generate_label(label_purpose_t purpose);
+  void declare_label(char * label);
   static int temp_counter = 0;
 %}
 
@@ -1372,6 +1376,23 @@ class_t * get_class_info(char * id)
   return NULL;
 }
 
+//Wrapper code.
+int setup_execute(stmt_node_t * current)
+{
+	add_to(text_section, "push {fp}\n");
+	add_to(text_section, "mov fp, sp\n");
+	int current_method_size = calc_method_size(current);
+	char alloc_method[40];
+	sprintf(alloc_method, "sub sp, sp, #%d\n", current_method_size);
+	add_to(text_section, alloc_method);
+	method_first_codegen(current);
+
+	execute(current);
+
+	add_to(text_section, "mov sp, fp\n");
+	add_to(text_section, "pop {fp}\n");
+
+}
 
 /* Execute statements. This is where the code generated for statements. */
 int execute(stmt_node_t * list)
@@ -1410,14 +1431,9 @@ int execute(stmt_node_t * list)
   }
 
  
-
   assert(current_scope != NULL);
-  add_to(text_section, "push {fp}\n");
-  add_to(text_section, "mov fp, sp\n");
-  int current_method_size = method_first_codegen(list); 
-  char alloc_method[40];
-  sprintf(alloc_method, "sub sp, sp, #%d\n", current_method_size);
-  add_to(text_section, alloc_method);
+
+
   while(current)
   {
     switch(current->type)
@@ -1437,7 +1453,7 @@ int execute(stmt_node_t * list)
 	}
 	case LIST: 
 	{
-	    execute(current);
+	    setup_execute(current);
 	    break;
 	}
 	case IF:
@@ -1450,24 +1466,24 @@ int execute(stmt_node_t * list)
 		break;
             }
 	    struct exp_node * exp = node->expression;
-	    int is_true;
-	    if(exp->is_id)
-	    {
-	       is_true = *(int*) llist_find(current_scope->name_table, exp->data.var_name);
-	    }
-	    else
-	    {
-		is_true = *(int*) exp->current_value;
-	    }	
+	    expr_codegen(exp);
+            //r0 should have the right value.
+	    char * if_l = generate_label(TRUE_P);
+	    char * else_l = generate_label(FALSE_P);
+	    char * endif_l = generate_label(ENDIF_P);
 
-	    if(is_true)
-	    {
-		execute(node->if_list);
-            }
-	    else
-	    {
-		execute(node->else_list);
-	    }
+	    add_to(text_section, "cmp r0, #0\n");
+	    char false_br[80];
+	    sprintf(false_br, "beq %s\n", else_l);
+	    add_to(text_section, false_br);
+	    declare_label(if_l);
+	    setup_execute(node->if_list);
+            char true_jump[80];
+	    sprintf(true_jump, "b %s\n", endif_l);
+	    add_to(text_section, true_jump);
+	    declare_label(else_l);
+	    setup_execute(node->else_list);
+	    declare_label(endif_l);
 	    break;
 	}
 	case WHILE: 
@@ -1480,15 +1496,42 @@ int execute(stmt_node_t * list)
 			break;
             	}
 	    	struct exp_node * exp = node->expression;
+		expr_codegen(exp);
+		char * while_l = generate_label(WHILE_P);
+		char * endwhile_l = generate_label(ENDWHILE_P);
 
-		while(*(int *) exp->current_value)
+	    	add_to(text_section, "cmp r0, #0\n");
+		char init_jump[80];
+		sprintf(init_jump, "beq %s\n", endwhile_l);
+		add_to(text_section, init_jump);
+  	    	add_to(text_section, "push {fp}\n");
+  	    	add_to(text_section, "mov fp, sp\n");
+
+		int current_method_size = calc_method_size(node->list);
+		char alloc_method[40];
+		sprintf(alloc_method, "sub sp, sp, #%d\n", current_method_size);
+		add_to(text_section, alloc_method);
+		method_first_codegen(node->list);
+		declare_label(while_l);
+		execute(node->list);
+		current_scope = node->list->scope;
+		expr_codegen(exp);
+		current_scope = current_scope->parent; //Backtrack. The reason we changed the scope is that traverse exp will now look at the right symbol table.
+		char jump_back[80];
+	    	add_to(text_section, "cmp r0, #0\n");
+		sprintf(jump_back, "bne %s\n", while_l);
+		add_to(text_section, jump_back);
+  	    	add_to(text_section, "mov sp, fp\n");
+  	    	add_to(text_section, "pop {fp}\n");
+		declare_label(endwhile_l);	
+		/*while(*(int *) exp->current_value)
 		{
 			execute(node->list);
 			current_scope = node->list->scope;
 			assert(current_scope != NULL);
 			traverse(exp);
 			current_scope = current_scope->parent; //Backtrack. The reason we changed the scope is that traverse exp will now look at the right symbol table.
-		}
+		}*/
 		break;
 	}
 	default: /*type_error();*/ break;
@@ -1509,7 +1552,7 @@ int execute(stmt_node_t * list)
   {
     current_scope = prev_scope;
   }
-  add_to(text_section, "pop {pc}");
+
 
 }
 
@@ -1588,10 +1631,10 @@ int traverse(struct exp_node * root)
     }*/
     if(root->is_id && !root->is_property)
     {
-	     //ListNode * node =  llist_find_node(current_scope->name_table, root->data.var_name);
-	     //symbol_codegen(root);	
-	     //root->current_value = node->real_value;
-	     //root->type = node->type;
+	     ListNode * node =  llist_find_node(current_scope->name_table, root->data.var_name);
+	     root->current_value = node->real_value;
+	     root->type = node->type;
+
 	     return 0;
     }
     else if(!root->is_leaf && !root->is_array_entry)
@@ -1603,7 +1646,6 @@ int traverse(struct exp_node * root)
 	    if(root->type != ASGN || !left->is_array_entry)
 	    {
 	    	if(traverse(left)) return 1;
-		
 	    }
 
 	    if(traverse(right)) return 1;
@@ -1627,18 +1669,18 @@ int traverse(struct exp_node * root)
 			return 1;
 
 		}
-		if(right == NULL)
+		if(root->operation != MIN && root->operation != PLU && right == NULL)
 		{
 			type_error(root->line_num);
 			return 1;	
 		}
-		else if(root->operation != IN && right->type != CLASS && right->current_value == NULL)
+		else if(root->operation != IN && right != NULL && right->type != CLASS && right->current_value == NULL)
 		{
 			type_error(root->line_num);
 			return 1;
 
 		}
-		if(root->operation != IN && !left->is_array_entry && left->type != right->type)
+		if(root->operation != IN && left != NULL && right !=NULL && !left->is_array_entry && left->type != right->type)
 		{
 		 	type_error(root->line_num);
 			return 1;
@@ -1776,8 +1818,8 @@ void s_print(void * arg)
 		//list_node = llist_find_node(current_scope->name_table, node->data.var_name);
 		//type = list_node->type;
 		//value = list_node->real_value;
-		type = node->type;
-		value = node->current_value;
+//		type = node->type;
+//		value = node->current_value;
 	}
 	else if(node->is_array)
 	{
@@ -1795,30 +1837,43 @@ void s_print(void * arg)
 
 		case INT : 
 		{
-			printf("%d", *((int*) value)); break;
+			//Move value from ro to r1.
+			add_to(text_section, "mov r1, r0\n");
+			add_to(text_section, "ldr r0, =print_int_format\n");
+			char print_arg[40];
+
+			add_to(text_section, "bl printf\n");		
 		} 
 		case STR :
 		{
 
-			if(node->is_array_entry)
-			{
-				char * str = *(char **) value;
-				printf("%s", str);
-			}
-			else
-			{
-				char * str = (char *) value;
-				printf("%s", str);
-			}
 			break;
 		}
 		case BOOL :
 		{
-			char * to_print = *(int*) value == 0 ? "false" : "true";
-			printf("%s", to_print);
+			char * true_l = generate_label(TRUE_P);
+			char * false_l = generate_label(FALSE_P);
+			char * endif_l = generate_label(ENDIF_P);
+		
+			add_to(text_section, "cmp r0, #1\n");
+			char branch[50];
+			sprintf(branch, "bne %s\n", false_l);
+			add_to(text_section, branch);
+			declare_label(true_l);
+			add_to(text_section, "ldr r0, =print_str_format\n");
+			add_to(text_section, "ldr r1, =bool_true\n");
+			add_to(text_section, "bl printf\n");
+			char branch2[50];
+			sprintf(branch2, "b %s\n", endif_l);
+			add_to(text_section, branch2);
+			declare_label(false_l);
+			add_to(text_section, "ldr r0, =print_str_format\n");
+			add_to(text_section, "ldr r1, =bool_false\n");
+			add_to(text_section, "bl printf\n");
+			declare_label(endif_l);
 			break;
 		}	
-		default: type_error(node->line_num); break; 
+		default: assert(0); break; 
 	}	
 }
 
@@ -1832,8 +1887,9 @@ void s_println(void * arg)
 	if(node->is_id)
 	{
 		//Do address computation.
-		type = node->type;
-		value = node->current_value;
+		ListNode * list_node = llist_find_node(current_scope->name_table, node->data.var_name);
+		//type = node->type;
+		//value = node->current_value;
 	}
 	else if(node->is_array)
 	{
@@ -1843,23 +1899,24 @@ void s_println(void * arg)
 	else
 	{
 		value = node->current_value;
-		type = node->type;
 	}
 	//assert(value != NULL);
-	switch(type)
+	switch(node->type)
 	{
 
 		case INT : 
 		{
-			add_to(text_section, "ldr r0, =print_int_format\n");
+			//Move value from ro to r1.
+			add_to(text_section, "mov r1, r0\n");
+			add_to(text_section, "ldr r0, =println_int_format\n");
 			char print_arg[40];
-			sprintf(print_arg, "mov r1, #%d\n", value);
-			add_to(text_section, print_arg);
+
+
 			add_to(text_section, "bl printf\n");		
 		} break;
 		case STR :
 		{ 
-			add_to(text_section, "ldr r0, =print_str_format\n");
+			add_to(text_section, "ldr r0, =println_str_format\n");
 			char print_arg[40];
 			//sprintf(print_arg, "mov r1, #%d\n", value);
 			//fprintf(gen_file, print_arg)
@@ -1868,15 +1925,29 @@ void s_println(void * arg)
 		}
 		case BOOL :
 		{
-			char * to_print = *(int*) value == 0 ? "bool_false" : "bool_true";
-			add_to(text_section, "ldr r0, =print_str_format\n");
-			char print_arg[40];
-			sprintf(print_arg, "ldr r1, =%s\n", to_print);
-			add_to(text_section, print_arg);
-			add_to(text_section, "bl printf\n");		
+			char * true_l = generate_label(TRUE_P);
+			char * false_l = generate_label(FALSE_P);
+			char * endif_l = generate_label(ENDIF_P);
+		
+			add_to(text_section, "cmp r0, #1\n");
+			char branch[50];
+			sprintf(branch, "bne %s\n", false_l);
+			add_to(text_section, branch);
+			declare_label(true_l);
+			add_to(text_section, "ldr r0, =println_str_format\n");
+			add_to(text_section, "ldr r1, =bool_true\n");
+			add_to(text_section, "bl printf\n");
+			char branch2[50];
+			sprintf(branch2, "b %s\n", endif_l);
+			add_to(text_section, branch2);
+			declare_label(false_l);
+			add_to(text_section, "ldr r0, =println_str_format\n");
+			add_to(text_section, "ldr r1, =bool_false\n");
+			add_to(text_section, "bl printf\n");
+			declare_label(endif_l);
 			break;
 		}	
-		default: type_error(node->line_num); break; 
+		default: assert(0); break; 
 	}	
 }
 
@@ -2279,18 +2350,6 @@ void s_asgn(void * abstract_arg)
   struct exp_node * right_value = arg->data.right;
   assert(right_value != NULL);
   assert(left_value->is_id || left_value->is_array_entry);
-  /*if(left_value->type != right_value->type)
-  {
-    type_error();
-    return;
-  }
-//You might want to use type info for catching this.
-  if(right->is_array && $1->dim_len != $4->data.dim_len)
-  {
-    type_error();
-    return;
-
-  }*/
   if(right_value->is_array)
   {
      allocate_array(right_value);
@@ -2325,6 +2384,23 @@ void s_asgn(void * abstract_arg)
   else
   {
     update_var(current_scope->name_table, left_value->data.var_name, right_value->current_value);
+    ListNode * var_node = llist_find_node(current_scope->name_table, left_value->data.var_name);
+    //TODO: Expand to other types.
+    switch(var_node->type)
+    {
+	case INT:
+	{
+    		char load[50];
+		//Expression result should be in r0.
+    		sprintf(load, "mov r4, r0\n");
+    		add_to(text_section, load);
+	}
+    }
+
+    
+    char store[50];
+    sprintf(store, "str r4, [fp, #%d]\n", -1 * var_node->offset);
+    add_to(text_section, store);
   }
 }
 
@@ -2344,7 +2420,13 @@ void s_decl(void * abstract_arg)
     if(assign == NULL)
     {
       add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, NULL);
-      //add_to(text_section, "") What to do when assign is null?
+      if(!construct_name_table)
+      {
+      	char var_decl[20 + strlen(id_leaf->data.var_name)];
+      	sprintf(var_decl, "%s: .word 0\n", id_leaf->data.var_name);
+      	add_to(data_section, var_decl);
+      }
+
     }
     else
     {
@@ -2375,6 +2457,23 @@ void s_decl(void * abstract_arg)
 	else
 	{
 		add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, assign->current_value);
+		if(!construct_name_table)
+		{
+			switch(id_leaf->type)
+			{
+				//TODO: Add others.
+				case BOOL:
+				case INT:
+				{
+					char var_decl[20 + strlen(id_leaf->data.var_name)];
+					sprintf(var_decl, "%s: .word %u\n", id_leaf->data.var_name, * (int *) assign->current_value);
+					add_to(data_section, var_decl);
+					break;
+				}
+				
+			}
+
+		}
 
 	}
 
@@ -2656,21 +2755,22 @@ char * create_temp()
    char * var_name = (char *) malloc((len + 3) * sizeof(len));
    sprintf(var_name, "_t%s", num_string);
    char data_decl[50];
-   sprintf(data_decl, "%s: .word 0\n");
+   sprintf(data_decl, "%s: .word 0\n", var_name);
    add_to(data_section, data_decl);
    temp_counter++;
    return var_name;
 }
 
 //The value of the symbol will be stored in r0.
+//NOTE: Value stored in stack.
 void symbol_codegen(ListNode * id_node)
 {
   assert(id_node);
-  char assembly_load[20];
+  char assembly_load[50];
   int offset = id_node->offset;
   sprintf(assembly_load, "ldr r0, [fp, #%d]\n", -1 * offset);
   add_to(text_section, assembly_load);
-  add_to(text_section, "ldr r0, [r0]\n");
+  //add_to(text_section, "ldr r0, [r0]\n");
 }
 
 void expr_codegen(struct exp_node * node)
@@ -2692,9 +2792,15 @@ void expr_codegen(struct exp_node * node)
 		  case INT:
 		  {
 		    int value = * (int * ) node->data.value; 
-		    char command[50];
-		    sprintf(command, "mov r0, #%d\n", value);
-		    add_to(text_section, command);
+		    //Split up 32 bit number to be 2 16 bit numbers.
+		    //int right_side = (value << 16) >> 16;
+		    //int left_side = value >> 16;
+		    //char split_left[50];
+		    char split_right[50];
+		    sprintf(split_right, "ldr r0, =#%d\n", value);
+		    //sprintf(split_left, "movt r0, #%d\n", left_side);
+		    add_to(text_section, split_right);
+		    //add_to(text_section, split_left);
 		  }
 		}
 	}
@@ -2705,9 +2811,37 @@ void expr_codegen(struct exp_node * node)
 	struct exp_node * left = node->data.left;
 	struct exp_node * right = node->data.right;
 	//r0 has the final value of the expression.
-	expr_codegen(left);
-	add_to(text_section, "mov r1, r0\n");
-	expr_codegen(right);
+	//In assign, we don't care the value of the var in left hand side.
+	if(node->operation != ASGN)
+	{
+	  expr_codegen(left);
+	  if(!left->has_temp_var)
+	  {
+	     add_to(text_section, "mov r1, r0\n");
+          }
+	  else
+	  {
+	     char * var = left->temp_var;
+	     char stmt[50];
+	     sprintf(stmt, "ldr r4, =%s\n", var);
+	     add_to(text_section, stmt);
+	     add_to(text_section, "ldr r1, [r4]\n");
+	  }
+
+	} 
+	if(right != NULL)
+	{
+		expr_codegen(right);
+		if(right->has_temp_var)
+		{
+		     char * var = right->temp_var;
+		     char stmt[50];
+		     sprintf(stmt, "ldr r4, =%s\n", var);
+		     add_to(text_section, stmt);
+		     add_to(text_section, "ldr r0, [r4]\n");
+		}
+	}
+
 	char operation[50];
 	char store_temp[50];
 	char * var = create_temp();
@@ -2719,7 +2853,7 @@ void expr_codegen(struct exp_node * node)
 			add_to(text_section,"add r0, r0, r1\n");
 			break;
 		case SUB:  
-			add_to(text_section,"sub r0, r0, r1\n");
+			add_to(text_section,"sub r0, r1, r0\n");
 			break;
 		case MUL:  
 			add_to(text_section,"mul r0, r0, r1\n");
@@ -2727,53 +2861,52 @@ void expr_codegen(struct exp_node * node)
 		case DIV:  
 			break;
 		case NGT:
+			add_to(text_section,"eor r0, r0, #1\n");
 			break; 
 		case PLU:
 			break;
 		case MIN:
+			add_to(text_section,"neg r0, r0\n");
 			break;  
 		case AND:
-			//root->type = BOOL; 
+			add_to(text_section,"and r0, r0, r1\n");
+			node->type = BOOL;
 			break;
 		case OR:
-			//root->type = BOOL; 
+			add_to(text_section,"orr r0, r0, r1\n");
+			node->type = BOOL;
 			break;
 		case SME:
-			//root->type = BOOL; 
-			break;
 		case LRE:
-			//root->type = BOOL; 
-			break;
 		case EQU:
-			//root->type = BOOL; 
-			break;
 		case NEQ:
-			//root->type = BOOL; 
-			break;
 		case LE:
-			//root->type = BOOL; 
-			break;
 		case GR:
-			//root->type = BOOL; 
+			logic_op_codegen(node->operation);
+			node->type = BOOL; 
 			break;
 		case IN: 
 		{
 			break;
 		}
-		case ASGN: return 1;
+		case ASGN: return 0;
                 case UNDEF: return 1;
 	
 		default: /*type_error();*/ break;	
 	}
 
-	sprintf(store_temp, "str r0, =%s\n", var);
+	sprintf(store_temp, "ldr r4, =%s\n", var);
 	add_to(text_section, store_temp);
+	char store[50];
+	sprintf(store, "str r0, [r4]\n", var);
+	node->has_temp_var = 1;
+	node->temp_var = var;
+	add_to(text_section, store);
   }
 }
 
 //Calculates how much memory we need for the method local variables. Also updates the offset for each variable.
-//This method has to be used in the second pass. (Assumes the name table is populated.)
-int method_first_codegen(stmt_node_t * list)
+int calc_method_size(stmt_node_t * list)
 {
   assert(list->type == LIST);
   //Iterate over list's name table. 
@@ -2804,16 +2937,135 @@ int method_first_codegen(stmt_node_t * list)
 	default: assert(0);
     }
     it->offset = current_offset;
-    char command[50];
-    sprintf(command, "ldr r2, =%d\n", it->real_value); 
-    add_to(text_section, command);
-    char command2[50];
-    sprintf(command2, "str r2, [fp, %d]\n", -1 * current_offset); 
-    add_to(text_section, command2);
     it = it->next;
   }
   //For every variable, update their offset.
   return current_offset;
+}
+
+//Puts the variables in the respective offsets in the assembly code.
+void method_first_codegen(stmt_node_t * list)
+{
+  assert(list->type == LIST);
+  //Iterate over list's name table. 
+  LinkedList * name_table = list->scope->name_table;
+  ListNode * it = name_table->head;
+  while(it)
+  {
+    int current_offset = it->offset;
+    char command[50];
+    sprintf(command, "ldr r2, =%s\n", it->value); 
+    add_to(text_section, command);
+    //We are storing the value in stack, thus we have to dereference the address before storing.
+    add_to(text_section, "ldr r2, [r2]\n");
+    char command2[50];
+    sprintf(command2, "str r2, [fp, #%d]\n", -1 * current_offset); 
+    add_to(text_section, command2);
+    it = it->next;
+  }
+}
+
+char * generate_label(label_purpose_t purpose)
+{
+  char * to_be_written[50];
+  switch(purpose)
+  {
+	case TRUE_P:
+	{
+		sprintf(to_be_written, "_true%d", g_label_counter[TRUE_P]++);
+		break;
+	}
+	case FALSE_P:
+	{
+		sprintf(to_be_written, "_false%d", g_label_counter[FALSE_P]++);
+		break;
+	}
+	case WHILE_P:
+	{
+		sprintf(to_be_written, "_while%d", g_label_counter[WHILE_P]++);
+		break;
+	}
+	case ENDIF_P:
+	{
+		sprintf(to_be_written, "_endif%d", g_label_counter[ENDIF_P]++);
+		break;
+	}
+	case ENDWHILE_P:
+	{
+		sprintf(to_be_written, "_endwhile%d", g_label_counter[ENDWHILE_P]++);
+		break;
+	}
+
+  }
+  int len = strlen(to_be_written);
+  char * result = malloc((len + 1) * sizeof(char));
+  strncpy(result, to_be_written, len);
+  result[len] = 0;
+  return result;
+}
+
+void logic_op_codegen(enum op op)
+{
+	//Make sure it is logic operations.
+	char var_str[80];
+
+	char * endif_label = generate_label(ENDIF_P);
+	char * true_label = generate_label(TRUE_P);
+	char * false_label = generate_label(FALSE_P);
+
+	switch(op)
+	{
+		
+		case SME:
+			sprintf(var_str, "ble %s\n", true_label);
+			break;
+		case LRE:
+			sprintf(var_str, "bge %s\n", true_label);
+			break;
+		case EQU:
+			sprintf(var_str, "beq %s\n", true_label);
+			break;
+		case NEQ:
+			sprintf(var_str, "bne %s\n", true_label);
+			break;
+		case LE:
+			sprintf(var_str, "blt %s\n", true_label);
+			break;
+		case GR:
+			sprintf(var_str, "bgt %s\n", true_label);
+			break;
+	}
+
+
+
+
+	add_to(text_section,"cmp r1, r0\n");
+	add_to(text_section, var_str);
+	char label_decl2[50];
+	sprintf(label_decl2, "%s:\n", false_label);
+	add_to(text_section, label_decl2);
+	add_to(text_section, "mov r0, #0\n");
+	char jump2[50];
+	sprintf(jump2, "b %s\n", endif_label);
+	add_to(text_section, jump2);
+	char label_decl[50];
+	sprintf(label_decl, "%s:\n", true_label);
+	add_to(text_section, label_decl);
+	add_to(text_section, "mov r0, #1\n");
+	char jump[50];
+	sprintf(jump, "b %s\n", endif_label);
+	add_to(text_section, jump);
+
+	char label_decl3[50];
+	sprintf(label_decl3, "%s:\n", endif_label);
+	add_to(text_section, label_decl3);
+}
+
+void declare_label(char * label)
+{
+  char decl[80];
+  sprintf(decl, "%s:\n", label);
+  add_to(text_section, decl);
 }
 
 int main(int argc, char** argv)
@@ -2841,16 +3093,21 @@ int main(int argc, char** argv)
      text_section = (char **) malloc(sizeof(char *));
      * data_section = NULL;
      * text_section = NULL;
-    execute(main_stmt_list);
+
+    setup_execute(main_stmt_list);
     fprintf(gen_file, ".section .data\n");
     init_data_section();
     if(data_section != NULL) fprintf(gen_file, *data_section);
     fprintf(gen_file, ".section .text\n");
+    fprintf(gen_file, ".global main\n");
     fprintf(gen_file, ".balign 4\n");
+    //The start (main) routine.
+    fprintf(gen_file, "main: \n");
+    fprintf(gen_file, "push {lr}\n");
     if(text_section != NULL) fprintf(gen_file, *text_section);
     if(data_section != NULL) free(data_section);
     if(text_section != NULL) free(text_section);
-
+    fprintf(gen_file, "pop {pc}\n");
   }
   fclose(gen_file);
 }

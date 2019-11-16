@@ -56,6 +56,7 @@ struct exp_node * create_exp_node(enum op operation, struct exp_node * left, str
   new_node->data.left = left;
   new_node->data.right = right;
   new_node->is_leaf = 0;
+  new_node->has_temp_var = 0;
   return new_node;
 }
 
@@ -67,6 +68,7 @@ struct exp_node * create_id_leaf(char * ID)
   newNode->is_leaf = 1;
   newNode->is_array = 0;
   newNode->operation = UNDEF;
+  newNode->has_temp_var = 0;
   newNode->data.var_name = ID;
   return newNode;
 }
@@ -92,6 +94,7 @@ struct exp_node * create_string_leaf(char* string)
   new_node->is_leaf = 1;
   new_node->is_id = 0;
   new_node->is_array = 0;
+  new_node->has_temp_var = 0;
   new_node->current_value = (void * ) string;
   return new_node; 
 }
@@ -105,6 +108,7 @@ struct exp_node * create_int_leaf(int * value)
   newNode->is_id = 0;
   newNode->is_leaf = 1;
   newNode->is_array = 0;
+  newNode->has_temp_var = 0;
   newNode->current_value = (void *) value;
   return newNode;
 }
@@ -120,6 +124,7 @@ struct exp_node * create_bool_leaf(int value)
   newNode->is_id = 0;
   newNode->is_leaf = 1;
   newNode->is_array = 0;
+  newNode->has_temp_var = 0;
   newNode->current_value = (void *) val_in_mem;
   return newNode;
 }
@@ -135,6 +140,7 @@ struct exp_node * create_array_leaf(enum type type, index_list_t * dimensions, v
   node->data.dimensions = dimensions;
   node->data.dim_len = find_index_len(dimensions);
   node->type = type;
+  node->has_temp_var = 0;
   void * main_pointer;
   void * last_value;
   index_t * it = dimensions->sentinel->prev;
@@ -155,6 +161,7 @@ struct exp_node * create_array_entry_leaf(char * array_name, index_list_t * inde
   node->is_array_entry = 1;
   node->is_id = 0;
   node->data.array_entry = array_entry;
+  node->has_temp_var = 0;
   return node;
 }
 

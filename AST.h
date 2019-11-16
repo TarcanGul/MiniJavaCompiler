@@ -14,6 +14,17 @@ struct scope;
 struct scope_list;
 struct method;
 struct class_s;
+
+typedef enum label_purpose
+{
+	TRUE_P = 0,
+	FALSE_P = 1,
+	WHILE_P = 2,
+	ENDIF_P = 3,
+	ENDWHILE_P = 4
+} label_purpose_t;
+  
+
 //Type info is the struct for Type and PrimeType. Can also tell if a type is array. 
 typedef struct type_info 
 {
@@ -36,6 +47,7 @@ struct exp_node
   int is_array_entry;
   int is_property;
   int is_method;
+  int has_temp_var;
   //Length of each dimension. 0 means 1st dimension ans so on.
   union data
   {
@@ -58,6 +70,7 @@ struct exp_node
   //Keeping state of current value.
   void * current_value;
   char * associated_class;
+  char * temp_var;
   struct exp_node * next;
 };
 
