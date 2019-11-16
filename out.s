@@ -3,7 +3,7 @@ x: .word 1
 y: .word 100
 z: .word 0
 abra: .word 1
-hello: .word 1304907392
+hello: .word 3949297280
 _t0: .word 0
 _t1: .word 0
 _t2: .word 0
@@ -52,6 +52,7 @@ str r2, [fp, #-20]
 ldr r2, =x
 ldr r2, [r2]
 str r2, [fp, #-24]
+ldr r0, =#3949297936
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
@@ -66,12 +67,14 @@ bl printf
 ldr r0, [fp, #-20]
 mov r1, r0
 ldr r0, =#2
+ldr r0, =#3949298736
 mul r0, r0, r1
 ldr r4, =_t0
 str r0, [r4]
 ldr r4, =_t0
 ldr r1, [r4]
 ldr r0, =#2
+ldr r0, =#3949298992
 add r0, r0, r1
 ldr r4, =_t1
 str r0, [r4]
@@ -79,6 +82,7 @@ mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, =#4
+ldr r0, =#3949299456
 mov r1, r0
 ldr r0, [fp, #-24]
 sub r0, r1, r0
@@ -87,6 +91,7 @@ str r0, [r4]
 ldr r4, =_t2
 ldr r1, [r4]
 ldr r0, =#16
+ldr r0, =#3949299856
 mul r0, r0, r1
 ldr r4, =_t3
 str r0, [r4]
@@ -117,14 +122,17 @@ ldr r1, =bool_false
 bl printf
 _endif0:
 ldr r0, =#4
+ldr r0, =#3949300912
 mov r1, r0
 ldr r0, =#4
+ldr r0, =#3949301056
 mul r0, r0, r1
 ldr r4, =_t5
 str r0, [r4]
 ldr r4, =_t5
 ldr r1, [r4]
 ldr r0, =#4
+ldr r0, =#3949301312
 mul r0, r0, r1
 ldr r4, =_t6
 str r0, [r4]
@@ -132,8 +140,10 @@ mov r1, r0
 ldr r0, =print_int_format
 bl printf
 ldr r0, =#1
+ldr r0, =#3949301744
 mov r1, r0
 ldr r0, =#0
+ldr r0, =#3949301888
 and r0, r0, r1
 ldr r4, =_t7
 str r0, [r4]
@@ -152,6 +162,7 @@ _endif1:
 ldr r0, [fp, #-12]
 mov r1, r0
 ldr r0, =#0
+ldr r0, =#3949302352
 orr r0, r0, r1
 ldr r4, =_t8
 str r0, [r4]
@@ -180,6 +191,7 @@ ldr r2, =hello
 ldr r2, [r2]
 str r2, [fp, #-24]
 ldr r0, =#1000
+ldr r0, =#3949302496
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
@@ -223,6 +235,7 @@ ldr r2, =hello
 ldr r2, [r2]
 str r2, [fp, #-20]
 ldr r0, =#959
+ldr r0, =#3949303920
 mov r1, r0
 neg r0, r0
 ldr r4, =_t9
@@ -236,6 +249,7 @@ _endif2:
 ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =#0
+ldr r0, =#3949305280
 cmp r1, r0
 bgt _true4
 _false4:
@@ -272,12 +286,14 @@ ldr r2, [r2]
 str r2, [fp, #-24]
 _while0:
 ldr r0, =#420
+ldr r0, =#3949305536
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, [fp, #-24]
 mov r1, r0
 ldr r0, =#1
+ldr r0, =#3949306096
 sub r0, r1, r0
 ldr r4, =_t11
 str r0, [r4]
@@ -289,6 +305,7 @@ str r4, [fp, #-24]
 ldr r0, [fp, #-24]
 mov r1, r0
 ldr r0, =#0
+ldr r0, =#3949305280
 cmp r1, r0
 bgt _true5
 _false5:
