@@ -231,7 +231,6 @@ ldr r4, =_t10
 str r0, [r4]
 cmp r0, #0
 beq _endwhile0
-_while0:
 push {fp}
 mov fp, sp
 sub sp, sp, #24
@@ -250,6 +249,7 @@ str r2, [fp, #-20]
 ldr r2, =i
 ldr r2, [r2]
 str r2, [fp, #-24]
+_while0:
 ldr r0, =#420
 mov r1, r0
 ldr r0, =println_int_format
@@ -264,8 +264,6 @@ ldr r4, =_t11
 ldr r0, [r4]
 mov r4, r0
 str r4, [fp, #-24]
-mov sp, fp
-pop {fp}
 ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =#0
@@ -282,6 +280,8 @@ ldr r4, =_t13
 str r0, [r4]
 cmp r0, #0
 bne _while0
+mov sp, fp
+pop {fp}
 _endwhile0:
 mov sp, fp
 pop {fp}
