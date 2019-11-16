@@ -249,9 +249,6 @@ str r0, [r4]
 mov r1, r0
 ldr r0, =print_int_format
 bl printf
-mov r1, r0
-ldr r0, =print_str_format
-bl printf
 ldr r0, =#1
 mov r1, r0
 ldr r0, =#0
@@ -472,9 +469,6 @@ ldr r4, =_t23
 str r0, [r4]
 mov r1, r0
 ldr r0, =print_int_format
-bl printf
-mov r1, r0
-ldr r0, =print_str_format
 bl printf
 ldr r0, [fp, #-36]
 mov r1, r0
