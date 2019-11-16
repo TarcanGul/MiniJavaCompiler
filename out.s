@@ -44,28 +44,28 @@ ldr r0, =println_int_format
 bl printf
 ldr r0, [fp, #-16]
 mov r1, r0
-mov r0, #2
+mov32 r0, #2
 mul r0, r0, r1
 ldr r4, =_t0
 str r0, [r4]
 ldr r4, =_t0
 ldr r1, [r4]
-mov r0, #2
+mov32 r0, #2
 add r0, r0, r1
 ldr r4, =_t1
 str r0, [r4]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-mov r0, #4
+mov32 r0, #4
 mov r1, r0
-mov r0, #5
+mov32 r0, #5
 sub r0, r1, r0
 ldr r4, =_t2
 str r0, [r4]
 ldr r4, =_t2
 ldr r1, [r4]
-mov r0, #16
+mov32 r0, #16
 mul r0, r0, r1
 ldr r4, =_t3
 str r0, [r4]
@@ -90,24 +90,24 @@ ldr r0, =println_str_format
 ldr r1, =bool_false
 bl printf
 _endif0:
-mov r0, #4
+mov32 r0, #4
 mov r1, r0
-mov r0, #4
+mov32 r0, #4
 mul r0, r0, r1
 ldr r4, =_t5
 str r0, [r4]
 ldr r4, =_t5
 ldr r1, [r4]
-mov r0, #4
+mov32 r0, #4
 mul r0, r0, r1
 ldr r4, =_t6
 str r0, [r4]
 mov r1, r0
 ldr r0, =print_int_format
 bl printf
-mov r0, #1
+mov32 r0, #1
 mov r1, r0
-mov r0, #0
+mov32 r0, #0
 and r0, r0, r1
 ldr r4, =_t7
 str r0, [r4]
@@ -126,7 +126,7 @@ _endif1:
 ldr r0, =println_str_format
 ldr r0, [fp, #-8]
 mov r1, r0
-mov r0, #0
+mov32 r0, #0
 orr r0, r0, r1
 ldr r4, =_t8
 str r0, [r4]
@@ -148,7 +148,7 @@ str r2, [fp, #-16]
 ldr r2, =abra
 ldr r2, [r2]
 str r2, [fp, #-20]
-mov r0, #1000
+mov32 r0, #1000
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
@@ -171,7 +171,7 @@ str r2, [fp, #-16]
 ldr r2, =abra
 ldr r2, [r2]
 str r2, [fp, #-20]
-mov r0, #959
+mov32 r0, #959
 mov r1, r0
 neg r0, r0
 ldr r4, =_t9
