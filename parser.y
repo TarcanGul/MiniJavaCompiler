@@ -66,8 +66,10 @@
   int calc_method_size(stmt_node_t * list);
   void method_first_codegen(stmt_node_t * list);
   char * generate_label(label_purpose_t purpose);
+  char * generate_str_literal();
   void declare_label(char * label);
   static int temp_counter = 0;
+  static int str_literal_counter = 0;
 %}
 
 %union
@@ -1840,13 +1842,14 @@ void s_print(void * arg)
 			//Move value from ro to r1.
 			add_to(text_section, "mov r1, r0\n");
 			add_to(text_section, "ldr r0, =print_int_format\n");
-			char print_arg[40];
-
 			add_to(text_section, "bl printf\n");		
+			break;
 		} 
 		case STR :
 		{
-
+			add_to(text_section, "mov r1, r0\n"); 
+			add_to(text_section, "ldr r0, =print_str_format\n");
+			add_to(text_section, "bl printf\n");
 			break;
 		}
 		case BOOL :
@@ -1909,18 +1912,14 @@ void s_println(void * arg)
 			//Move value from ro to r1.
 			add_to(text_section, "mov r1, r0\n");
 			add_to(text_section, "ldr r0, =println_int_format\n");
-			char print_arg[40];
-
-
 			add_to(text_section, "bl printf\n");		
 		} break;
 		case STR :
-		{ 
+		{
+			add_to(text_section, "mov r1, r0\n"); 
 			add_to(text_section, "ldr r0, =println_str_format\n");
 			char print_arg[40];
-			//sprintf(print_arg, "mov r1, #%d\n", value);
-			//fprintf(gen_file, print_arg)
-			//fprintf(gen_file, "bl printf\n");		
+			add_to(text_section, "bl printf\n");
 			break;
 		}
 		case BOOL :
@@ -2388,12 +2387,17 @@ void s_asgn(void * abstract_arg)
     //TODO: Expand to other types.
     switch(var_node->type)
     {
+	case BOOL:
 	case INT:
 	{
     		char load[50];
 		//Expression result should be in r0.
     		sprintf(load, "mov r4, r0\n");
     		add_to(text_section, load);
+	}
+	case STR:
+	{
+		add_to(text_section, "mov r4, r0\n");
 	}
     }
 
@@ -2457,8 +2461,11 @@ void s_decl(void * abstract_arg)
 	else
 	{
 		add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, assign->current_value);
+
 		if(!construct_name_table)
 		{
+			ListNode * node = (ListNode *) llist_find_node(current_scope->name_table, id_leaf->data.var_name);
+
 			switch(id_leaf->type)
 			{
 				//TODO: Add others.
@@ -2466,11 +2473,56 @@ void s_decl(void * abstract_arg)
 				case INT:
 				{
 					char var_decl[20 + strlen(id_leaf->data.var_name)];
-					sprintf(var_decl, "%s: .word %u\n", id_leaf->data.var_name, * (int *) assign->current_value);
+					sprintf(var_decl, "%s: .word %d\n", id_leaf->data.var_name, * (int *) assign->current_value);
 					add_to(data_section, var_decl);
 					break;
 				}
-				
+				case STR:
+				{
+					char * value = (char *) assign->current_value;
+					char var_decl[20 + strlen(id_leaf->data.var_name)];
+					sprintf(var_decl, "%s: .word 0\n", id_leaf->data.var_name);
+					add_to(data_section, var_decl);
+					//Malloc space for string.
+					int len = strlen(value) + 1;
+					char malloc_space[80];
+					sprintf(malloc_space, "mov r0, #%d\n", len);
+					add_to(text_section, malloc_space);
+					add_to(text_section, "bl malloc\n");
+					char address[20 + strlen(id_leaf->data.var_name)];
+					sprintf(address, "ldr r4, =%s\n", id_leaf->data.var_name);
+					add_to(text_section, address);
+					//Store pointer to memory pointed by r4.
+					add_to(text_section, "str r0, [r4]\n");
+					
+					//Setting the string
+					for(int i = 0; i < len - 1; i++)
+					{
+					  char get_char[50];
+					  sprintf(get_char, "mov r1, #%d\n", (int) value[i]);
+
+					
+					  char put_char[50];
+					  sprintf(put_char, "strb r1, [r4, #%d]\n", i); //Store char in position i.
+			
+					  add_to(text_section, get_char);	
+					  add_to(text_section, address);
+					  add_to(text_section, "ldr r4, [r4]\n");
+					  add_to(text_section, put_char);
+					}
+				        //Null terminate.
+					char null_ter[50];
+				        sprintf(null_ter, "strb r1, [r4, #%d]\n", len - 1);
+
+				        add_to(text_section, "mov r1, #0\n");
+					add_to(text_section, null_ter);
+					add_to(text_section, address);
+					add_to(text_section, "ldr r4, [r4]\n");
+					char update_stack[60];
+					sprintf(update_stack, "str r4, [fp, #%d]\n", -1 * node->offset);
+					add_to(text_section, update_stack);
+					break;
+				}		
 			}
 
 		}
@@ -2770,7 +2822,6 @@ void symbol_codegen(ListNode * id_node)
   int offset = id_node->offset;
   sprintf(assembly_load, "ldr r0, [fp, #%d]\n", -1 * offset);
   add_to(text_section, assembly_load);
-  //add_to(text_section, "ldr r0, [r0]\n");
 }
 
 void expr_codegen(struct exp_node * node)
@@ -2793,15 +2844,26 @@ void expr_codegen(struct exp_node * node)
 		  {
 		    int value = * (int * ) node->data.value; 
 		    //Split up 32 bit number to be 2 16 bit numbers.
-		    //int right_side = (value << 16) >> 16;
-		    //int left_side = value >> 16;
-		    //char split_left[50];
 		    char split_right[50];
 		    sprintf(split_right, "ldr r0, =#%d\n", value);
-		    //sprintf(split_left, "movt r0, #%d\n", left_side);
 		    add_to(text_section, split_right);
-		    //add_to(text_section, split_left);
+		    break;
 		  }
+		  case STR:
+		  {
+		    char * value = (char *) node->data.value;
+		    char * str_literal = generate_str_literal();
+		    node->has_temp_var = 1;
+		    node->temp_var = str_literal;
+		    char lit_decl[80]; 
+		    sprintf(lit_decl, "%s: .asciz \"%s\"\n", str_literal, value);
+		    add_to(data_section, lit_decl);
+		    char load_ins[80];
+		    sprintf(load_ins, "ldr r0, =%s\n", str_literal);
+		    add_to(text_section, load_ins);
+		    //add_to(text_section, "ldr r0, [r0]\n");
+		    break;
+	 	  }
 		}
 	}
 
@@ -2825,7 +2887,8 @@ void expr_codegen(struct exp_node * node)
 	     char stmt[50];
 	     sprintf(stmt, "ldr r4, =%s\n", var);
 	     add_to(text_section, stmt);
-	     add_to(text_section, "ldr r1, [r4]\n");
+	     if(left != NULL && left->type != STR ) add_to(text_section, "ldr r1, [r4]\n");
+ 	     else add_to(text_section, "mov r1, r4\n");
 	  }
 
 	} 
@@ -2838,20 +2901,53 @@ void expr_codegen(struct exp_node * node)
 		     char stmt[50];
 		     sprintf(stmt, "ldr r4, =%s\n", var);
 		     add_to(text_section, stmt);
-		     add_to(text_section, "ldr r0, [r4]\n");
+		     if(right->type != STR) add_to(text_section, "ldr r0, [r4]\n");
+		     else add_to(text_section, "mov r0, r4\n");
 		}
 	}
 
 	char operation[50];
 	char store_temp[50];
 	char * var = create_temp();
+	enum type type = left->type;
         //r0 have right operand, r1 have left operand.
 	switch(node->operation)
 	{
 		
-		case ADD:  
-			add_to(text_section,"add r0, r0, r1\n");
+		case ADD:
+		{
+			switch(type)
+			{
+				case INT: add_to(text_section,"add r0, r0, r1\n"); break;
+				case STR:
+				{
+					//Allocate new space for the dest using realloc.
+					//r0 and r1 has the pointers. Move them.
+					//r4, r5 => left, right operand.
+					//r6, r7 => lengths of strings.
+					//r4, r5 will have pc relative addresses.
+					add_to(text_section, "mov r4, r1\n");
+					add_to(text_section, "mov r5, r0\n");
+					add_to(text_section, "mov r0, r4\n");
+					add_to(text_section, "bl strlen\n");
+					add_to(text_section, "mov r6, r0\n");
+
+					add_to(text_section, "mov r0, r5\n");
+					add_to(text_section, "bl strlen\n");
+					add_to(text_section, "mov r7, r0\n");
+					add_to(text_section, "add r1, r6, r7\n");
+					add_to(text_section, "ldr r0, [r4]\n");
+					add_to(text_section, "bl realloc\n");
+					add_to(text_section, "mov r1, r5\n");
+					add_to(text_section, "bl strcat\n");
+					break;
+				}
+			}
+
 			break;
+
+		} 
+
 		case SUB:  
 			add_to(text_section,"sub r0, r1, r0\n");
 			break;
@@ -2899,6 +2995,7 @@ void expr_codegen(struct exp_node * node)
 	add_to(text_section, store_temp);
 	char store[50];
 	sprintf(store, "str r0, [r4]\n", var);
+
 	node->has_temp_var = 1;
 	node->temp_var = var;
 	add_to(text_section, store);
@@ -2925,8 +3022,8 @@ int calc_method_size(stmt_node_t * list)
 	}
 	case STR:
 	{
-		//TODO: Allocate for strings.
-	        //current_offset += strlen(it->real_value);
+		//TODO: Store string pointer.
+	        current_offset += 4;
 		break;
 	}
 	case CLASS:
@@ -2957,6 +3054,7 @@ void method_first_codegen(stmt_node_t * list)
     sprintf(command, "ldr r2, =%s\n", it->value); 
     add_to(text_section, command);
     //We are storing the value in stack, thus we have to dereference the address before storing.
+    //YOU MIGHT NOT DO THIS IN STRING VARIABLES.
     add_to(text_section, "ldr r2, [r2]\n");
     char command2[50];
     sprintf(command2, "str r2, [fp, #%d]\n", -1 * current_offset); 
@@ -2967,7 +3065,8 @@ void method_first_codegen(stmt_node_t * list)
 
 char * generate_label(label_purpose_t purpose)
 {
-  char * to_be_written[50];
+  //char * to_be_written[50];
+  char to_be_written[50];
   switch(purpose)
   {
 	case TRUE_P:
@@ -3002,6 +3101,17 @@ char * generate_label(label_purpose_t purpose)
   strncpy(result, to_be_written, len);
   result[len] = 0;
   return result;
+}
+
+char * generate_str_literal()
+{
+	char to_be_wr[50];
+	sprintf(to_be_wr, "_strlt%d", str_literal_counter++);
+  	int len = strlen(to_be_wr);
+  	char * result = malloc((len + 1) * sizeof(char));
+  	strncpy(result, to_be_wr, len);
+  	result[len] = 0;
+  	return result;
 }
 
 void logic_op_codegen(enum op op)

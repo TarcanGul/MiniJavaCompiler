@@ -2,12 +2,19 @@
 class simple {
     public static void main(String [] args) {
 	    int x = 1, y = 100, z;
+	    String bale;
 	    boolean abra = true;
-	    //z = x*y - (y - 1) + 1;
-            //System.out.println("This line should be printed. A bunch of expressions:");
-            //System.out.print("x = ");
+	    String hello = "hello";
+	    String concat = " concat";
+	    z = x*y - (y - 1) + 1;
+            System.out.println("This line should be printed. A bunch of expressions:");
+	    System.out.println(hello);
+	    hello = "Reassigned string";
+	    //System.out.println(hello + concat);
+	    System.out.println(hello);
+            System.out.print("x = ");
             System.out.println(x);
-            //System.out.print("y = ");
+            System.out.print("y = ");
             System.out.println(y * 2 + 2);
 	    z = (4 - x) * 16;
 	    System.out.println(x);
@@ -32,9 +39,9 @@ class simple {
 		System.out.println(420);
 		i = i-1;
 	    }       
-            //System.out.print("z = ");
-            //System.out.println(z);
-            /*System.out.print("x+y = ");
+            System.out.print("z = ");
+            System.out.println(z);
+            System.out.print("x+y = ");
             System.out.println(x+y);
             System.out.print("x*y-(y-1) = ");
             System.out.print(x*y-(y-1));
@@ -50,6 +57,6 @@ class simple {
             System.out.print("x+y = ");
             System.out.println(x+y);
             System.out.print("x*y-(b-1) = ");
-            System.out.println(x*y-(b-1));*/
+            System.out.println(x*y-(b-1));
     }
 }
