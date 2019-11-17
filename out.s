@@ -215,13 +215,10 @@ mov r4, r0
 str r4, [fp, #-24]
 ldr r0, =_strlt2
 ldr r4, =_strlt2
-ldr r1, [r4]
 ldr r0, =_strlt3
 ldr r4, =_strlt3
-ldr r0, [r4]
 mov r4, r1
 mov r5, r0
-ldr r4, [r4]
 mov r0, r4
 bl strlen
 mov r6, r0
