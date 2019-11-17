@@ -210,6 +210,10 @@ ldr r4, =_strlt1
 ldr r0, [r4]
 mov r4, r0
 str r4, [fp, #-24]
+ldr r0, [fp, #-24]
+mov r1, r0
+ldr r0, =println_str_format
+bl printf
 ldr r0, =_strlt2
 mov r1, r0
 ldr r0, =print_str_format
