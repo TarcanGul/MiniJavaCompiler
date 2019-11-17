@@ -214,6 +214,17 @@ str r4, [fp, #-24]
 ldr r0, [fp, #-24]
 mov r1, r0
 ldr r0, [fp, #-20]
+mov r2, r1
+mov r3, r0
+bl strlen
+mov r4, r0
+mov r3, r0
+bl strlen
+mov r5, r0
+add r1, r4, r5
+mov r0, r2
+bl realloc
+mov r1, r3
 bl strcat
 ldr r4, =_t6
 str r0, [r4]
