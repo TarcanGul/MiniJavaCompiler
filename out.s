@@ -174,7 +174,7 @@ mul r0, r0, r1
 ldr r4, =_t0
 str r0, [r4]
 ldr r4, =_t0
-mov r1, r4
+ldr r1, [r4]
 ldr r0, [fp, #-40]
 mov r1, r0
 ldr r0, =#1
@@ -182,18 +182,18 @@ sub r0, r1, r0
 ldr r4, =_t1
 str r0, [r4]
 ldr r4, =_t1
-mov r0, r4
+ldr r0, [r4]
 sub r0, r1, r0
 ldr r4, =_t2
 str r0, [r4]
 ldr r4, =_t2
-mov r1, r4
+ldr r1, [r4]
 ldr r0, =#1
 add r0, r0, r1
 ldr r4, =_t3
 str r0, [r4]
 ldr r4, =_t3
-mov r0, r4
+ldr r0, [r4]
 mov r4, r0
 mov r4, r0
 str r4, [fp, #-36]
@@ -233,7 +233,7 @@ mul r0, r0, r1
 ldr r4, =_t6
 str r0, [r4]
 ldr r4, =_t6
-mov r1, r4
+ldr r1, [r4]
 ldr r0, =#2
 add r0, r0, r1
 ldr r4, =_t7
@@ -248,13 +248,13 @@ sub r0, r1, r0
 ldr r4, =_t8
 str r0, [r4]
 ldr r4, =_t8
-mov r1, r4
+ldr r1, [r4]
 ldr r0, =#16
 mul r0, r0, r1
 ldr r4, =_t9
 str r0, [r4]
 ldr r4, =_t9
-mov r0, r4
+ldr r0, [r4]
 mov r4, r0
 mov r4, r0
 str r4, [fp, #-36]
@@ -286,7 +286,7 @@ mul r0, r0, r1
 ldr r4, =_t11
 str r0, [r4]
 ldr r4, =_t11
-mov r1, r4
+ldr r1, [r4]
 ldr r0, =#4
 mul r0, r0, r1
 ldr r4, =_t12
@@ -463,7 +463,7 @@ sub r0, r1, r0
 ldr r4, =_t17
 str r0, [r4]
 ldr r4, =_t17
-mov r0, r4
+ldr r0, [r4]
 mov r4, r0
 mov r4, r0
 str r4, [fp, #-36]
@@ -518,7 +518,7 @@ mul r0, r0, r1
 ldr r4, =_t21
 str r0, [r4]
 ldr r4, =_t21
-mov r1, r4
+ldr r1, [r4]
 ldr r0, [fp, #-40]
 mov r1, r0
 ldr r0, =#1
@@ -526,7 +526,7 @@ sub r0, r1, r0
 ldr r4, =_t22
 str r0, [r4]
 ldr r4, =_t22
-mov r0, r4
+ldr r0, [r4]
 sub r0, r1, r0
 ldr r4, =_t23
 str r0, [r4]
@@ -540,7 +540,7 @@ add r0, r0, r1
 ldr r4, =_t24
 str r0, [r4]
 ldr r4, =_t24
-mov r0, r4
+ldr r0, [r4]
 mov r4, r0
 mov r4, r0
 str r4, [fp, #-44]
@@ -551,7 +551,7 @@ mul r0, r0, r1
 ldr r4, =_t26
 str r0, [r4]
 ldr r4, =_t26
-mov r1, r4
+ldr r1, [r4]
 ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =#10
@@ -559,18 +559,18 @@ sub r0, r1, r0
 ldr r4, =_t27
 str r0, [r4]
 ldr r4, =_t27
-mov r0, r4
+ldr r0, [r4]
 sub r0, r1, r0
 ldr r4, =_t28
 str r0, [r4]
 ldr r4, =_t28
-mov r1, r4
+ldr r1, [r4]
 ldr r0, =#1
 add r0, r0, r1
 ldr r4, =_t29
 str r0, [r4]
 ldr r4, =_t29
-mov r0, r4
+ldr r0, [r4]
 mov r4, r0
 mov r4, r0
 str r4, [fp, #-36]
@@ -622,7 +622,7 @@ mul r0, r0, r1
 ldr r4, =_t32
 str r0, [r4]
 ldr r4, =_t32
-mov r1, r4
+ldr r1, [r4]
 ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =#1
@@ -630,7 +630,7 @@ sub r0, r1, r0
 ldr r4, =_t33
 str r0, [r4]
 ldr r4, =_t33
-mov r0, r4
+ldr r0, [r4]
 sub r0, r1, r0
 ldr r4, =_t34
 str r0, [r4]
