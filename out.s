@@ -215,8 +215,10 @@ mov r4, r0
 str r4, [fp, #-24]
 ldr r0, =_strlt2
 ldr r4, =_strlt2
+mov r1, r4
 ldr r0, =_strlt3
 ldr r4, =_strlt3
+mov r0, r4
 mov r4, r1
 mov r5, r0
 mov r0, r4
