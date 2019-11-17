@@ -214,9 +214,6 @@ str r4, [fp, #-24]
 ldr r0, [fp, #-24]
 mov r1, r0
 ldr r0, [fp, #-20]
-mov r2, r0
-mov r0, r1
-mov r1, r2
 bl strcat
 ldr r4, =_t6
 str r0, [r4]
