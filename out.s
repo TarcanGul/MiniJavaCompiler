@@ -109,25 +109,25 @@ str r0, [r4]
 mov r1, #104
 ldr r4, =hello
 ldr r4, [r4]
-str r1, [r4, #0]
+strb r1, [r4, #0]
 mov r1, #101
 ldr r4, =hello
 ldr r4, [r4]
-str r1, [r4, #1]
+strb r1, [r4, #1]
 mov r1, #108
 ldr r4, =hello
 ldr r4, [r4]
-str r1, [r4, #2]
+strb r1, [r4, #2]
 mov r1, #108
 ldr r4, =hello
 ldr r4, [r4]
-str r1, [r4, #3]
+strb r1, [r4, #3]
 mov r1, #111
 ldr r4, =hello
 ldr r4, [r4]
-str r1, [r4, #4]
+strb r1, [r4, #4]
 mov r1, #0
-str r1, [r4, #5]
+strb r1, [r4, #5]
 ldr r4, =hello
 ldr r4, [r4]
 str r4, [fp, #-24]
@@ -138,33 +138,33 @@ str r0, [r4]
 mov r1, #32
 ldr r4, =concat
 ldr r4, [r4]
-str r1, [r4, #0]
+strb r1, [r4, #0]
 mov r1, #99
 ldr r4, =concat
 ldr r4, [r4]
-str r1, [r4, #1]
+strb r1, [r4, #1]
 mov r1, #111
 ldr r4, =concat
 ldr r4, [r4]
-str r1, [r4, #2]
+strb r1, [r4, #2]
 mov r1, #110
 ldr r4, =concat
 ldr r4, [r4]
-str r1, [r4, #3]
+strb r1, [r4, #3]
 mov r1, #99
 ldr r4, =concat
 ldr r4, [r4]
-str r1, [r4, #4]
+strb r1, [r4, #4]
 mov r1, #97
 ldr r4, =concat
 ldr r4, [r4]
-str r1, [r4, #5]
+strb r1, [r4, #5]
 mov r1, #116
 ldr r4, =concat
 ldr r4, [r4]
-str r1, [r4, #6]
+strb r1, [r4, #6]
 mov r1, #0
-str r1, [r4, #7]
+strb r1, [r4, #7]
 ldr r4, =concat
 ldr r4, [r4]
 str r4, [fp, #-20]
@@ -216,6 +216,7 @@ mov r1, r0
 ldr r0, [fp, #-20]
 mov r4, r1
 mov r5, r0
+ldr r4, [r4]
 mov r0, r4
 bl strlen
 mov r6, r0
