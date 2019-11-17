@@ -198,6 +198,7 @@ mov r4, r0
 mov r4, r0
 str r4, [fp, #-36]
 ldr r0, =_strlt0
+ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
@@ -206,6 +207,7 @@ mov r1, r0
 ldr r0, =println_str_format
 bl printf
 ldr r0, =_strlt1
+ldr r0, [r0]
 ldr r4, =_strlt1
 ldr r0, [r4]
 mov r4, r0
@@ -215,6 +217,7 @@ mov r1, r0
 ldr r0, =println_str_format
 bl printf
 ldr r0, =_strlt2
+ldr r0, [r0]
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -223,6 +226,7 @@ mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, =_strlt3
+ldr r0, [r0]
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -487,6 +491,7 @@ mov sp, fp
 pop {fp}
 _endwhile0:
 ldr r0, =_strlt4
+ldr r0, [r0]
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -495,6 +500,7 @@ mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, =_strlt5
+ldr r0, [r0]
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -508,6 +514,7 @@ mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, =_strlt6
+ldr r0, [r0]
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -575,6 +582,7 @@ mov r4, r0
 mov r4, r0
 str r4, [fp, #-36]
 ldr r0, =_strlt7
+ldr r0, [r0]
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -583,6 +591,7 @@ mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, =_strlt8
+ldr r0, [r0]
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -591,6 +600,7 @@ mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, =_strlt9
+ldr r0, [r0]
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -599,6 +609,7 @@ mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, =_strlt10
+ldr r0, [r0]
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -612,6 +623,7 @@ mov r1, r0
 ldr r0, =println_int_format
 bl printf
 ldr r0, =_strlt11
+ldr r0, [r0]
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
