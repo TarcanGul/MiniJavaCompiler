@@ -14,11 +14,9 @@ _t4: .word 0
 _strlt0: .asciz "This line should be printed. A bunch of expressions:"
 _strlt1: .asciz "Reassigned string"
 _t5: .word 0
-_strlt2: .asciz "Hello "
-_strlt3: .asciz "concat"
 _t6: .word 0
-_strlt4: .asciz "x = "
-_strlt5: .asciz "y = "
+_strlt2: .asciz "x = "
+_strlt3: .asciz "y = "
 _t7: .word 0
 _t8: .word 0
 _t9: .word 0
@@ -35,10 +33,10 @@ _t17: .word 0
 _t18: .word 0
 _t19: .word 0
 _t20: .word 0
-_strlt6: .asciz "z = "
-_strlt7: .asciz "x+y = "
+_strlt4: .asciz "z = "
+_strlt5: .asciz "x+y = "
 _t21: .word 0
-_strlt8: .asciz "x*y-(y-1) = "
+_strlt6: .asciz "x*y-(y-1) = "
 _t22: .word 0
 _t23: .word 0
 _t24: .word 0
@@ -51,12 +49,12 @@ _t28: .word 0
 _t29: .word 0
 _t30: .word 0
 _t31: .word 0
-_strlt9: .asciz "a = "
-_strlt10: .asciz "b = "
-_strlt11: .asciz "z = "
-_strlt12: .asciz "x+y = "
+_strlt7: .asciz "a = "
+_strlt8: .asciz "b = "
+_strlt9: .asciz "z = "
+_strlt10: .asciz "x+y = "
 _t32: .word 0
-_strlt13: .asciz "x*y-(b-1) = "
+_strlt11: .asciz "x*y-(b-1) = "
 _t33: .word 0
 _t34: .word 0
 _t35: .word 0
@@ -213,12 +211,9 @@ ldr r4, =_strlt1
 ldr r0, [r4]
 mov r4, r0
 str r4, [fp, #-24]
-ldr r0, =_strlt2
-ldr r4, =_strlt2
-mov r1, r4
-ldr r0, =_strlt3
-ldr r4, =_strlt3
-mov r0, r4
+ldr r0, [fp, #-24]
+mov r1, r0
+ldr r0, [fp, #-20]
 mov r4, r1
 mov r5, r0
 mov r0, r4
@@ -228,16 +223,16 @@ mov r0, r5
 bl strlen
 mov r7, r0
 add r1, r6, r7
-mov r0, r4
+ldr r0, [r4]
 bl realloc
 mov r1, r5
 bl strcat
 ldr r4, =_t6
 str r0, [r4]
 mov r1, r0
-ldr r0, =println_str_format
+ldr r0, =println_int_format
 bl printf
-ldr r0, =_strlt4
+ldr r0, =_strlt2
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -245,7 +240,7 @@ ldr r0, [fp, #-44]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, =_strlt5
+ldr r0, =_strlt3
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -509,7 +504,7 @@ bne _while0
 mov sp, fp
 pop {fp}
 _endwhile0:
-ldr r0, =_strlt6
+ldr r0, =_strlt4
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -517,7 +512,7 @@ ldr r0, [fp, #-36]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, =_strlt7
+ldr r0, =_strlt5
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -530,7 +525,7 @@ str r0, [r4]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, =_strlt8
+ldr r0, =_strlt6
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -597,7 +592,7 @@ ldr r0, [r4]
 mov r4, r0
 mov r4, r0
 str r4, [fp, #-36]
-ldr r0, =_strlt9
+ldr r0, =_strlt7
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -605,7 +600,7 @@ ldr r0, [fp, #-12]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, =_strlt10
+ldr r0, =_strlt8
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -613,7 +608,7 @@ ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, =_strlt11
+ldr r0, =_strlt9
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -621,7 +616,7 @@ ldr r0, [fp, #-36]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, =_strlt12
+ldr r0, =_strlt10
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -634,7 +629,7 @@ str r0, [r4]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, =_strlt13
+ldr r0, =_strlt11
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
