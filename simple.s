@@ -223,6 +223,7 @@ mov r0, r5
 bl strlen
 mov r7, r0
 add r1, r6, r7
+add r1, r1, #1
 mov r0, r4
 bl realloc
 mov r1, r5
