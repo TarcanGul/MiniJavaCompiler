@@ -235,7 +235,7 @@ bl strcat
 ldr r4, =_t6
 str r0, [r4]
 mov r1, r0
-ldr r0, =println_int_format
+ldr r0, =println_str_format
 bl printf
 ldr r0, [fp, #-24]
 mov r1, r0
