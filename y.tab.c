@@ -3606,7 +3606,7 @@ int traverse(struct exp_node * root)
 	}
 
     }*/
-    if(root->is_id && !root->is_property)
+    if(root->is_id)
     {
 	     ListNode * node =  llist_find_node(current_scope->name_table, root->data.var_name);
 	     root->current_value = node->real_value;
@@ -3664,6 +3664,7 @@ int traverse(struct exp_node * root)
 		} 
 		
 	    }
+	    root->type = left->type;
 	    switch(root->operation)
 	    {
 		
@@ -4896,7 +4897,11 @@ void expr_codegen(struct exp_node * node)
 				case INT: add_to(text_section,"add r0, r0, r1\n"); break;
 				case STR:
 				{
-					//Allocate new space for the dest using realloc.
+					//Allocate new space for the dest using malloc.
+					char * concat_string = generate_str_literal();
+					char data_decl[80];
+					sprintf(data_decl, "%s: .word 0\n", concat_string);
+					add_to(data_section, data_decl);
 					//r0 and r1 has the pointers. Move them.
 					//r4, r5 => left, right operand.
 					//r6, r7 => lengths of strings.
@@ -4910,9 +4915,16 @@ void expr_codegen(struct exp_node * node)
 					add_to(text_section, "mov r0, r5\n");
 					add_to(text_section, "bl strlen\n");
 					add_to(text_section, "mov r7, r0\n");
-					add_to(text_section, "add r1, r6, r7\n");
-					add_to(text_section, "ldr r0, [r4]\n");
-					add_to(text_section, "bl realloc\n");
+					add_to(text_section, "add r0, r6, r7\n");
+					add_to(text_section, "add r0, r0, #1\n");
+					add_to(text_section, "bl malloc\n");
+					char addr_load[80];
+					sprintf(addr_load, "ldr r3, =%s\n", concat_string);
+					add_to(text_section, addr_load);
+					add_to(text_section, "str r0, [r3]\n");
+					//strcpy yap. r0=>dest (malloc pointer) r1=>source (first operand)
+					add_to(text_section, "mov r1, r4\n");
+					add_to(text_section, "bl strcpy\n");
 					add_to(text_section, "mov r1, r5\n");
 					add_to(text_section, "bl strcat\n");
 					break;
@@ -5172,7 +5184,13 @@ int main(int argc, char** argv)
 
   if(!type_violation_found)
   {
-    gen_file = fopen("out.s", "w+");
+    char * filename = strdup(argv[1]);
+    int len = strlen(filename);
+    char * file_without_ext = malloc((len-2) * sizeof(char));
+    strncpy(file_without_ext, filename, len - 5);
+    strncpy(&file_without_ext[len-5], ".s", 2);
+    file_without_ext[len-3] = 0;
+    gen_file = fopen(file_without_ext, "w+");
 
      data_section = (char **) malloc(sizeof(char *));
      text_section = (char **) malloc(sizeof(char *));

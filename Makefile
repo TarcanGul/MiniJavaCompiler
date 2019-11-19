@@ -1,5 +1,5 @@
-interpret: y.tab.c lex.yy.c
-	gcc -g y.tab.c lex.yy.c LinkedList.c AST.c -o interpret
+mjavac: y.tab.c lex.yy.c
+	gcc -g y.tab.c lex.yy.c LinkedList.c AST.c -o mjavac
 y.tab.c: parser.y
 	yacc -d -g --verbose parser.y
 lex.yy.c: parser.l
