@@ -70,6 +70,8 @@
   void declare_label(char * label);
   static int temp_counter = 0;
   static int str_literal_counter = 0;
+
+  char ** program_args = NULL;
 %}
 
 %union
@@ -356,6 +358,14 @@ MainClass : K_CLASS ID LEFT_BRACE K_PUBLIC K_STATIC K_VOID K_MAIN LEFT_PAR K_STR
 		method_t * main_method = (method_t *) malloc(sizeof(method_t));
 		main_method->statement = $15; 
 		main_method->statement->scope = main_scope;
+		ListNode * args_node = (ListNode *) malloc(sizeof(ListNode));
+		args_node->value = $12;
+		args_node->real_value = program_args;
+		add_var_to_table(main_scope->name_table, args_node);
+
+		char args_decl[80];
+		sprintf(args_decl, "%s: .word 0\n", $12);
+		add_to(data_section, args_decl);
 		update_scope_hierarchy(main_method->statement);
 		//method_list_t * method_list = (method_list_t *) malloc(sizeof(method_list_t));
 		add_var_to_table(class_scope->name_table, "main", UNDEF, main_method); 
@@ -1387,8 +1397,19 @@ int setup_execute(stmt_node_t * current)
 	char alloc_method[40];
 	sprintf(alloc_method, "sub sp, sp, #%d\n", current_method_size);
 	add_to(text_section, alloc_method);
-	method_first_codegen(current);
 
+	//Setup the program_args pointer via assembly. Main args should be the first var added to the main table.
+	//If not, use llist_find
+	ListNode * args_node = current->scope->name_table->head;
+	assert(args_node != NULL);
+	
+	char args_call[80];
+	sprintf(args_call, "ldr r4, =%s\n", args_node->value);
+	add_to(text_section, args_call);
+	add_to(text_section, "str r1, [r4]\n");
+	
+	method_first_codegen(current);
+	
 	execute(current);
 
 	add_to(text_section, "mov sp, fp\n");
