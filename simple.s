@@ -60,6 +60,7 @@ _strlt12: .asciz "x*y-(b-1) = "
 _t33: .word 0
 _t34: .word 0
 _t35: .word 0
+array: .word 0
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
 println_str_format: .asciz "%s\n"
