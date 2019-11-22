@@ -23,3 +23,8 @@ Then command line.
 Command line
 r0 => argc
 r1 => argv double pointer *(base + offset)
+
+You know how command line would work. Write the code you wrote.
+Dive into 1D arrays and make it work both (hopefully by Friday).
+
+1D arrays => s_decl, s_asgn, array entries in expr_codegen.
