@@ -28,9 +28,7 @@ _t12: .word 0
 _t13: .word 0
 _t14: .word 0
 _t15: .word 0
-args: .word 0
 rr: .word 5
-args: .word 0
 _t16: .word 0
 i: .word 5
 _t17: .word 0
@@ -73,10 +71,10 @@ bool_false: .asciz "false"
 .balign 4
 main: 
 push {lr}
-push {fp}
-mov fp, sp
 ldr r4, =args
 str r1, [r4]
+push {fp}
+mov fp, sp
 sub sp, sp, #52
 ldr r2, =array
 ldr r2, [r2]
@@ -361,8 +359,6 @@ beq _false2
 _true2:
 push {fp}
 mov fp, sp
-ldr r4, =args
-str r1, [r4]
 sub sp, sp, #40
 ldr r2, =rr
 ldr r2, [r2]
@@ -418,8 +414,6 @@ b _endif2
 _false2:
 push {fp}
 mov fp, sp
-ldr r4, =args
-str r1, [r4]
 sub sp, sp, #36
 ldr r2, =args
 ldr r2, [r2]
