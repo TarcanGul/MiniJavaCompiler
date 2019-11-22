@@ -71,7 +71,6 @@
   static int temp_counter = 0;
   static int str_literal_counter = 0;
 
-  char ** program_args = NULL;
 %}
 
 %union
@@ -360,7 +359,6 @@ MainClass : K_CLASS ID LEFT_BRACE K_PUBLIC K_STATIC K_VOID K_MAIN LEFT_PAR K_STR
 		main_method->statement->scope = main_scope;
 		ListNode * args_node = (ListNode *) malloc(sizeof(ListNode));
 		args_node->value = $12;
-		args_node->real_value = program_args;
 		add_var_to_table(main_scope->name_table, args_node);
 
 		char args_decl[80];
@@ -1398,7 +1396,7 @@ int setup_execute(stmt_node_t * current)
 	sprintf(alloc_method, "sub sp, sp, #%d\n", current_method_size);
 	add_to(text_section, alloc_method);
 
-	//Setup the program_args pointer via assembly. Main args should be the first var added to the main table.
+	//Main args should be the first var added to the main table.
 	//If not, use llist_find
 	ListNode * args_node = current->scope->name_table->head;
 	assert(args_node != NULL);
@@ -2352,10 +2350,15 @@ void allocate_array(struct exp_node * node)
   {
 	case BOOL:
 	case INT: 
-  		node->current_value = malloc(total_alloc_size * sizeof(int));
+  		//node->current_value = malloc(total_alloc_size * sizeof(int));
+		char command[80];
+		sprintf(command, "ldr r0, =#%d\n", total_alloc_size);
+		add_to(text_section, command);
+		add_to(text_section, "bl malloc\n");
+		add_to
 		break;
 	case STR:
-  		node->current_value = malloc(total_alloc_size * sizeof(char *));
+  		//node->current_value = malloc(total_alloc_size * sizeof(char *));
 		break;
 	default: yyerror("Unhandled array type."); break;
 
@@ -2458,15 +2461,25 @@ void s_decl(void * abstract_arg)
     {
       if(assign->is_array)
       {
+	
 	allocate_array(assign);
-        add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, assign->current_value);
+
+	char command[80];
+	sprintf(command, "ldr r4, =%s\n", id_leaf->data.var_name);
+	add_to(text_section, command);
+	add_to("str r0, [r4]\n");
+        add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, NULL); //The value is null because we don't know the pointer until runtime.
 	ListNode * just_added_array = llist_find_node(current_scope->name_table, id_leaf->data.var_name);
+	just_added_array->dim_capacity_list = assign -> data.dimensions;
+	
+	/*
 	if(just_added_array == NULL)
 	{
 		type_error(current_node->line_num);
 		return;
 	}
-	just_added_array->dim_capacity_list = assign -> data.dimensions;
+	just_added_array->dim_capacity_list = assign -> data.dimensions;*/
+	
       }
       else
       {
