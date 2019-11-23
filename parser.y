@@ -70,7 +70,7 @@
   void declare_label(char * label);
   static int temp_counter = 0;
   static int str_literal_counter = 0;
-
+  static char * main_args_name = NULL;
 %}
 
 %union
@@ -357,13 +357,8 @@ MainClass : K_CLASS ID LEFT_BRACE K_PUBLIC K_STATIC K_VOID K_MAIN LEFT_PAR K_STR
 		method_t * main_method = (method_t *) malloc(sizeof(method_t));
 		main_method->statement = $15; 
 		main_method->statement->scope = main_scope;
-		ListNode * args_node = (ListNode *) malloc(sizeof(ListNode));
-		args_node->value = $12;
-		add_var_to_table(main_scope->name_table, args_node);
-
-		char args_decl[80];
-		sprintf(args_decl, "%s: .word 0\n", $12);
-		add_to(data_section, args_decl);
+		main_args_name = $12;
+		add_var_to_table(main_scope->name_table, main_args_name, STR, NULL);
 		update_scope_hierarchy(main_method->statement);
 		//method_list_t * method_list = (method_list_t *) malloc(sizeof(method_list_t));
 		add_var_to_table(class_scope->name_table, "main", UNDEF, main_method); 
@@ -682,7 +677,9 @@ VarDeclTail :
 
 Opt_ExpressionList : 
 	ExpressionList {$$ = $1;} 
-	| /*empty*/;
+	| /*empty*/
+	{ $$ = NULL; }
+	;
 	
 ExpressionList : Expression ExpressionTailList
 {
@@ -711,14 +708,14 @@ ExpressionTailList :
 			it->next = $2;
 		}
 	}
-	| /*empty*/;
+	| /*empty*/ {$$ = NULL;};
 
 ExpressionTail : COMMA Expression
 {
 	$$ = $2;
 };
 
-Opt_FormalList : FormalList {$$ = $1;} | /*empty*/;
+Opt_FormalList : FormalList {$$ = $1;} | /*empty*/ {$$ = NULL;};
 
 FormalList  : Type ID FormalListTailList
 {
@@ -757,7 +754,7 @@ FormalListTailList :
 			$$ = $1;
 		}
 	}
-	| /*empty*/; 
+	| /*empty*/ {$$ = NULL;}; 
 
 Type : PrimeType {$$ = $1;}
 	| Type IndexNoExpr 
@@ -1391,21 +1388,11 @@ int setup_execute(stmt_node_t * current)
 {
 	add_to(text_section, "push {fp}\n");
 	add_to(text_section, "mov fp, sp\n");
+
 	int current_method_size = calc_method_size(current);
 	char alloc_method[40];
 	sprintf(alloc_method, "sub sp, sp, #%d\n", current_method_size);
 	add_to(text_section, alloc_method);
-
-	//Main args should be the first var added to the main table.
-	//If not, use llist_find
-	ListNode * args_node = current->scope->name_table->head;
-	assert(args_node != NULL);
-	
-	char args_call[80];
-	sprintf(args_call, "ldr r4, =%s\n", args_node->value);
-	add_to(text_section, args_call);
-	add_to(text_section, "str r1, [r4]\n");
-	
 	method_first_codegen(current);
 	
 	execute(current);
@@ -2350,13 +2337,17 @@ void allocate_array(struct exp_node * node)
   {
 	case BOOL:
 	case INT: 
-  		//node->current_value = malloc(total_alloc_size * sizeof(int));
-		char command[80];
-		sprintf(command, "ldr r0, =#%d\n", total_alloc_size);
-		add_to(text_section, command);
-		add_to(text_section, "bl malloc\n");
-		add_to
+  	{	//node->current_value = malloc(total_alloc_size * sizeof(int));
+		if(construct_name_table)
+		{
+			char command[80];
+			sprintf(command, "ldr r0, =#%d\n", total_alloc_size);
+			add_to(text_section, command);
+			add_to(text_section, "bl malloc\n");
+		}
+
 		break;
+	}
 	case STR:
   		//node->current_value = malloc(total_alloc_size * sizeof(char *));
 		break;
@@ -2390,9 +2381,10 @@ void s_asgn(void * abstract_arg)
 	case INT: 
 	{ 
 
-		int * int_array = (int *) array;
-     		int real_index = find_value_of_index(left_value->data.array_entry->index, array_name_entry->dim_capacity_list);
-     		int_array[real_index] = *(int *) right_value->current_value;
+		//int * int_array = (int *) array;
+     		//int real_index = find_value_of_index(left_value->data.array_entry->index, array_name_entry->dim_capacity_list);
+     		//int_array[real_index] = *(int *) right_value->current_value;
+		//add_to(text_section, )
 		break;
 	}
 	case STR:
@@ -2417,8 +2409,20 @@ void s_asgn(void * abstract_arg)
 	{
     		char load[50];
 		//Expression result should be in r0.
-    		sprintf(load, "mov r4, r0\n");
-    		add_to(text_section, load);
+		if(right_value->is_array)
+		{
+			char command[80];
+			sprintf(command, "ldr r4, =%s\n", var_node->value);
+			add_to(text_section, command);
+			add_to("str r0, [r4]\n");
+		}
+		else
+		{
+    			sprintf(load, "mov r4, r0\n");
+    			add_to(text_section, load);
+		}
+
+
 	}
 	case STR:
 	{
@@ -2462,15 +2466,24 @@ void s_decl(void * abstract_arg)
       if(assign->is_array)
       {
 	
-	allocate_array(assign);
+	add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, NULL); //The value is null because we don't know the pointer until runtime.
+	if(!construct_name_table)
+	{
 
-	char command[80];
-	sprintf(command, "ldr r4, =%s\n", id_leaf->data.var_name);
-	add_to(text_section, command);
-	add_to("str r0, [r4]\n");
-        add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, NULL); //The value is null because we don't know the pointer until runtime.
-	ListNode * just_added_array = llist_find_node(current_scope->name_table, id_leaf->data.var_name);
-	just_added_array->dim_capacity_list = assign -> data.dimensions;
+		char var_decl[20 + strlen(id_leaf->data.var_name)];
+		sprintf(var_decl, "%s: .word 0\n", id_leaf->data.var_name);
+		add_to(data_section, var_decl);
+		allocate_array(assign);
+
+		char command[80];
+		sprintf(command, "ldr r4, =%s\n", id_leaf->data.var_name);
+		add_to(text_section, command);
+		add_to(text_section, "str r0, [r4]\n");
+
+		ListNode * just_added_array = llist_find_node(current_scope->name_table, id_leaf->data.var_name);
+		just_added_array->dim_capacity_list = assign -> data.dimensions;
+	}	
+
 	
 	/*
 	if(just_added_array == NULL)
@@ -3256,6 +3269,17 @@ int main(int argc, char** argv)
      * data_section = NULL;
      * text_section = NULL;
 
+     //Main args should be the first var added to the main table.
+     //If not, use llist_find
+     ListNode * args_node = llist_find_node(main_stmt_list->scope->name_table, main_args_name);
+     assert(args_node != NULL);
+     char args_decl[80];
+     sprintf(args_decl, "%s: .word 0\n", args_node->value);
+     add_to(data_section, args_decl);
+     char args_call[80];
+     sprintf(args_call, "ldr r4, =%s\n", args_node->value);
+     add_to(text_section, args_call);
+     add_to(text_section, "str r1, [r4]\n");
     setup_execute(main_stmt_list);
     fprintf(gen_file, ".section .data\n");
     init_data_section();

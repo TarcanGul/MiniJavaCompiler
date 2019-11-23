@@ -58,5 +58,9 @@ class simple {
             System.out.println(x+y);
             System.out.print("x*y-(b-1) = ");
             System.out.println(x*y-(b-1));
+	    int[] array = new int[5];
+	    //array[2] = 45;
+            //System.out.println(array[2]);
+	
     }
 }

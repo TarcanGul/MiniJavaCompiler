@@ -27,4 +27,13 @@ r1 => argv double pointer *(base + offset)
 You know how command line would work. Write the code you wrote.
 Dive into 1D arrays and make it work both (hopefully by Friday).
 
-1D arrays => s_decl, s_asgn, array entries in expr_codegen.
+1D arrays => s_decl, s_asgn, array entries in expr_codegen
+Decl done, now handle assigning and getting value. Start s_asgn and open the slides.
+Method call
+Class
+	=Done by end of thanksgiving week
+
+Reg allocation
+	=Done by Thursday dead week
+
+Also don't forget compiler hw

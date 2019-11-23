@@ -135,8 +135,9 @@
   void declare_label(char * label);
   static int temp_counter = 0;
   static int str_literal_counter = 0;
+  static char * main_args_name = NULL;
 
-#line 140 "y.tab.c" /* yacc.c:339  */
+#line 141 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -274,7 +275,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 76 "parser.y" /* yacc.c:355  */
+#line 77 "parser.y" /* yacc.c:355  */
 
   char *string_val;
   int integer_val;
@@ -292,7 +293,7 @@ union YYSTYPE
   class_t * class;
   class_list_t * class_list;
 
-#line 296 "y.tab.c" /* yacc.c:355  */
+#line 297 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -309,7 +310,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 313 "y.tab.c" /* yacc.c:358  */
+#line 314 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -611,16 +612,16 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   129,   129,   138,   146,   154,   162,   170,   177,   185,
-     193,   201,   209,   217,   224,   231,   238,   245,   252,   258,
-     264,   268,   272,   287,   303,   304,   308,   320,   328,   345,
-     370,   387,   391,   453,   474,   477,   493,   511,   513,   527,
-     542,   547,   551,   568,   587,   610,   633,   641,   652,   668,
-     676,   677,   679,   689,   706,   708,   713,   713,   715,   724,
-     733,   752,   754,   755,   762,   773,   781,   789,   799,   843,
-     857,   861,   896,   919,   930,   942,   956,   960,   973,   979,
-     987,  1009,  1018,  1029,  1033,  1039,  1050,  1058,  1071,  1072,
-    1079
+       0,   130,   130,   139,   147,   155,   163,   171,   178,   186,
+     194,   202,   210,   218,   225,   232,   239,   246,   253,   259,
+     265,   269,   273,   288,   304,   305,   309,   321,   329,   346,
+     373,   390,   394,   456,   477,   480,   496,   514,   516,   530,
+     545,   550,   554,   571,   590,   613,   636,   644,   655,   671,
+     679,   681,   684,   694,   711,   713,   718,   718,   720,   729,
+     738,   757,   759,   760,   767,   778,   786,   794,   804,   848,
+     862,   866,   901,   924,   935,   947,   961,   965,   978,   984,
+     992,  1014,  1023,  1034,  1038,  1044,  1055,  1063,  1076,  1077,
+    1084
 };
 #endif
 
@@ -1604,18 +1605,18 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 130 "parser.y" /* yacc.c:1646  */
+#line 131 "parser.y" /* yacc.c:1646  */
     {
         program_t * cur_prog = (program_t *) malloc(sizeof(program_t));
 	cur_prog->main_class = (yyvsp[-1].class);
 	cur_prog->class_list = (yyvsp[0].class_list);
 	program = cur_prog;
 }
-#line 1615 "y.tab.c" /* yacc.c:1646  */
+#line 1616 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 139 "parser.y" /* yacc.c:1646  */
+#line 140 "parser.y" /* yacc.c:1646  */
     {
 	  	  struct exp_node * add_node = create_exp_node(ADD, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
 		  add_node->type = (yyvsp[-2].exp_node)->type;
@@ -1623,11 +1624,11 @@ yyreduce:
 	  	  (yyval.exp_node) = add_node;
 
 	}
-#line 1627 "y.tab.c" /* yacc.c:1646  */
+#line 1628 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 147 "parser.y" /* yacc.c:1646  */
+#line 148 "parser.y" /* yacc.c:1646  */
     {
 	  	  struct exp_node * sub_node = create_exp_node(SUB, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
 		  sub_node->type = (yyvsp[-2].exp_node)->type;
@@ -1635,11 +1636,11 @@ yyreduce:
 		  (yyval.exp_node) = sub_node;
 
 	}
-#line 1639 "y.tab.c" /* yacc.c:1646  */
+#line 1640 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 155 "parser.y" /* yacc.c:1646  */
+#line 156 "parser.y" /* yacc.c:1646  */
     {
 
  	 	  struct exp_node * node = create_exp_node(AND, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
@@ -1647,11 +1648,11 @@ yyreduce:
 		  node->line_num = yylineno;
 	  	  (yyval.exp_node) = node;
 	}
-#line 1651 "y.tab.c" /* yacc.c:1646  */
+#line 1652 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 163 "parser.y" /* yacc.c:1646  */
+#line 164 "parser.y" /* yacc.c:1646  */
     {
 
  	 	  struct exp_node * node = create_exp_node(OR, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
@@ -1659,22 +1660,22 @@ yyreduce:
 		  node->type = (yyvsp[-2].exp_node)->type;
 	  	  (yyval.exp_node) = node;
 	}
-#line 1663 "y.tab.c" /* yacc.c:1646  */
+#line 1664 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 171 "parser.y" /* yacc.c:1646  */
+#line 172 "parser.y" /* yacc.c:1646  */
     {
  	 	  struct exp_node * node = create_exp_node(SME, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
 		  node->line_num = yylineno;
 		  node->type = (yyvsp[-2].exp_node)->type;
 	  	  (yyval.exp_node) = node;
 	}
-#line 1674 "y.tab.c" /* yacc.c:1646  */
+#line 1675 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 178 "parser.y" /* yacc.c:1646  */
+#line 179 "parser.y" /* yacc.c:1646  */
     {
 
  	 	  struct exp_node * node = create_exp_node(LRE, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
@@ -1682,11 +1683,11 @@ yyreduce:
 		  node->type = (yyvsp[-2].exp_node)->type;
 	  	  (yyval.exp_node) = node;
 	}
-#line 1686 "y.tab.c" /* yacc.c:1646  */
+#line 1687 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 186 "parser.y" /* yacc.c:1646  */
+#line 187 "parser.y" /* yacc.c:1646  */
     {
 
  	 	  struct exp_node * node = create_exp_node(EQU, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
@@ -1694,11 +1695,11 @@ yyreduce:
 		  node->line_num = yylineno;
 	  	  (yyval.exp_node) = node;
 	}
-#line 1698 "y.tab.c" /* yacc.c:1646  */
+#line 1699 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 194 "parser.y" /* yacc.c:1646  */
+#line 195 "parser.y" /* yacc.c:1646  */
     {
 
  	 	  struct exp_node * node = create_exp_node(NEQ, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
@@ -1706,11 +1707,11 @@ yyreduce:
 		  node->line_num = yylineno;
 	  	  (yyval.exp_node) = node;
 	}
-#line 1710 "y.tab.c" /* yacc.c:1646  */
+#line 1711 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 202 "parser.y" /* yacc.c:1646  */
+#line 203 "parser.y" /* yacc.c:1646  */
     {
 		  struct exp_node * mult_node = create_exp_node(MUL, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
 		  mult_node->type = (yyvsp[-2].exp_node)->type;
@@ -1718,11 +1719,11 @@ yyreduce:
 		  (yyval.exp_node) = mult_node;
 
 	}
-#line 1722 "y.tab.c" /* yacc.c:1646  */
+#line 1723 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 210 "parser.y" /* yacc.c:1646  */
+#line 211 "parser.y" /* yacc.c:1646  */
     {	
 	  	  struct exp_node * div_node = create_exp_node(DIV, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
 		  div_node->line_num = yylineno;
@@ -1730,102 +1731,102 @@ yyreduce:
 	          (yyval.exp_node) = div_node;
 
 	}
-#line 1734 "y.tab.c" /* yacc.c:1646  */
+#line 1735 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 218 "parser.y" /* yacc.c:1646  */
+#line 219 "parser.y" /* yacc.c:1646  */
     {
 		  struct exp_node * node = create_exp_node(LE, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
 		  node->type = BOOL;
 		  node->line_num = yylineno;
 		  (yyval.exp_node) = node;
 	}
-#line 1745 "y.tab.c" /* yacc.c:1646  */
+#line 1746 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 225 "parser.y" /* yacc.c:1646  */
+#line 226 "parser.y" /* yacc.c:1646  */
     {
 		  struct exp_node * node = create_exp_node(GR, (yyvsp[-2].exp_node), (yyvsp[0].exp_node));
 		  node->type = BOOL;
 		  node->line_num = yylineno;
 		  (yyval.exp_node) = node;
 	}
-#line 1756 "y.tab.c" /* yacc.c:1646  */
+#line 1757 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 232 "parser.y" /* yacc.c:1646  */
+#line 233 "parser.y" /* yacc.c:1646  */
     {
 		  struct exp_node * node = create_exp_node(NGT, (yyvsp[0].exp_node), NULL);
 		  node->type = BOOL;
 		  node->line_num = yylineno;
 		  (yyval.exp_node) = node;
 	}
-#line 1767 "y.tab.c" /* yacc.c:1646  */
+#line 1768 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 239 "parser.y" /* yacc.c:1646  */
+#line 240 "parser.y" /* yacc.c:1646  */
     {
 		  struct exp_node * node = create_exp_node(PLU, (yyvsp[0].exp_node), NULL);
 		  node->type = (yyvsp[0].exp_node)->type;
 		  node->line_num = yylineno;
 		  (yyval.exp_node) = node;
 	}
-#line 1778 "y.tab.c" /* yacc.c:1646  */
+#line 1779 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 246 "parser.y" /* yacc.c:1646  */
+#line 247 "parser.y" /* yacc.c:1646  */
     {
 		  struct exp_node * node = create_exp_node(MIN, (yyvsp[0].exp_node), NULL);
 		  node->type = (yyvsp[0].exp_node)->type;
 		  node->line_num = yylineno;
 		  (yyval.exp_node) = node;
 	}
-#line 1789 "y.tab.c" /* yacc.c:1646  */
+#line 1790 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 253 "parser.y" /* yacc.c:1646  */
+#line 254 "parser.y" /* yacc.c:1646  */
     {	
 		struct exp_node * leaf = create_bool_leaf(1);
 		leaf->line_num = yylineno;
 		(yyval.exp_node) = leaf;
 	}
-#line 1799 "y.tab.c" /* yacc.c:1646  */
+#line 1800 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 259 "parser.y" /* yacc.c:1646  */
+#line 260 "parser.y" /* yacc.c:1646  */
     {	
 		struct exp_node * leaf = create_bool_leaf(0);
 		leaf->line_num = yylineno;
 		(yyval.exp_node) = leaf;
 	}
-#line 1809 "y.tab.c" /* yacc.c:1646  */
+#line 1810 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 265 "parser.y" /* yacc.c:1646  */
+#line 266 "parser.y" /* yacc.c:1646  */
     {	
 		(yyval.exp_node) = (yyvsp[0].exp_node);
 	}
-#line 1817 "y.tab.c" /* yacc.c:1646  */
+#line 1818 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 269 "parser.y" /* yacc.c:1646  */
+#line 270 "parser.y" /* yacc.c:1646  */
     {
 		(yyval.exp_node) = (yyvsp[0].exp_node);
 	}
-#line 1825 "y.tab.c" /* yacc.c:1646  */
+#line 1826 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 273 "parser.y" /* yacc.c:1646  */
+#line 274 "parser.y" /* yacc.c:1646  */
     {
 		/*if(!$1->is_array)
 		{ 
@@ -1840,11 +1841,11 @@ yyreduce:
 		  */
 		//}
 	}
-#line 1844 "y.tab.c" /* yacc.c:1646  */
+#line 1845 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 288 "parser.y" /* yacc.c:1646  */
+#line 289 "parser.y" /* yacc.c:1646  */
     {
 		//The constructor should be called, so this a method.
 		struct exp_node * node = (struct exp_node *) malloc(sizeof(struct exp_node));
@@ -1860,19 +1861,19 @@ yyreduce:
 		(yyval.exp_node) = node;
 				
 	}
-#line 1864 "y.tab.c" /* yacc.c:1646  */
+#line 1865 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 305 "parser.y" /* yacc.c:1646  */
+#line 306 "parser.y" /* yacc.c:1646  */
     {
 		(yyval.exp_node) = (yyvsp[-1].exp_node);
 	}
-#line 1872 "y.tab.c" /* yacc.c:1646  */
+#line 1873 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 309 "parser.y" /* yacc.c:1646  */
+#line 310 "parser.y" /* yacc.c:1646  */
     {
 		char * str = (yyvsp[0].string_val);
 		int len = strlen(str);
@@ -1884,11 +1885,11 @@ yyreduce:
 	  leaf->line_num = yylineno;
 	  (yyval.exp_node) = leaf;		
 	}
-#line 1888 "y.tab.c" /* yacc.c:1646  */
+#line 1889 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 321 "parser.y" /* yacc.c:1646  */
+#line 322 "parser.y" /* yacc.c:1646  */
     {
 	  int * result = (int *) malloc(sizeof(int));
 	  *result = (yyvsp[0].integer_val);	
@@ -1896,11 +1897,11 @@ yyreduce:
 	  leaf->line_num = yylineno;
 	  (yyval.exp_node) = leaf;
 	}
-#line 1900 "y.tab.c" /* yacc.c:1646  */
+#line 1901 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 329 "parser.y" /* yacc.c:1646  */
+#line 330 "parser.y" /* yacc.c:1646  */
     {
 /*		switch($3.type)
 		{
@@ -1914,11 +1915,11 @@ yyreduce:
 				break;
 		}*/
 	}
-#line 1918 "y.tab.c" /* yacc.c:1646  */
+#line 1919 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 346 "parser.y" /* yacc.c:1646  */
+#line 347 "parser.y" /* yacc.c:1646  */
     {
 		class_t * cl = (class_t *) malloc(sizeof(class_t));
 		scope_t * class_scope = (scope_t *) malloc(sizeof(scope_t));
@@ -1932,6 +1933,8 @@ yyreduce:
 		method_t * main_method = (method_t *) malloc(sizeof(method_t));
 		main_method->statement = (yyvsp[-2].stmt_node); 
 		main_method->statement->scope = main_scope;
+		main_args_name = (yyvsp[-5].string_val);
+		add_var_to_table(main_scope->name_table, main_args_name, STR, NULL);
 		update_scope_hierarchy(main_method->statement);
 		//method_list_t * method_list = (method_list_t *) malloc(sizeof(method_list_t));
 		add_var_to_table(class_scope->name_table, "main", UNDEF, main_method); 
@@ -1939,11 +1942,11 @@ yyreduce:
 		cl->scope = class_scope;
 		(yyval.class) = cl;
 	    }
-#line 1943 "y.tab.c" /* yacc.c:1646  */
+#line 1946 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 371 "parser.y" /* yacc.c:1646  */
+#line 374 "parser.y" /* yacc.c:1646  */
     {
 		if((yyvsp[-1].class_list) == NULL)
 		{
@@ -1959,19 +1962,19 @@ yyreduce:
 		 	(yyval.class_list) = (yyvsp[-1].class_list);
 		}
 	}
-#line 1963 "y.tab.c" /* yacc.c:1646  */
+#line 1966 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 387 "parser.y" /* yacc.c:1646  */
+#line 390 "parser.y" /* yacc.c:1646  */
     {
 		(yyval.class_list) = NULL;
 	}
-#line 1971 "y.tab.c" /* yacc.c:1646  */
+#line 1974 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 392 "parser.y" /* yacc.c:1646  */
+#line 395 "parser.y" /* yacc.c:1646  */
     {
 	//No inheritance.
 	if((yyvsp[-4].string_val) == NULL)
@@ -2031,11 +2034,11 @@ yyreduce:
 		printf("Inheritance: to be implemented");
 	}
 }
-#line 2035 "y.tab.c" /* yacc.c:1646  */
+#line 2038 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 454 "parser.y" /* yacc.c:1646  */
+#line 457 "parser.y" /* yacc.c:1646  */
     {
 		if((yyvsp[-1].vardecllist) == NULL)
 		{
@@ -2056,17 +2059,17 @@ yyreduce:
 			(yyval.vardecllist) = (yyvsp[-1].vardecllist);
 		}
 	}
-#line 2060 "y.tab.c" /* yacc.c:1646  */
+#line 2063 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 474 "parser.y" /* yacc.c:1646  */
+#line 477 "parser.y" /* yacc.c:1646  */
     { (yyval.vardecllist) = NULL; }
-#line 2066 "y.tab.c" /* yacc.c:1646  */
+#line 2069 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 478 "parser.y" /* yacc.c:1646  */
+#line 481 "parser.y" /* yacc.c:1646  */
     {
 		if((yyvsp[-1].method_list) == NULL)
 		{
@@ -2082,11 +2085,11 @@ yyreduce:
 		  (yyval.method_list) = (yyvsp[-1].method_list);
 		}
 	}
-#line 2086 "y.tab.c" /* yacc.c:1646  */
+#line 2089 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 494 "parser.y" /* yacc.c:1646  */
+#line 497 "parser.y" /* yacc.c:1646  */
     {
 		if((yyvsp[-1].method_list) == NULL)
 		{
@@ -2104,17 +2107,17 @@ yyreduce:
 		}
 
 	}
-#line 2108 "y.tab.c" /* yacc.c:1646  */
+#line 2111 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 511 "parser.y" /* yacc.c:1646  */
+#line 514 "parser.y" /* yacc.c:1646  */
     {(yyval.method_list) = NULL;}
-#line 2114 "y.tab.c" /* yacc.c:1646  */
+#line 2117 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 514 "parser.y" /* yacc.c:1646  */
+#line 517 "parser.y" /* yacc.c:1646  */
     {
   method_t * method = (method_t*) malloc(sizeof(method_t));	
   scope_t * method_scope = (scope_t *) malloc(sizeof(scope_t));	
@@ -2127,11 +2130,11 @@ yyreduce:
   update_scope_hierarchy((yyvsp[-1].stmt_node));
   (yyval.method) = method;
 }
-#line 2131 "y.tab.c" /* yacc.c:1646  */
+#line 2134 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 528 "parser.y" /* yacc.c:1646  */
+#line 531 "parser.y" /* yacc.c:1646  */
     {
   method_t * method = (method_t*) malloc(sizeof(method_t));
   scope_t * method_scope = (scope_t *) malloc(sizeof(scope_t));	
@@ -2144,27 +2147,27 @@ yyreduce:
   update_scope_hierarchy((yyvsp[-1].stmt_node));
   (yyval.method) = method;
 }
-#line 2148 "y.tab.c" /* yacc.c:1646  */
+#line 2151 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 543 "parser.y" /* yacc.c:1646  */
+#line 546 "parser.y" /* yacc.c:1646  */
     {
 		(yyval.string_val) = (yyvsp[0].string_val);
 	}
-#line 2156 "y.tab.c" /* yacc.c:1646  */
+#line 2159 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 547 "parser.y" /* yacc.c:1646  */
+#line 550 "parser.y" /* yacc.c:1646  */
     {
 		(yyval.string_val) = NULL;
 	}
-#line 2164 "y.tab.c" /* yacc.c:1646  */
+#line 2167 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 552 "parser.y" /* yacc.c:1646  */
+#line 555 "parser.y" /* yacc.c:1646  */
     {
 	        struct var_decl_list_t * list = (struct var_decl_list_t *) malloc(sizeof(struct var_decl_list_t)); 
 		list->type = (yyvsp[-3].type);
@@ -2181,11 +2184,11 @@ yyreduce:
 		}
 		(yyval.vardecllist) = list;
 	  }
-#line 2185 "y.tab.c" /* yacc.c:1646  */
+#line 2188 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 569 "parser.y" /* yacc.c:1646  */
+#line 572 "parser.y" /* yacc.c:1646  */
     {
 	        struct var_decl_list_t * list = (struct var_decl_list_t *) malloc(sizeof(struct var_decl_list_t)); 
 		list->type = malloc(sizeof(type_info_t));
@@ -2204,11 +2207,11 @@ yyreduce:
 		(yyval.vardecllist) = list;
 
           }
-#line 2208 "y.tab.c" /* yacc.c:1646  */
+#line 2211 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 588 "parser.y" /* yacc.c:1646  */
+#line 591 "parser.y" /* yacc.c:1646  */
     {
 		//if($1->type != $4->type) ERROR;
 	        struct var_decl_list_t * list = (struct var_decl_list_t *) malloc(sizeof(struct var_decl_list_t)); 
@@ -2231,11 +2234,11 @@ yyreduce:
 		
 
 	  }
-#line 2235 "y.tab.c" /* yacc.c:1646  */
+#line 2238 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 611 "parser.y" /* yacc.c:1646  */
+#line 614 "parser.y" /* yacc.c:1646  */
     {
 	        struct var_decl_list_t * list = (struct var_decl_list_t *) malloc(sizeof(struct var_decl_list_t)); 
 		list->type = malloc(sizeof(type_info_t));
@@ -2254,11 +2257,11 @@ yyreduce:
 		(yyval.vardecllist) = list;
  
 	  }
-#line 2258 "y.tab.c" /* yacc.c:1646  */
+#line 2261 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 634 "parser.y" /* yacc.c:1646  */
+#line 637 "parser.y" /* yacc.c:1646  */
     { 
 			struct var_decl_t * decl = (struct var_decl_t *) malloc(sizeof(struct var_decl_t));
 			decl->id = (yyvsp[-2].string_val);
@@ -2266,11 +2269,11 @@ yyreduce:
 			decl->line_num = yylineno;
 			(yyval.var_decl) = decl; 
 		}
-#line 2270 "y.tab.c" /* yacc.c:1646  */
+#line 2273 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 642 "parser.y" /* yacc.c:1646  */
+#line 645 "parser.y" /* yacc.c:1646  */
     { 
 			struct var_decl_t * decl = (struct var_decl_t *) malloc(sizeof(struct var_decl_t));
 			decl->id = (yyvsp[0].string_val);
@@ -2278,11 +2281,11 @@ yyreduce:
 			decl->value = NULL;
 			(yyval.var_decl) = decl;
 		}
-#line 2282 "y.tab.c" /* yacc.c:1646  */
+#line 2285 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 653 "parser.y" /* yacc.c:1646  */
+#line 656 "parser.y" /* yacc.c:1646  */
     {
 		if((yyvsp[-1].vardecllist) == NULL)
 		{
@@ -2297,25 +2300,31 @@ yyreduce:
 			decl->next = (yyvsp[0].var_decl);
 		}
 	}
-#line 2301 "y.tab.c" /* yacc.c:1646  */
+#line 2304 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 668 "parser.y" /* yacc.c:1646  */
+#line 671 "parser.y" /* yacc.c:1646  */
     {
 		(yyval.vardecllist) = NULL;
 	}
-#line 2309 "y.tab.c" /* yacc.c:1646  */
+#line 2312 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 676 "parser.y" /* yacc.c:1646  */
+#line 679 "parser.y" /* yacc.c:1646  */
     {(yyval.exp_list) = (yyvsp[0].exp_list);}
-#line 2315 "y.tab.c" /* yacc.c:1646  */
+#line 2318 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 51:
+#line 681 "parser.y" /* yacc.c:1646  */
+    { (yyval.exp_list) = NULL; }
+#line 2324 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 680 "parser.y" /* yacc.c:1646  */
+#line 685 "parser.y" /* yacc.c:1646  */
     {
 	(yyvsp[-1].exp_node)->next = (yyvsp[0].exp_list)->head;
 	exp_list_t * list = (exp_list_t *) malloc(sizeof(exp_list_t));
@@ -2323,11 +2332,11 @@ yyreduce:
 	(yyval.exp_list) = list;
 	
 }
-#line 2327 "y.tab.c" /* yacc.c:1646  */
+#line 2336 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 690 "parser.y" /* yacc.c:1646  */
+#line 695 "parser.y" /* yacc.c:1646  */
     {
 		if((yyvsp[-1].exp_list) == NULL)
 		{
@@ -2344,25 +2353,37 @@ yyreduce:
 			it->next = (yyvsp[0].exp_node);
 		}
 	}
-#line 2348 "y.tab.c" /* yacc.c:1646  */
+#line 2357 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 54:
+#line 711 "parser.y" /* yacc.c:1646  */
+    {(yyval.exp_list) = NULL;}
+#line 2363 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 709 "parser.y" /* yacc.c:1646  */
+#line 714 "parser.y" /* yacc.c:1646  */
     {
 	(yyval.exp_node) = (yyvsp[0].exp_node);
 }
-#line 2356 "y.tab.c" /* yacc.c:1646  */
+#line 2371 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 713 "parser.y" /* yacc.c:1646  */
+#line 718 "parser.y" /* yacc.c:1646  */
     {(yyval.arg_list) = (yyvsp[0].arg_list);}
-#line 2362 "y.tab.c" /* yacc.c:1646  */
+#line 2377 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 57:
+#line 718 "parser.y" /* yacc.c:1646  */
+    {(yyval.arg_list) = NULL;}
+#line 2383 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 716 "parser.y" /* yacc.c:1646  */
+#line 721 "parser.y" /* yacc.c:1646  */
     {
 	argument_t * arg = (argument_t *) malloc(sizeof(argument_t));
 	arg->next = (yyvsp[0].arg_list)->head;
@@ -2370,22 +2391,22 @@ yyreduce:
 	list->head = arg;
 	(yyval.arg_list) = list;
 }
-#line 2374 "y.tab.c" /* yacc.c:1646  */
+#line 2395 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 725 "parser.y" /* yacc.c:1646  */
+#line 730 "parser.y" /* yacc.c:1646  */
     {
 	argument_t * arg = (argument_t *) malloc(sizeof(argument_t));
 	arg->type = (yyvsp[-1].type);
 	arg->id = (yyvsp[0].string_val);
 	(yyval.method_arg) = arg;	 
 }
-#line 2385 "y.tab.c" /* yacc.c:1646  */
+#line 2406 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 734 "parser.y" /* yacc.c:1646  */
+#line 739 "parser.y" /* yacc.c:1646  */
     {
 		if((yyvsp[-1].arg_list) == NULL)
 		{
@@ -2404,28 +2425,34 @@ yyreduce:
 			(yyval.arg_list) = (yyvsp[-1].arg_list);
 		}
 	}
-#line 2408 "y.tab.c" /* yacc.c:1646  */
+#line 2429 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 61:
+#line 757 "parser.y" /* yacc.c:1646  */
+    {(yyval.arg_list) = NULL;}
+#line 2435 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 754 "parser.y" /* yacc.c:1646  */
+#line 759 "parser.y" /* yacc.c:1646  */
     {(yyval.type) = (yyvsp[0].type);}
-#line 2414 "y.tab.c" /* yacc.c:1646  */
+#line 2441 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 756 "parser.y" /* yacc.c:1646  */
+#line 761 "parser.y" /* yacc.c:1646  */
     {
 		type_info_t * type = (yyvsp[-1].type);
 		assert((yyvsp[-1].type) != NULL);
 		(yyvsp[-1].type)->dim_len++;
 		(yyval.type) = (yyvsp[-1].type);
 	}
-#line 2425 "y.tab.c" /* yacc.c:1646  */
+#line 2452 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 763 "parser.y" /* yacc.c:1646  */
+#line 768 "parser.y" /* yacc.c:1646  */
     {
 		type_info_t * type = (type_info_t *) malloc(sizeof(type_info_t));
 		type->type = CLASS;
@@ -2433,11 +2460,11 @@ yyreduce:
 		type->dim_len = (yyvsp[0].integer_val);
 		(yyval.type) = type;
 	}
-#line 2437 "y.tab.c" /* yacc.c:1646  */
+#line 2464 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 774 "parser.y" /* yacc.c:1646  */
+#line 779 "parser.y" /* yacc.c:1646  */
     {
 		type_info_t * type = (type_info_t *) malloc(sizeof(type_info_t));
 		type->type = INT;
@@ -2445,11 +2472,11 @@ yyreduce:
 		type->class_id = NULL;
 		(yyval.type) = type;
 	}
-#line 2449 "y.tab.c" /* yacc.c:1646  */
+#line 2476 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 782 "parser.y" /* yacc.c:1646  */
+#line 787 "parser.y" /* yacc.c:1646  */
     {
 		type_info_t * type = (type_info_t *) malloc(sizeof(type_info_t));
 		type->type = STR;
@@ -2457,11 +2484,11 @@ yyreduce:
 		type->dim_len = 0;
 		(yyval.type) = type;
 	}
-#line 2461 "y.tab.c" /* yacc.c:1646  */
+#line 2488 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 790 "parser.y" /* yacc.c:1646  */
+#line 795 "parser.y" /* yacc.c:1646  */
     {
 		type_info_t * type = (type_info_t *) malloc(sizeof(type_info_t));
 		type->type = BOOL;
@@ -2469,11 +2496,11 @@ yyreduce:
 		type->dim_len = 0;
 		(yyval.type) = type;
 	}
-#line 2473 "y.tab.c" /* yacc.c:1646  */
+#line 2500 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 800 "parser.y" /* yacc.c:1646  */
+#line 805 "parser.y" /* yacc.c:1646  */
     {
 		exp_node_list_t * asgn_list = (exp_node_list_t*) malloc(sizeof(exp_node_list_t));
 		elist_init(asgn_list);
@@ -2517,11 +2544,11 @@ yyreduce:
 		stmt->scope = NULL;
 		(yyval.stmt_node) = stmt; 
 	}
-#line 2521 "y.tab.c" /* yacc.c:1646  */
+#line 2548 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 844 "parser.y" /* yacc.c:1646  */
+#line 849 "parser.y" /* yacc.c:1646  */
     {
 		scope_t * scope = (scope_t *) malloc(sizeof(scope_t));
 		scope->name_table = (LinkedList *) malloc(sizeof(LinkedList));
@@ -2535,19 +2562,19 @@ yyreduce:
 		update_scope_hierarchy((yyvsp[-1].stmt_node));
 		(yyval.stmt_node) = ref;
 	}
-#line 2539 "y.tab.c" /* yacc.c:1646  */
+#line 2566 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 858 "parser.y" /* yacc.c:1646  */
+#line 863 "parser.y" /* yacc.c:1646  */
     {
 		(yyval.stmt_node) = NULL;
 	}
-#line 2547 "y.tab.c" /* yacc.c:1646  */
+#line 2574 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 862 "parser.y" /* yacc.c:1646  */
+#line 867 "parser.y" /* yacc.c:1646  */
     {
 		if_node_t * node = (if_node_t *) malloc(sizeof(if_node_t));
 		node->expression = (yyvsp[-4].exp_node);
@@ -2582,11 +2609,11 @@ yyreduce:
 		stmt->line_no = yylineno;
 		(yyval.stmt_node) = stmt;
 	}
-#line 2586 "y.tab.c" /* yacc.c:1646  */
+#line 2613 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 897 "parser.y" /* yacc.c:1646  */
+#line 902 "parser.y" /* yacc.c:1646  */
     {
 		while_node_t * node = (while_node_t *) malloc(sizeof(while_node_t));
 		node->expression = (yyvsp[-2].exp_node);
@@ -2609,11 +2636,11 @@ yyreduce:
 		stmt->arg_is_expr = 0;
 		(yyval.stmt_node) = stmt;
 	}
-#line 2613 "y.tab.c" /* yacc.c:1646  */
+#line 2640 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 920 "parser.y" /* yacc.c:1646  */
+#line 925 "parser.y" /* yacc.c:1646  */
     {
 		stmt_node_t * stmt = (stmt_node_t * )malloc(sizeof(stmt_node_t));
 		stmt->invoke = s_println;
@@ -2624,11 +2651,11 @@ yyreduce:
 
 		(yyval.stmt_node) = stmt;		
 	  }
-#line 2628 "y.tab.c" /* yacc.c:1646  */
+#line 2655 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 931 "parser.y" /* yacc.c:1646  */
+#line 936 "parser.y" /* yacc.c:1646  */
     {
 
 		stmt_node_t * stmt = (stmt_node_t * )malloc(sizeof(stmt_node_t));
@@ -2640,11 +2667,11 @@ yyreduce:
 		(yyval.stmt_node) = stmt;		
 		
 	  }
-#line 2644 "y.tab.c" /* yacc.c:1646  */
+#line 2671 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 943 "parser.y" /* yacc.c:1646  */
+#line 948 "parser.y" /* yacc.c:1646  */
     {
 
 		stmt_node_t * stmt = (stmt_node_t * )malloc(sizeof(stmt_node_t));
@@ -2658,19 +2685,19 @@ yyreduce:
 		stmt->line_no = yylineno;
 		(yyval.stmt_node) = stmt;		
 	  }
-#line 2662 "y.tab.c" /* yacc.c:1646  */
+#line 2689 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 957 "parser.y" /* yacc.c:1646  */
+#line 962 "parser.y" /* yacc.c:1646  */
     {
 		stack_push((yyvsp[-1].exp_node));
 	}
-#line 2670 "y.tab.c" /* yacc.c:1646  */
+#line 2697 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 961 "parser.y" /* yacc.c:1646  */
+#line 966 "parser.y" /* yacc.c:1646  */
     {
 		stmt_node_t * stmt = (stmt_node_t *) malloc(sizeof(stmt_node_t));
 		stmt->type = PRO;
@@ -2680,32 +2707,32 @@ yyreduce:
 		stmt->arg = (yyvsp[-1].exp_node); //Setting the method as the argument.
 		(yyval.stmt_node) = stmt;
 	}
-#line 2684 "y.tab.c" /* yacc.c:1646  */
+#line 2711 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 974 "parser.y" /* yacc.c:1646  */
+#line 979 "parser.y" /* yacc.c:1646  */
     {
 		assert((yyvsp[-1].stmt_node)->type == LIST);
 	        slist_add((yyvsp[-1].stmt_node), (yyvsp[0].stmt_node));
 		(yyval.stmt_node) = (yyvsp[-1].stmt_node);
 	}
-#line 2694 "y.tab.c" /* yacc.c:1646  */
+#line 2721 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 980 "parser.y" /* yacc.c:1646  */
+#line 985 "parser.y" /* yacc.c:1646  */
     {
 		(yyval.stmt_node) = (stmt_node_t *) malloc(sizeof(stmt_node_t));
 		(yyval.stmt_node)->type = LIST;
 		assert((yyvsp[0].stmt_node)->type == LIST || (yyvsp[0].stmt_node)->type == PRO || (yyvsp[0].stmt_node)->type == IF || (yyvsp[0].stmt_node)->type == WHILE);
 		slist_add((yyval.stmt_node), (yyvsp[0].stmt_node));
  	  }
-#line 2705 "y.tab.c" /* yacc.c:1646  */
+#line 2732 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 988 "parser.y" /* yacc.c:1646  */
+#line 993 "parser.y" /* yacc.c:1646  */
     {
 		struct exp_node * leaf = (struct exp_node *) malloc(sizeof(struct exp_node));
                 leaf->is_method = 1;
@@ -2725,11 +2752,11 @@ yyreduce:
 		(yyval.exp_node) = leaf;
 
 }
-#line 2729 "y.tab.c" /* yacc.c:1646  */
+#line 2756 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 1010 "parser.y" /* yacc.c:1646  */
+#line 1015 "parser.y" /* yacc.c:1646  */
     {
 		index_t * dimension = (index_t *) malloc(sizeof(index_t));
 		dimension->size = (yyvsp[-1].exp_node);
@@ -2738,11 +2765,11 @@ yyreduce:
 		index_list_add(list, dimension);
 		(yyval.dimension_list) = list;
 	}
-#line 2742 "y.tab.c" /* yacc.c:1646  */
+#line 2769 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 1019 "parser.y" /* yacc.c:1646  */
+#line 1024 "parser.y" /* yacc.c:1646  */
     {
 		index_t * dimension = (index_t *) malloc(sizeof(index_t));
 		dimension->size = (yyvsp[-1].exp_node);
@@ -2750,27 +2777,27 @@ yyreduce:
 		index_list_add((yyvsp[-3].dimension_list), dimension);
 		(yyval.dimension_list) = (yyvsp[-3].dimension_list);
 	}
-#line 2754 "y.tab.c" /* yacc.c:1646  */
+#line 2781 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 1030 "parser.y" /* yacc.c:1646  */
+#line 1035 "parser.y" /* yacc.c:1646  */
     {
 		(yyval.integer_val) = (yyvsp[-2].dimension_list) + 1;
 	}
-#line 2762 "y.tab.c" /* yacc.c:1646  */
+#line 2789 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 1034 "parser.y" /* yacc.c:1646  */
+#line 1039 "parser.y" /* yacc.c:1646  */
     {
 		(yyval.integer_val) = 1;
 	}
-#line 2770 "y.tab.c" /* yacc.c:1646  */
+#line 2797 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 1040 "parser.y" /* yacc.c:1646  */
+#line 1045 "parser.y" /* yacc.c:1646  */
     {
 		char * var = (yyvsp[0].string_val);
 		//Find the id leaf and update parent right.
@@ -2781,11 +2808,11 @@ yyreduce:
 		(yyval.exp_node) = leaf;
 
 	}
-#line 2785 "y.tab.c" /* yacc.c:1646  */
+#line 2812 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 1051 "parser.y" /* yacc.c:1646  */
+#line 1056 "parser.y" /* yacc.c:1646  */
     {
 		char * array_name = (yyvsp[-1].string_val);
                 index_list_t * index_list = (yyvsp[0].dimension_list);
@@ -2793,11 +2820,11 @@ yyreduce:
 		leaf->line_num = yylineno;
 		(yyval.exp_node) = leaf;		
 	}
-#line 2797 "y.tab.c" /* yacc.c:1646  */
+#line 2824 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 1059 "parser.y" /* yacc.c:1646  */
+#line 1064 "parser.y" /* yacc.c:1646  */
     {
 		//Look from name table.
 		//Property reading or method reading.
@@ -2810,22 +2837,22 @@ yyreduce:
 		(yyval.exp_node) = node;
 		
 	}
-#line 2814 "y.tab.c" /* yacc.c:1646  */
+#line 2841 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 1073 "parser.y" /* yacc.c:1646  */
+#line 1078 "parser.y" /* yacc.c:1646  */
     {
 		index_list_t * dim_list = (yyvsp[0].dimension_list);
 		struct exp_node * node = create_array_leaf((yyvsp[-1].type)->type, (yyvsp[0].dimension_list), NULL);	
 		node->line_num = yylineno;
 		(yyval.exp_node) = node;	
 	}
-#line 2825 "y.tab.c" /* yacc.c:1646  */
+#line 2852 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2829 "y.tab.c" /* yacc.c:1646  */
+#line 2856 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3053,7 +3080,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1082 "parser.y" /* yacc.c:1906  */
+#line 1087 "parser.y" /* yacc.c:1906  */
 
 
 
@@ -3358,12 +3385,13 @@ int setup_execute(stmt_node_t * current)
 {
 	add_to(text_section, "push {fp}\n");
 	add_to(text_section, "mov fp, sp\n");
+
 	int current_method_size = calc_method_size(current);
 	char alloc_method[40];
 	sprintf(alloc_method, "sub sp, sp, #%d\n", current_method_size);
 	add_to(text_section, alloc_method);
 	method_first_codegen(current);
-
+	
 	execute(current);
 
 	add_to(text_section, "mov sp, fp\n");
@@ -4306,10 +4334,19 @@ void allocate_array(struct exp_node * node)
   {
 	case BOOL:
 	case INT: 
-  		node->current_value = malloc(total_alloc_size * sizeof(int));
+  	{	//node->current_value = malloc(total_alloc_size * sizeof(int));
+		if(construct_name_table)
+		{
+			char command[80];
+			sprintf(command, "ldr r0, =#%d\n", total_alloc_size);
+			add_to(text_section, command);
+			add_to(text_section, "bl malloc\n");
+		}
+
 		break;
+	}
 	case STR:
-  		node->current_value = malloc(total_alloc_size * sizeof(char *));
+  		//node->current_value = malloc(total_alloc_size * sizeof(char *));
 		break;
 	default: yyerror("Unhandled array type."); break;
 
@@ -4368,8 +4405,20 @@ void s_asgn(void * abstract_arg)
 	{
     		char load[50];
 		//Expression result should be in r0.
-    		sprintf(load, "mov r4, r0\n");
-    		add_to(text_section, load);
+		if(right_value->is_array)
+		{
+			char command[80];
+			sprintf(command, "ldr r4, =%s\n", var_node->value);
+			add_to(text_section, command);
+			add_to("str r0, [r4]\n");
+		}
+		else
+		{
+    			sprintf(load, "mov r4, r0\n");
+    			add_to(text_section, load);
+		}
+
+
 	}
 	case STR:
 	{
@@ -4412,15 +4461,34 @@ void s_decl(void * abstract_arg)
     {
       if(assign->is_array)
       {
-	allocate_array(assign);
-        add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, assign->current_value);
-	ListNode * just_added_array = llist_find_node(current_scope->name_table, id_leaf->data.var_name);
+	
+	add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, NULL); //The value is null because we don't know the pointer until runtime.
+	if(!construct_name_table)
+	{
+
+		char var_decl[20 + strlen(id_leaf->data.var_name)];
+		sprintf(var_decl, "%s: .word 0\n", id_leaf->data.var_name);
+		add_to(data_section, var_decl);
+		allocate_array(assign);
+
+		char command[80];
+		sprintf(command, "ldr r4, =%s\n", id_leaf->data.var_name);
+		add_to(text_section, command);
+		add_to(text_section, "str r0, [r4]\n");
+
+		ListNode * just_added_array = llist_find_node(current_scope->name_table, id_leaf->data.var_name);
+		just_added_array->dim_capacity_list = assign -> data.dimensions;
+	}	
+
+	
+	/*
 	if(just_added_array == NULL)
 	{
 		type_error(current_node->line_num);
 		return;
 	}
-	just_added_array->dim_capacity_list = assign -> data.dimensions;
+	just_added_array->dim_capacity_list = assign -> data.dimensions;*/
+	
       }
       else
       {
@@ -5197,6 +5265,17 @@ int main(int argc, char** argv)
      * data_section = NULL;
      * text_section = NULL;
 
+     //Main args should be the first var added to the main table.
+     //If not, use llist_find
+     ListNode * args_node = llist_find_node(main_stmt_list->scope->name_table, main_args_name);
+     assert(args_node != NULL);
+     char args_decl[80];
+     sprintf(args_decl, "%s: .word 0\n", args_node->value);
+     add_to(data_section, args_decl);
+     char args_call[80];
+     sprintf(args_call, "ldr r4, =%s\n", args_node->value);
+     add_to(text_section, args_call);
+     add_to(text_section, "str r1, [r4]\n");
     setup_execute(main_stmt_list);
     fprintf(gen_file, ".section .data\n");
     init_data_section();
