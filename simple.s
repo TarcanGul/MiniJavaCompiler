@@ -61,6 +61,7 @@ _t33: .word 0
 _t34: .word 0
 _t35: .word 0
 array: .word 0
+_t36: .word 0
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
 println_str_format: .asciz "%s\n"
@@ -683,8 +684,19 @@ str r0, [r4]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
+ldr r0, =#20
+bl malloc
 ldr r4, =array
 str r0, [r4]
+ldr r0, =#45
+ldr r4, =array
+ldr r4, [r4]
+ldr r0, =#-981263552
+mul r1, r0, r2
+add r0, r4, r1
+mov r1, r0
+ldr r0, =#45
+str r0, [r1]
 mov sp, fp
 pop {fp}
 pop {pc}
