@@ -59,14 +59,16 @@ _t32: .word 0
 _t33: .word 0
 array: .word 0
 _t34: .word 0
-array2: .word 0
 _t35: .word 0
+array2: .word 0
+_t36: .word 0
+_t37: .word 0
 array3: .word 0
 _strlt13: .asciz "Hello"
-_t36: .word 0
+_t38: .word 0
 _strlt14: .asciz "Hello"
 _strlt15: .asciz " world!"
-_t37: .word 0
+_t39: .word 0
 _strlt16: .asciz " world!"
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
@@ -608,9 +610,29 @@ add r0, r4, r1
 mov r1, r0
 ldr r0, =#45
 str r0, [r1]
+ldr r0, =#34343
+ldr r4, =array
+ldr r4, [r4]
+ldr r0, =#4
+ldr r2, =#4
+mul r1, r0, r2
+add r0, r4, r1
+mov r1, r0
+ldr r0, =#34343
+str r0, [r1]
 ldr r4, =array
 ldr r4, [r4]
 ldr r0, =#2
+ldr r1, =#4
+mul r1, r1, r0
+add r0, r4, r1
+ldr r0, [r0]
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
+ldr r4, =array
+ldr r4, [r4]
+ldr r0, =#4
 ldr r1, =#4
 mul r1, r1, r0
 add r0, r4, r1
@@ -632,6 +654,16 @@ add r0, r4, r1
 mov r1, r0
 ldr r0, =#1
 str r0, [r1]
+ldr r0, =#0
+ldr r4, =array2
+ldr r4, [r4]
+ldr r0, =#4
+ldr r2, =#4
+mul r1, r0, r2
+add r0, r4, r1
+mov r1, r0
+ldr r0, =#0
+str r0, [r1]
 ldr r4, =array2
 ldr r4, [r4]
 ldr r0, =#5
@@ -651,6 +683,25 @@ ldr r0, =println_str_format
 ldr r1, =bool_false
 bl printf
 _endif4:
+ldr r4, =array2
+ldr r4, [r4]
+ldr r0, =#4
+ldr r1, =#4
+mul r1, r1, r0
+add r0, r4, r1
+ldr r0, [r0]
+cmp r0, #1
+bne _false5
+_true5:
+ldr r0, =println_str_format
+ldr r1, =bool_true
+bl printf
+b _endif5
+_false5:
+ldr r0, =println_str_format
+ldr r1, =bool_false
+bl printf
+_endif5:
 ldr r0, =#32
 bl malloc
 ldr r4, =array3
