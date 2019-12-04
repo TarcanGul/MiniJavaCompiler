@@ -587,6 +587,7 @@ ldr r0, =#45
 ldr r4, =array
 ldr r4, [r4]
 ldr r0, =#2
+ldr r2, =#4
 mul r1, r0, r2
 add r0, r4, r1
 mov r1, r0
