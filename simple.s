@@ -733,7 +733,7 @@ str r0, [r1]
 ldr r4, =array3
 ldr r4, [r4]
 ldr r0, =#1
-ldr r1, =#4
+ldr r1, =#8
 mul r1, r1, r0
 add r0, r4, r1
 ldr r0, [r0]
@@ -743,7 +743,7 @@ bl printf
 ldr r4, =array3
 ldr r4, [r4]
 ldr r0, =#2
-ldr r1, =#4
+ldr r1, =#8
 mul r1, r1, r0
 add r0, r4, r1
 ldr r0, [r0]
