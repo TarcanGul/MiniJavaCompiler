@@ -60,7 +60,18 @@ class simple {
             System.out.println(x*y-(b-1));
 	    int[] array = new int[5];
 	    array[2] = 45;
+	    array[4] = 34343; 
             System.out.println(array[2]);
-	
+            System.out.println(array[4]);
+	    boolean[] array2 = new boolean[6];
+	    array2[5] = true;
+	    array2[4] = false;
+	    System.out.println(array2[5]);
+	    System.out.println(array2[4]);
+	    String[] array3 = new String[4];
+	    array3[1] = "Hello";
+	    array3[2] = " world!";
+	    System.out.println(array3[1]);
+	    System.out.println(array3[2]);
     }
 }

@@ -1921,7 +1921,8 @@ void s_println(void * arg)
 			add_to(text_section, "mov r1, r0\n");
 			add_to(text_section, "ldr r0, =println_int_format\n");
 			add_to(text_section, "bl printf\n");		
-		} break;
+			break;
+		} ;
 		case STR :
 		{
 			add_to(text_section, "mov r1, r0\n"); 
@@ -2347,8 +2348,13 @@ void allocate_array(struct exp_node * node)
 		break;
 	}
 	case STR:
-  		//node->current_value = malloc(total_alloc_size * sizeof(char *));
+	{
+		char command[80];
+		sprintf(command, "ldr r0, =#%d\n", total_alloc_size * sizeof(char *));
+		add_to(text_section, command);
+		add_to(text_section, "bl malloc\n");
 		break;
+	}
 	default: yyerror("Unhandled array type."); break;
 
   }
@@ -2394,9 +2400,11 @@ void s_asgn(void * abstract_arg)
 	}
 	case STR:
 	{ 
-		char ** char_array = (char**) array;
-     		int real_index = find_value_of_index(left_value->data.array_entry->index, array_name_entry->dim_capacity_list); 
-     		char_array[real_index] = (char *) right_value->current_value;
+		char put_offset[80];
+		sprintf(put_offset, "ldr r2, =#%d\n", sizeof(char *));
+		add_to(text_section, put_offset);
+		break;
+
 		break;
 	}
 	default: yyerror("Unknown array type"); return;
@@ -2410,7 +2418,6 @@ void s_asgn(void * abstract_arg)
 	//r0 have real location. Now we will get the value of the right.
 	expr_codegen(right_value);
 	add_to(text_section, "str r0, [r1]\n"); //Stores there. 
-
   }
   else
   {
@@ -2905,9 +2912,12 @@ void expr_codegen(struct exp_node * node)
 		int size_type = 0;
 		switch(array_entry->type)
 		{
-			case INT : size_type = 4; break;
+			case BOOL : 
+			case INT : size_type = sizeof(int); break;
+			case STR : size_type = sizeof(char *); break;
 			default: assert(0); break;
 		}
+		node->type = array_entry->type; //Updating type info here for future uses.
 		char put_offset[80];	
 		sprintf(put_offset, "ldr r1, =#%d\n", size_type);
 		add_to(text_section, put_offset);
