@@ -3102,11 +3102,12 @@ void yyerror(char const* msg)
 
 void type_error(int line_num)
 {
-  fprintf(stderr, "Type violation at line %d\n", line_num);
+  //No type error for project 3.
+  /*fprintf(stderr, "Type violation at line %d\n", line_num);
   if(!type_violation_found)
   {
     type_violation_found = 1;
-  }
+  }*/
 }
 
 void update_scope_hierarchy(stmt_node_t * stmt)
@@ -3362,9 +3363,9 @@ struct exp_node * lookup_array(array_entry_t * entry)
 		return result;
 	}
 	default: return NULL;
-     }
-	
+     }	
 }
+
 
 class_t * get_class_info(char * id)
 {
@@ -3787,7 +3788,7 @@ int traverse(struct exp_node * root)
     }
     else if(root->is_array_entry)
     {
-		array_entry_t * array_entry = root->data.array_entry;
+		/*array_entry_t * array_entry = root->data.array_entry;
 		struct exp_node * result = lookup_array(array_entry);	
 	        if(result == NULL)
 		{
@@ -3803,7 +3804,7 @@ int traverse(struct exp_node * root)
 		}
 		root->current_value = result -> current_value;
 		root->is_array = result->is_array;
-		root->type = result->type;
+		root->type = result->type;*/
     }
   }
 }
@@ -4335,13 +4336,10 @@ void allocate_array(struct exp_node * node)
 	case BOOL:
 	case INT: 
   	{	//node->current_value = malloc(total_alloc_size * sizeof(int));
-		if(construct_name_table)
-		{
-			char command[80];
-			sprintf(command, "ldr r0, =#%d\n", total_alloc_size);
-			add_to(text_section, command);
-			add_to(text_section, "bl malloc\n");
-		}
+		char command[80];
+		sprintf(command, "ldr r0, =#%d\n", total_alloc_size * sizeof(int));
+		add_to(text_section, command);
+		add_to(text_section, "bl malloc\n");
 
 		break;
 	}
@@ -4371,16 +4369,24 @@ void s_asgn(void * abstract_arg)
   {
      ListNode * array_name_entry = llist_find_node(current_scope->name_table, left_value->data.array_entry->array_name);
      assert(array_name_entry != NULL);
+     char command[80];
+     char *name_array = array_name_entry->value; //Contains the array name.
+     sprintf(command, "ldr r4, =%s\n", name_array);
+	//We have to find the location of the array entry.
+     add_to(text_section, command);
+     add_to(text_section, "ldr r4, [r4]\n");
+     expr_codegen(left_value->data.array_entry->index->sentinel->next->size); //This outputs content to r0. We are getting the first index here.
+
      void * array = array_name_entry->real_value;
+
      switch(array_name_entry->type)
      {
 	case BOOL:
 	case INT: 
 	{ 
-
-		int * int_array = (int *) array;
-     		int real_index = find_value_of_index(left_value->data.array_entry->index, array_name_entry->dim_capacity_list);
-     		int_array[real_index] = *(int *) right_value->current_value;
+		char put_offset[80];
+		sprintf(put_offset, "ldr r2, =#%d\n", sizeof(int));
+		add_to(text_section, put_offset);
 		break;
 	}
 	case STR:
@@ -4392,6 +4398,16 @@ void s_asgn(void * abstract_arg)
 	}
 	default: yyerror("Unknown array type"); return;
      }
+        char calc_offset[80];
+		//Moving the offset to r1. 
+	sprintf(calc_offset, "mul r1, r0, r2\n");
+	add_to(text_section, calc_offset);
+	add_to(text_section, "add r0, r4, r1\n");
+	add_to(text_section, "mov r1, r0\n");
+	//r0 have real location. Now we will get the value of the right.
+	expr_codegen(right_value);
+	add_to(text_section, "str r0, [r1]\n"); //Stores there. 
+
   }
   else
   {
@@ -4461,9 +4477,11 @@ void s_decl(void * abstract_arg)
     {
       if(assign->is_array)
       {
-	
-	add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, NULL); //The value is null because we don't know the pointer until runtime.
-	if(!construct_name_table)
+	if(construct_name_table)
+	{
+		add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, NULL); //The value is null because we don't know the pointer until runtime.
+	}	
+	else
 	{
 
 		char var_decl[20 + strlen(id_leaf->data.var_name)];
@@ -4472,22 +4490,14 @@ void s_decl(void * abstract_arg)
 		allocate_array(assign);
 
 		char command[80];
+		//Load array address.
 		sprintf(command, "ldr r4, =%s\n", id_leaf->data.var_name);
 		add_to(text_section, command);
 		add_to(text_section, "str r0, [r4]\n");
 
 		ListNode * just_added_array = llist_find_node(current_scope->name_table, id_leaf->data.var_name);
 		just_added_array->dim_capacity_list = assign -> data.dimensions;
-	}	
-
-	
-	/*
-	if(just_added_array == NULL)
-	{
-		type_error(current_node->line_num);
-		return;
-	}
-	just_added_array->dim_capacity_list = assign -> data.dimensions;*/
+	}		
 	
       }
       else
@@ -4879,6 +4889,31 @@ void expr_codegen(struct exp_node * node)
 		ListNode * entry = llist_find_node(current_scope->name_table, node->data.var_name);
 		symbol_codegen(entry);
   	}
+	else if(node->is_array_entry)
+	{
+		array_entry_t * entry = node->data.array_entry;
+		ListNode * array_entry = llist_find_node(current_scope->name_table, entry->array_name);
+		char read_array[80];
+		sprintf(read_array, "ldr r4, =%s\n", entry->array_name);
+		add_to(text_section, read_array);
+		add_to(text_section, "ldr r4, [r4]\n");
+		expr_codegen(entry->index->sentinel->next->size);
+		//We have array index at r0. Calculate offset.
+		int size_type = 0;
+		switch(array_entry->type)
+		{
+			case INT : size_type = 4; break;
+			default: assert(0); break;
+		}
+		char put_offset[80];	
+		sprintf(put_offset, "ldr r1, =#%d\n", size_type);
+		add_to(text_section, put_offset);
+		add_to(text_section, "mul r1, r1, r0\n");
+		//Go to exact array position.
+		add_to(text_section, "add r0, r4, r1\n");
+		//Read from array and write to result.
+		add_to(text_section, "ldr r0, [r0]\n"); 
+	}
 	else
 	{
 		switch(node->type)

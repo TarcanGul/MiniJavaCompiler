@@ -157,6 +157,7 @@ struct exp_node * create_array_entry_leaf(char * array_name, index_list_t * inde
   node->operation = UNDEF;
   array_entry->array_name = array_name;
   array_entry->index = index;
+  node->is_leaf = 1;
   node->is_array = 0;
   node->is_array_entry = 1;
   node->is_id = 0;

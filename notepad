@@ -28,12 +28,13 @@ You know how command line would work. Write the code you wrote.
 Dive into 1D arrays and make it work both (hopefully by Friday).
 
 1D arrays => s_decl, s_asgn, array entries in expr_codegen
-Decl done, now handle assigning and getting value. Start s_asgn and open the slides.
-Method call
+Decl done, now handle assigning and getting value. Start s_asgn and open the slides. Then cmd args
+The s_asgn doesn't seem right. 
+INT ARRAY WORKS. GO WITH OTHER TYPES.
+Objects
+Method call, Integer.parseInt
 Class
-	=Done by end of thanksgiving week
 
 Reg allocation
-	=Done by Thursday dead week
 
 Also don't forget compiler hw
