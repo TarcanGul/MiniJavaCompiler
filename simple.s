@@ -629,9 +629,18 @@ ldr r1, =#4
 mul r1, r1, r0
 add r0, r4, r1
 ldr r0, [r0]
-mov r1, r0
-ldr r0, =println_int_format
+cmp r0, #1
+bne _false4
+_true4:
+ldr r0, =println_str_format
+ldr r1, =bool_true
 bl printf
+b _endif4
+_false4:
+ldr r0, =println_str_format
+ldr r1, =bool_false
+bl printf
+_endif4:
 mov sp, fp
 pop {fp}
 pop {pc}
