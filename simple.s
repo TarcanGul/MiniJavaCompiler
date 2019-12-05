@@ -83,6 +83,7 @@ _strlt15: .asciz "Hello"
 _strlt16: .asciz " world!"
 _t51: .word 0
 _strlt17: .asciz " world!"
+obj: .word 0
 obj2: .word 0
 obj3: .word 0
 _t52: .word 0
