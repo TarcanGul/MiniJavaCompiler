@@ -871,7 +871,7 @@ ldr r1, =#8
 add r0, r4, r1
 ldr r0, [r0]
 mov r1, r0
-ldr r0, =println_int_format
+ldr r0, =println_str_format
 bl printf
 mov sp, fp
 pop {fp}
