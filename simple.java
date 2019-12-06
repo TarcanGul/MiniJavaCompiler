@@ -82,7 +82,9 @@ class simple {
 	    obj3 = obj;	    
 
 	    obj.property = 5;
-	    System.out.println(obj.property);
+            obj.another = "Hey from the other side!";
+	    System.out.print(obj.property);
+	    System.out.println(obj.another);
     }
 }
 
@@ -90,4 +92,5 @@ class AnotherClass
 {
   int property;
   int size;
+  String another;
 }

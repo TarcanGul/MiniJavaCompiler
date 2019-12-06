@@ -4490,7 +4490,6 @@ char * find_prop_name(struct exp_node * node)
   return it->data.var_name;
 }
 
-
 //After code generated, the address will be in r0.
 void prop_codegen(struct exp_node * node)
 {
@@ -4513,7 +4512,8 @@ void prop_codegen(struct exp_node * node)
   add_to(text_section, add_offset);
   add_to(text_section, "add r0, r4, r1\n");
 
-
+  //Update node
+  node->type = var_node->type; //If type is not class.
 }
 
 
@@ -5194,30 +5194,6 @@ void expr_codegen(struct exp_node * node)
 		case IN: 
 		{
 			assert(0);
-			/*struct exp_node * left = node->data.left;
-			struct exp_node * right = node->data.right;
-			expr_codegen(right);
-			//left burada orijinal id, right ise property.
-			assert(left->is_id);
-			char * obj_name = left->data.var_name;
-			char * property_name = right->data.var_name;
-			class_t * class_info = get_class_info(right->associated_class);
-			ListNode * prop_node = llist_find_node(class_info->scope->name_table, right->data.var_name);	
-			//Get only offset info from the name table.
-			int offset = prop_node->offset;
-			//TODO: Continue from here.
-			
-			char get_obj[80];
-			sprintf(get_obj, "ldr r4, =%s\n", obj_name);
-			add_to(text_section, get_obj);
-			add_to(text_section, "ldr r4, [r4]\n");
-			
-			char calc_offset[80];
-			sprintf(calc_offset, "add r4, r4, =#%d\n", offset);
-			add_to(text_section, calc_offset);
-
-			add_to(text_section, "ldr r0, [r4]\n"); //Reading the value stored.
-			break;*/
 		}
 		case ASGN: return 0;
                 case UNDEF: return 1;
