@@ -841,13 +841,13 @@ ldr r0, =#5
 mov r1, r0
 ldr r4, =obj
 ldr r4, [r4]
-add r0, r0, r1
 ldr r1, =#12
+add r0, r0, r1
 ldr r1, [r0]
 ldr r4, =obj
 ldr r4, [r4]
-add r0, r0, r1
 ldr r1, =#12
+add r0, r0, r1
 ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_int_format
