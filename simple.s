@@ -91,6 +91,9 @@ _t54: .word 0
 _strlt17: .asciz "Hey from the other side!"
 _t55: .word 0
 _strlt18: .asciz "Hey from the other side!"
+a: .word 345
+a: .word 345
+_strlt19: .asciz "Called doSomething()"
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
 println_str_format: .asciz "%s\n"
@@ -98,10 +101,10 @@ print_str_format: .asciz "%s"
 bool_true: .asciz "true"
 bool_false: .asciz "false"
 .section .text
-.global main
-.balign 4
 main: 
 push {lr}
+.global main
+.balign 4
 ldr r4, =args
 str r1, [r4]
 push {fp}
@@ -826,12 +829,12 @@ mov r1, r0
 ldr r0, =println_str_format
 bl printf
 ldr r4, =obj
-ldr r0, =#16
+ldr r0, =#20
 bl malloc
 str r0, [r4]
-ldr r0, =#16
+ldr r0, =#20
 bl malloc
-ldr r0, =#16
+ldr r0, =#20
 bl malloc
 mov r4, r0
 str r4, [fp, #-4]
@@ -844,7 +847,7 @@ ldr r0, =#5
 mov r2, r0
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#16
+ldr r1, =#20
 add r0, r4, r1
 str r2, [r0]
 ldr r0, =_strlt17
@@ -854,12 +857,12 @@ ldr r0, =_strlt18
 mov r2, r0
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#8
+ldr r1, =#12
 add r0, r4, r1
 str r2, [r0]
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#16
+ldr r1, =#20
 add r0, r4, r1
 ldr r0, [r0]
 mov r1, r0
@@ -867,12 +870,44 @@ ldr r0, =print_int_format
 bl printf
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#8
+ldr r1, =#12
 add r0, r4, r1
 ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
+bl _obj_doSomething
 mov sp, fp
 pop {fp}
+b __end__
+_AnotherClass_doSomething:
+push {fp}
+mov fp, sp
+sub sp, sp, #24
+ldr r2, =a
+ldr r2, [r2]
+str r2, [fp, #-8]
+ldr r2, =property
+ldr r2, [r2]
+str r2, [fp, #-12]
+ldr r2, =size
+ldr r2, [r2]
+str r2, [fp, #-16]
+ldr r2, =another
+ldr r2, [r2]
+str r2, [fp, #-20]
+ldr r2, =doSomething
+ldr r2, [r2]
+str r2, [fp, #-24]
+ldr r0, [fp, #-8]
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
+ldr r0, =_strlt19
+mov r1, r0
+ldr r0, =println_str_format
+bl printf
+mov sp, fp
+pop {fp}
+__end__:
 pop {pc}
