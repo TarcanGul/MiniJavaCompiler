@@ -838,12 +838,12 @@ mov r4, r0
 str r4, [fp, #-4]
 ldr r0, =#5
 ldr r0, =#5
-mov r1, r0
+mov r2, r0
 ldr r4, =obj
 ldr r4, [r4]
 ldr r1, =#12
 add r0, r4, r1
-ldr r1, [r0]
+ldr r2, [r0]
 ldr r4, =obj
 ldr r4, [r4]
 ldr r1, =#12
