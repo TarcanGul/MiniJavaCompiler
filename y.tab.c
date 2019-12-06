@@ -4425,9 +4425,9 @@ void s_asgn(void * abstract_arg)
     expr_codegen(right_value);
     if(left_value -> operation == IN) //It is a property or method.
     {
-	add_to(text_section, "mov r1, r0\n"); //Moving result value to r1 because it will get overwritten otherwise.
-	prop_codegen(left_value);
-        add_to(text_section, "ldr r1, [r0]\n");
+	add_to(text_section, "mov r2, r0\n"); //Moving result value to r1 because it will get overwritten otherwise.
+	prop_codegen(left_value); //Uses r0 and r1.
+        add_to(text_section, "str r2, [r0]\n");
 	return;
     }
 
