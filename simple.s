@@ -843,7 +843,7 @@ ldr r4, =obj
 ldr r4, [r4]
 ldr r1, =#12
 add r0, r4, r1
-ldr r2, [r0]
+str r2, [r0]
 ldr r4, =obj
 ldr r4, [r4]
 ldr r1, =#12
