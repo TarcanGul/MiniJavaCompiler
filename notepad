@@ -28,12 +28,12 @@ You know how command line would work. Write the code you wrote.
 Dive into 1D arrays and make it work both (hopefully by Friday).
 
 1D arrays => s_decl, s_asgn, array entries in expr_codegen
-Decl done, now handle assigning and getting value. Start s_asgn and open the slides. Then cmd args
-The s_asgn doesn't seem right. 
-INT ARRAY WORKS. GO WITH OTHER TYPES.
-Objects
+NEXT: Objects. Should be similar to arrays. Malloc properties and method. Method is also a variable.
+
+Handle different types of assignments.
+GO TO Line 2950 for task.
+In assign, handle if left node is IN. generate code for IN where in r0 we get the resulting address already. 
 Method call, Integer.parseInt
-Class
 
 Reg allocation
 

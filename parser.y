@@ -291,6 +291,7 @@ Expression :
 		struct exp_node * node = (struct exp_node *) malloc(sizeof(struct exp_node));
 		node->type = CLASS;
 		node->associated_class = $2;
+		node->is_constructed = 1; //Has new operator.
 		node->is_array = 0;
 		node->is_array_entry = 0;
 		node->is_id = 0;
@@ -402,6 +403,24 @@ ClassDecl : K_CLASS ID Opt_Inheritance LEFT_BRACE VarDeclList MethodDeclList RIG
   		llist_init(name_table);
 		cl_scope->parent = NULL;
 		cl_scope->name_table = name_table;
+		if($5 != NULL)
+		{
+			struct var_decl_t * it_var = $5->id_list;
+			while(it_var)
+			{
+				ListNode * node = (ListNode *) malloc(sizeof(ListNode));
+				node->value = it_var->id;
+				//Determine value before adding to symbol table.
+				//traverse(it_var->value);
+				node->type = it_var->type;
+				node->class_id = $5->class_id;
+				node->symbol_type = PROPERTY;
+				add_node_to_table(cl_scope->name_table, node);
+				it_var = it_var->next;
+			}
+
+		}
+
 		//Add every method to the name table of the class.
 		if($6 != NULL)
 		{
@@ -410,7 +429,7 @@ ClassDecl : K_CLASS ID Opt_Inheritance LEFT_BRACE VarDeclList MethodDeclList RIG
 			{
 				ListNode * node = (ListNode *) malloc(sizeof(ListNode));
 				node->value = it->id;
-				node->real_value = it;
+				//node->real_value = it;
 				node->symbol_type = METHOD;
 				node->type = it->type->type;
 				node->class_id = it->type->class_id;
@@ -421,24 +440,7 @@ ClassDecl : K_CLASS ID Opt_Inheritance LEFT_BRACE VarDeclList MethodDeclList RIG
 			}
 
 		}
-		if($5 != NULL)
-		{
-			struct var_decl_t * it_var = $5->id_list;
-			while(it_var)
-			{
-				ListNode * node = (ListNode *) malloc(sizeof(ListNode));
-				node->value = it_var->id;
-				//Determine value before adding to symbol table.
-				traverse(it_var->value);
-				node->real_value = it_var->value->current_value;
-				node->type = it_var->type;
-				node->class_id = $5->class_id;
-				node->symbol_type = PROPERTY;
-				add_node_to_table(cl_scope->name_table, node);
-				it_var = it_var->next;
-			}
 
-		}
 
 		//cl->methods = $6;
 		//cl->properties = $5;
@@ -1640,9 +1642,9 @@ int traverse(struct exp_node * root)
     }*/
     if(root->is_id)
     {
-	     ListNode * node =  llist_find_node(current_scope->name_table, root->data.var_name);
-	     root->current_value = node->real_value;
-	     root->type = node->type;
+	     //ListNode * node =  llist_find_node(current_scope->name_table, root->data.var_name);
+	     //root->current_value = node->real_value;
+	     //root->type = node->type;
 
 	     return 0;
     }
@@ -2368,7 +2370,7 @@ void s_asgn(void * abstract_arg)
   struct exp_node * left_value = arg->data.left;
   struct exp_node * right_value = arg->data.right;
   assert(right_value != NULL);
-  assert(left_value->is_id || left_value->is_array_entry);
+  //assert(left_value->is_id || left_value->is_array_entry);
   if(right_value->is_array)
   {
      allocate_array(right_value);
@@ -2421,7 +2423,17 @@ void s_asgn(void * abstract_arg)
   }
   else
   {
-    update_var(current_scope->name_table, left_value->data.var_name, right_value->current_value);
+    //update_var(current_scope->name_table, left_value->data.var_name, right_value->current_value);
+
+    expr_codegen(right_value);
+    if(left_value -> operation == IN) //It is a property or method.
+    {
+	add_to(text_section, "mov r1, r0\n"); //Moving result value to r1 because it will get overwritten otherwise.
+	prop_codegen(left_value);
+        add_to(text_section, "ldr r1, [r0]\n");
+	return;
+    }
+
     ListNode * var_node = llist_find_node(current_scope->name_table, left_value->data.var_name);
     //TODO: Expand to other types.
     switch(var_node->type)
@@ -2443,12 +2455,19 @@ void s_asgn(void * abstract_arg)
     			sprintf(load, "mov r4, r0\n");
     			add_to(text_section, load);
 		}
-
+		break;
 
 	}
 	case STR:
 	{
 		add_to(text_section, "mov r4, r0\n");
+		break;
+	}
+	case CLASS:
+	{
+		//expr_codegen should handle this. r0 has class address. 
+		add_to(text_section, "mov r4, r0\n");
+		break;
 	}
     }
 
@@ -2458,6 +2477,49 @@ void s_asgn(void * abstract_arg)
     add_to(text_section, store);
   }
 }
+
+char * find_prop_name(struct exp_node * node)
+{
+  if(node == NULL) return NULL;
+  if(node->operation != IN)
+  {
+	return node->data.var_name;
+  }
+  struct exp_node * it = node;
+  while(it->data.left)
+  {
+	it = it->data.left;
+  }
+  return it->data.var_name;
+}
+
+
+//After code generated, the address will be in r0.
+void prop_codegen(struct exp_node * node)
+{
+  char * var_name = node->data.left->data.var_name;
+  char * prop_name = find_prop_name(node->data.right);
+  ListNode * class_var_node = llist_find_node(current_scope->name_table, var_name);
+  class_t * info = get_class_info(class_var_node->class_id);
+
+  ListNode * var_node = llist_find_node(info->scope->name_table, prop_name);
+
+  //Find offset of prop_name
+  char read_var[80];
+  sprintf(read_var, "ldr r4, =%s\n", var_name);
+  add_to(text_section, read_var);
+  add_to(text_section, "ldr r4, [r4]\n"); //Getting base address.
+  int prop_offset = var_node->offset;
+  char add_offset[80];
+  sprintf(add_offset, "ldr r1, =#%d\n", prop_offset);
+  //Now the address is in r0.
+  add_to(text_section, add_offset);
+  add_to(text_section, "add r0, r4, r1\n");
+
+
+}
+
+
 
 void s_decl(void * abstract_arg)
 {
@@ -2485,6 +2547,7 @@ void s_decl(void * abstract_arg)
     }
     else
     {
+
       if(assign->is_array)
       {
 	if(construct_name_table)
@@ -2493,10 +2556,10 @@ void s_decl(void * abstract_arg)
 	}	
 	else
 	{
-
 		char var_decl[20 + strlen(id_leaf->data.var_name)];
 		sprintf(var_decl, "%s: .word 0\n", id_leaf->data.var_name);
 		add_to(data_section, var_decl);
+
 		allocate_array(assign);
 
 		char command[80];
@@ -2514,13 +2577,37 @@ void s_decl(void * abstract_arg)
       {
         if(assign->type == CLASS && id_leaf->type == CLASS)
 	{
-		ListNode * node = (ListNode *) malloc(sizeof(ListNode));
-		node->value = id_leaf->data.var_name;
-		node->type = CLASS;
-		node->class_id = assign->associated_class;
-		id_leaf->associated_class = assign->associated_class;
-		node->real_value = assign->current_value; //Can be null.
-		add_node_to_table(current_scope->name_table, node);	
+		if(construct_name_table)
+		{
+			ListNode * node = (ListNode *) malloc(sizeof(ListNode));
+			node->value = id_leaf->data.var_name;
+			node->type = CLASS;
+			node->class_id = assign->associated_class;
+			id_leaf->associated_class = assign->associated_class;
+			node->real_value = assign->current_value; //Can be null.
+			add_node_to_table(current_scope->name_table, node);	
+		}
+		else
+		{
+			char var_decl[20 + strlen(id_leaf->data.var_name)];
+			sprintf(var_decl, "%s: .word 0\n", id_leaf->data.var_name);
+			add_to(data_section, var_decl);
+
+			ListNode * node = llist_find_node(current_scope->name_table, id_leaf->data.var_name);
+			char get_var[80];
+			sprintf(get_var, "ldr r4, =%s\n", node->value);	
+			add_to(text_section, get_var);
+			
+			class_t * curr_class = get_class_info(node->class_id);
+			int obj_size = calc_class_size(curr_class);
+				
+			char put_size[80];
+			sprintf(put_size, "ldr r0, =#%d\n", obj_size);
+			add_to(text_section, put_size);
+			add_to(text_section, "bl malloc\n");
+			add_to(text_section, "str r0, [r4]\n"); //Putting obj into its base address.	
+		}
+
 	}
 	else
 	{
@@ -2617,6 +2704,7 @@ void s_invoke(void * abstract_arg)
   assert(method_info != NULL);
   execute(method_info->statement);*/
 }
+
 
 //Fake executes to see if there is any error.
 int traverse_for_errors(stmt_node_t * list)
@@ -2892,7 +2980,14 @@ void expr_codegen(struct exp_node * node)
 {
   if(node == NULL) return;
 
-  if(node->is_leaf)
+  if(node->operation == IN) //We have to catch properties first. 
+  {
+	//Put address to r0.
+        prop_codegen(node);
+	add_to(text_section, "ldr r0, [r0]\n");
+	return;
+  }
+  else if(node->is_leaf)
   {
   	if(node->is_id)
   	{
@@ -2956,6 +3051,21 @@ void expr_codegen(struct exp_node * node)
 		    //add_to(text_section, "ldr r0, [r0]\n");
 		    break;
 	 	  }
+		  case CLASS:
+		  {
+			if(node->is_constructed)
+			{	
+				class_t * curr_class = get_class_info(node->associated_class);
+				int obj_size = calc_class_size(curr_class);
+					
+				char put_size[80];
+				sprintf(put_size, "ldr r0, =#%d\n", obj_size);
+				add_to(text_section, put_size);
+				add_to(text_section, "bl malloc\n");
+				//r0 has class address location
+			}	
+			//else might be method call. id is already handled in first if. 		
+		  }
 		}
 	}
 
@@ -3086,7 +3196,31 @@ void expr_codegen(struct exp_node * node)
 			break;
 		case IN: 
 		{
-			break;
+			assert(0);
+			/*struct exp_node * left = node->data.left;
+			struct exp_node * right = node->data.right;
+			expr_codegen(right);
+			//left burada orijinal id, right ise property.
+			assert(left->is_id);
+			char * obj_name = left->data.var_name;
+			char * property_name = right->data.var_name;
+			class_t * class_info = get_class_info(right->associated_class);
+			ListNode * prop_node = llist_find_node(class_info->scope->name_table, right->data.var_name);	
+			//Get only offset info from the name table.
+			int offset = prop_node->offset;
+			//TODO: Continue from here.
+			
+			char get_obj[80];
+			sprintf(get_obj, "ldr r4, =%s\n", obj_name);
+			add_to(text_section, get_obj);
+			add_to(text_section, "ldr r4, [r4]\n");
+			
+			char calc_offset[80];
+			sprintf(calc_offset, "add r4, r4, =#%d\n", offset);
+			add_to(text_section, calc_offset);
+
+			add_to(text_section, "ldr r0, [r4]\n"); //Reading the value stored.
+			break;*/
 		}
 		case ASGN: return 0;
                 case UNDEF: return 1;
@@ -3141,6 +3275,32 @@ int calc_method_size(stmt_node_t * list)
   }
   //For every variable, update their offset.
   return current_offset;
+}
+
+int calc_class_size(class_t * class)
+{
+  LinkedList * name_table = class->scope->name_table;
+  ListNode * it = name_table->head;
+  int current_offset = 4;
+  while(it)
+  {
+    switch(it->type)
+    {
+	case BOOL:
+	case INT:
+	case STR:
+	        current_offset += 4;
+		break;
+	case CLASS:
+	{
+		//Find class node by class name metodu yaz.
+		//current_offset += calc_class_size(find)
+	}
+    }
+    it->offset = current_offset;
+    it = it->next;
+  }
+  return current_offset;	
 }
 
 //Puts the variables in the respective offsets in the assembly code.

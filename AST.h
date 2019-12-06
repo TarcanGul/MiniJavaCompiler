@@ -48,6 +48,7 @@ struct exp_node
   int is_property;
   int is_method;
   int has_temp_var;
+  int is_constructed; //Having "new Object()" where we have to malloc. 
   //Length of each dimension. 0 means 1st dimension ans so on.
   union data
   {
@@ -71,6 +72,7 @@ struct exp_node
   void * current_value;
   char * associated_class;
   char * temp_var;
+  char * assembly_code;
   struct exp_node * next;
 };
 

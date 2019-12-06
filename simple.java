@@ -73,5 +73,21 @@ class simple {
 	    array3[2] = " world!";
 	    System.out.println(array3[1]);
 	    System.out.println(array3[2]);
+
+	    AnotherClass obj = new AnotherClass();
+	    AnotherClass obj2;
+	    AnotherClass obj3;
+
+	    obj2 = new AnotherClass();
+	    obj3 = obj;	    
+
+	    obj.property = 5;
+	    System.out.println(obj.property);
     }
+}
+
+class AnotherClass
+{
+  int property;
+  int size;
 }
