@@ -100,8 +100,6 @@ print_str_format: .asciz "%s"
 bool_true: .asciz "true"
 bool_false: .asciz "false"
 .section .text
-main: 
-push {lr}
 .global main
 .balign 4
 ldr r4, =args
@@ -886,18 +884,12 @@ sub sp, sp, #24
 ldr r2, =ab
 ldr r2, [r2]
 str r2, [fp, #-8]
-ldr r2, =property
-ldr r2, [r2]
-str r2, [fp, #-12]
 ldr r2, =size
 ldr r2, [r2]
-str r2, [fp, #-16]
-ldr r2, =another
-ldr r2, [r2]
-str r2, [fp, #-20]
+str r2, [fp, #-12]
 ldr r2, =doSomething
 ldr r2, [r2]
-str r2, [fp, #-24]
+str r2, [fp, #-20]
 ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =println_int_format
