@@ -105,7 +105,7 @@ bool_false: .asciz "false"
 main:
 ldr r4, =args
 str r1, [r4]
-push {fp}
+push {fp, lr}
 mov fp, sp
 sub sp, sp, #60
 ldr r2, =obj3
@@ -876,10 +876,10 @@ ldr r0, =println_str_format
 bl printf
 bl _AnotherClass_doSomething
 mov sp, fp
-pop {fp}
+pop {fp, sp}
 b __end__
 _AnotherClass_doSomething:
-push {fp}
+push {fp, lr}
 mov fp, sp
 sub sp, sp, #24
 ldr r2, =ab
@@ -894,6 +894,6 @@ mov r1, r0
 ldr r0, =println_str_format
 bl printf
 mov sp, fp
-pop {fp}
+pop {fp, sp}
 __end__:
 pop {pc}
