@@ -14,6 +14,7 @@ struct scope;
 struct scope_list;
 struct method;
 struct class_s;
+struct exp_list;
 
 typedef enum label_purpose
 {
@@ -59,6 +60,7 @@ struct exp_node
     struct array_entry * array_entry;
     char * var_name;
     void * value;
+    struct exp_list * arg_list;
   } data;
   //Keeping state of current value.
   void * current_value;

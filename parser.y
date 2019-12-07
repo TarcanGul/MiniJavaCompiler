@@ -434,6 +434,21 @@ ClassDecl : K_CLASS ID Opt_Inheritance LEFT_BRACE VarDeclList MethodDeclList RIG
 				node->type = it->type->type;
 				node->class_id = it->type->class_id;
 				node->arg_list = it->arg_list;
+				if(it->arg_list != NULL)
+				{
+					argument_t * arg_it = it->arg_list->head;
+					while(arg_it)
+					{
+						ListNode * arg_node = (ListNode *) malloc(sizeof(ListNode));
+						arg_node->value = arg_it->id;
+						arg_node->real_value = NULL;
+						arg_node->type = arg_it->type->type;	
+						arg_node->symbol_type = ARG;
+						add_node_to_table(it->statement->scope->name_table, arg_node);
+						arg_it = arg_it->next;
+					}
+
+				}
 				add_node_to_table(cl_scope->name_table, node);
 				//Update parent scope.
 				it->statement->scope->parent = cl_scope;
@@ -686,7 +701,11 @@ Opt_ExpressionList :
 	
 ExpressionList : Expression ExpressionTailList
 {
-	$1->next = $2->head;
+	if($2 != NULL)
+	{
+		$1->next = $2->head;
+	}
+
 	exp_list_t * list = (exp_list_t *) malloc(sizeof(exp_list_t));
 	list->head = $1;
 	$$ = list;
@@ -700,6 +719,7 @@ ExpressionTailList :
 		{
 			exp_list_t * list = (exp_list_t *) malloc(sizeof(exp_list_t));
 			list->head = $2;
+			$$ = list;
 		}
 		else
 		{
@@ -709,6 +729,7 @@ ExpressionTailList :
 				it=it->next;
 			}
 			it->next = $2;
+			$$ = $1;
 		}
 	}
 	| /*empty*/ {$$ = NULL;};
@@ -723,7 +744,10 @@ Opt_FormalList : FormalList {$$ = $1;} | /*empty*/ {$$ = NULL;};
 FormalList  : Type ID FormalListTailList
 {
 	argument_t * arg = (argument_t *) malloc(sizeof(argument_t));
-	arg->next = $3->head;
+	if($3 != NULL)
+		arg->next = $3->head;
+	arg->type = $1;
+	arg->id = $2;
 	argument_list_t * list = (argument_list_t *) malloc(sizeof(argument_list_t));
 	list->head = arg;
 	$$ = list;
@@ -1004,6 +1028,7 @@ MethodCall : LeftValue LEFT_PAR Opt_ExpressionList RIGHT_PAR
 		leaf->data.left = $1;
 		if($3 != NULL)
 			leaf->data.right = $3->head;
+		leaf->operation = UNDEF;
   		leaf->is_leaf = 0;
   		leaf->is_id = 1;
   		leaf->is_array = 0;
@@ -1416,7 +1441,7 @@ int setup_execute(stmt_node_t * current, int is_main)
 	}
 	else
 	{
-		add_to(text_section, "pop {fp, sp}\n");
+		add_to(text_section, "pop {fp, pc}\n");
 	}
 
 
@@ -2502,7 +2527,7 @@ char * find_prop_name(struct exp_node * node)
 	return node->data.var_name;
   }
   struct exp_node * it = node;
-  while(it->data.left)
+  while(it->operation == IN && it->data.left)
   {
 	it = it->data.left;
   }
@@ -3014,7 +3039,47 @@ void expr_codegen(struct exp_node * node)
   if(node->is_method)
   {
 	//Left is calling property and right is arg_list.
-	struct exp_node * left = node->data.left;
+	struct exp_node * left = node->data.left; //Holds the in node. Has the method name
+	struct exp_node * arg_list_head = node->data.right;
+	char * method_name = find_prop_name(left->data.right);
+	char * obj_name = find_prop_name(left);
+	if(arg_list_head != NULL) //Catching arguments.
+	{
+		//In expression node, we have the given arguments.
+		struct exp_node * arg_it = arg_list_head;
+		ListNode * method_node = NULL;
+		if(obj_name == NULL)//Method is called inside the class. In that case current scope should have it.
+		{
+			method_node = llist_find_node(current_scope->name_table, method_name);
+		}
+		else
+		{
+			ListNode * instance_node = llist_find_node(current_scope->name_table, obj_name);
+			class_t * class_info = get_class_info(instance_node->class_id);
+			method_node = llist_find_node(class_info->scope->name_table, method_name);
+		}
+		assert(method_node != NULL);
+	        argument_t * formal_it = method_node->arg_list->head;	
+		char * registers[] = {"r5", "r6", "r7", "r8"};
+		int i = 0;
+		while(formal_it)
+		{
+			//arg_it will have current value
+			char wr_to_reg[80];
+			expr_codegen(arg_it);
+			sprintf(wr_to_reg, "mov %s, r0\n", registers[i++]);
+			add_to(text_section, wr_to_reg);
+			arg_it = arg_it->next;
+			formal_it = formal_it->next; 
+		}
+		for(int j = i - 1; i >= 0; i--)
+		{
+			//Writing to registers.
+			char wr_to_reg[80];
+			sprintf(wr_to_reg, "mov r%d, r%d\n", i, i+5);
+			add_to(text_section, wr_to_reg);
+		}
+	}
 	prop_codegen(left);
 	//Result should be in r0.
   }
@@ -3032,6 +3097,7 @@ void expr_codegen(struct exp_node * node)
   	{
 		ListNode * entry = llist_find_node(current_scope->name_table, node->data.var_name);
 		symbol_codegen(entry);
+		node->type = entry->type;
   	}
 	else if(node->is_array_entry)
 	{
@@ -3192,6 +3258,7 @@ void expr_codegen(struct exp_node * node)
 					add_to(text_section, "bl strcpy\n");
 					add_to(text_section, "mov r1, r5\n");
 					add_to(text_section, "bl strcat\n");
+					
 					break;
 				}
 			}
@@ -3243,6 +3310,7 @@ void expr_codegen(struct exp_node * node)
 		default: /*type_error();*/ break;	
 	}
 
+	node->type = left->type; //Update type.
 	sprintf(store_temp, "ldr r4, =%s\n", var);
 	add_to(text_section, store_temp);
 	char store[50];
@@ -3325,20 +3393,32 @@ void method_first_codegen(stmt_node_t * list)
   //Iterate over list's name table. 
   LinkedList * name_table = list->scope->name_table;
   ListNode * it = name_table->head;
+  int cor_register = 5; //Corresponding arg register which starts from r5. 
   while(it)
   {
     int current_offset = it->offset;
     if(it->symbol_type == PROPERTY || it->symbol_type == METHOD)
     {
-	it = it->next; //We don't have to write everything
+	it = it->next; //We don't have to write anything
 	continue;	
     }
     char command[50];
-    sprintf(command, "ldr r2, =%s\n", it->value); 
-    add_to(text_section, command);
-    //We are storing the value in stack, thus we have to dereference the address before storing.
-    //YOU MIGHT NOT DO THIS IN STRING VARIABLES.
-    add_to(text_section, "ldr r2, [r2]\n");
+    if(it->symbol_type == ARG)
+    {
+    	sprintf(command, "mov r2, r%d\n", cor_register++); //Hopefully the first argument added the first. 
+    	add_to(text_section, command);
+
+    }
+    else
+    {
+    	sprintf(command, "ldr r2, =%s\n", it->value); 
+    	add_to(text_section, command);
+    	//We are storing the value in stack, thus we have to dereference the address before storing.
+    	add_to(text_section, "ldr r2, [r2]\n");
+
+    }
+
+
     char command2[50];
     sprintf(command2, "str r2, [fp, #%d]\n", -1 * current_offset); 
     add_to(text_section, command2);
@@ -3533,6 +3613,7 @@ int main(int argc, char** argv)
      sprintf(args_decl, "%s: .word 0\n", args_node->value);
      add_to(data_section, args_decl);
      add_to(text_section, "main:\n");
+     add_to(text_section, "push {lr}\n");
      char args_call[80];
      sprintf(args_call, "ldr r4, =%s\n", args_node->value);
      add_to(text_section, args_call);

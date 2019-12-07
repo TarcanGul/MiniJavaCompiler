@@ -57,6 +57,7 @@ struct exp_node * create_exp_node(enum op operation, struct exp_node * left, str
   new_node->data.right = right;
   new_node->is_leaf = 0;
   new_node->has_temp_var = 0;
+  new_node->is_method = 0;
   return new_node;
 }
 

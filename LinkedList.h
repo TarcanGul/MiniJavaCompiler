@@ -2,7 +2,7 @@
 // Data structs for a list of ints
 
 typedef enum type {INT, STR, BOOL, CLASS, UNKNOWN};
-typedef enum symbol_type {VAR, METHOD, PROPERTY};
+typedef enum symbol_type {VAR, METHOD, PROPERTY, ARG};
 
 
 //Type info is the struct for Type and PrimeType. Can also tell if a type is array. 
@@ -37,6 +37,7 @@ struct ListNode {
 	enum symbol_type symbol_type;
 	argument_list_t * arg_list; //For methods.
 	int offset;
+	int reg_number; //For arguments.
 };
 
 typedef struct ListNode ListNode;

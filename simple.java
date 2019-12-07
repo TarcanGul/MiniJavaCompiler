@@ -87,6 +87,7 @@ class simple {
 	    System.out.println(obj.another);
 
   	    obj.doSomething(); //Basic method call.
+	    obj.add(23, 42);
     }
 }
 
@@ -102,5 +103,11 @@ class AnotherClass
 	int ab = 345;
 	System.out.println(ab);
 	System.out.println("Called doSomething()");
+  }
+
+  public int add(int aa, int bb)
+  {
+	System.out.print("Addition result: ");
+	System.out.println(aa + bb);
   }
 }
