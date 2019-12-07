@@ -92,14 +92,17 @@ _t54: .word 0
 _strlt18: .asciz "Hey from the other side!"
 _t55: .word 0
 _strlt19: .asciz "Hey from the other side!"
+_strlt20: .asciz "heaeae"
+resu: .word 0
+_strlt21: .asciz "Resu: "
 _t56: .word 0
 v: .word 0
 _t57: .word 0
 _t58: .word 0
-_strlt20: .asciz "Addition result: "
+_strlt22: .asciz "Addition result: "
 _t59: .word 0
 ab: .word 345
-_strlt21: .asciz "Called doSomething()"
+_strlt23: .asciz "Called doSomething()"
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
 println_str_format: .asciz "%s\n"
@@ -115,58 +118,61 @@ ldr r4, =args
 str r1, [r4]
 push {fp}
 mov fp, sp
-sub sp, sp, #60
-ldr r2, =obj3
-ldr r2, [r2]
-str r2, [fp, #-4]
-ldr r2, =obj2
-ldr r2, [r2]
-str r2, [fp, #-4]
-ldr r2, =obj
-ldr r2, [r2]
-str r2, [fp, #-4]
-ldr r2, =array3
+sub sp, sp, #76
+ldr r2, =resu
 ldr r2, [r2]
 str r2, [fp, #-8]
-ldr r2, =array2
+ldr r2, =obj3
 ldr r2, [r2]
 str r2, [fp, #-12]
-ldr r2, =array
+ldr r2, =obj2
 ldr r2, [r2]
 str r2, [fp, #-16]
-ldr r2, =b
+ldr r2, =obj
 ldr r2, [r2]
 str r2, [fp, #-20]
-ldr r2, =a
+ldr r2, =array3
 ldr r2, [r2]
 str r2, [fp, #-24]
-ldr r2, =i
+ldr r2, =array2
 ldr r2, [r2]
 str r2, [fp, #-28]
-ldr r2, =concat
+ldr r2, =array
 ldr r2, [r2]
 str r2, [fp, #-32]
-ldr r2, =hello
+ldr r2, =b
 ldr r2, [r2]
 str r2, [fp, #-36]
-ldr r2, =abra
+ldr r2, =a
 ldr r2, [r2]
 str r2, [fp, #-40]
-ldr r2, =bale
+ldr r2, =i
 ldr r2, [r2]
 str r2, [fp, #-44]
-ldr r2, =z
+ldr r2, =concat
 ldr r2, [r2]
 str r2, [fp, #-48]
-ldr r2, =y
+ldr r2, =hello
 ldr r2, [r2]
 str r2, [fp, #-52]
-ldr r2, =x
+ldr r2, =abra
 ldr r2, [r2]
 str r2, [fp, #-56]
-ldr r2, =args
+ldr r2, =bale
 ldr r2, [r2]
 str r2, [fp, #-60]
+ldr r2, =z
+ldr r2, [r2]
+str r2, [fp, #-64]
+ldr r2, =y
+ldr r2, [r2]
+str r2, [fp, #-68]
+ldr r2, =x
+ldr r2, [r2]
+str r2, [fp, #-72]
+ldr r2, =args
+ldr r2, [r2]
+str r2, [fp, #-76]
 mov r0, #6
 bl malloc
 ldr r4, =hello
@@ -195,7 +201,7 @@ mov r1, #0
 strb r1, [r4, #5]
 ldr r4, =hello
 ldr r4, [r4]
-str r4, [fp, #-36]
+str r4, [fp, #-52]
 mov r0, #8
 bl malloc
 ldr r4, =concat
@@ -232,16 +238,16 @@ mov r1, #0
 strb r1, [r4, #7]
 ldr r4, =concat
 ldr r4, [r4]
-str r4, [fp, #-32]
-ldr r0, [fp, #-56]
+str r4, [fp, #-48]
+ldr r0, [fp, #-72]
 mov r1, r0
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 mul r0, r0, r1
 ldr r4, =_t0
 str r0, [r4]
 ldr r4, =_t0
 ldr r1, [r4]
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 mov r1, r0
 ldr r0, =#1
 sub r0, r1, r0
@@ -260,15 +266,15 @@ ldr r4, =_t3
 str r0, [r4]
 ldr r4, =_t3
 ldr r0, [r4]
-ldr r0, [fp, #-56]
+ldr r0, [fp, #-72]
 mov r1, r0
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 mul r0, r0, r1
 ldr r4, =_t5
 str r0, [r4]
 ldr r4, =_t5
 ldr r1, [r4]
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 mov r1, r0
 ldr r0, =#1
 sub r0, r1, r0
@@ -286,12 +292,12 @@ add r0, r0, r1
 ldr r4, =_t8
 str r0, [r4]
 mov r4, r0
-str r4, [fp, #-48]
+str r4, [fp, #-64]
 ldr r0, =_strlt0
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
-ldr r0, [fp, #-36]
+ldr r0, [fp, #-52]
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
@@ -300,10 +306,10 @@ ldr r4, =_strlt1
 mov r0, r4
 ldr r0, =_strlt2
 mov r4, r0
-str r4, [fp, #-36]
-ldr r0, [fp, #-36]
+str r4, [fp, #-52]
+ldr r0, [fp, #-52]
 mov r1, r0
-ldr r0, [fp, #-32]
+ldr r0, [fp, #-48]
 mov r4, r1
 mov r5, r0
 mov r0, r4
@@ -326,7 +332,7 @@ str r0, [r4]
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
-ldr r0, [fp, #-36]
+ldr r0, [fp, #-52]
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
@@ -334,7 +340,7 @@ ldr r0, =_strlt4
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
-ldr r0, [fp, #-56]
+ldr r0, [fp, #-72]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
@@ -342,7 +348,7 @@ ldr r0, =_strlt5
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 mov r1, r0
 ldr r0, =#2
 mul r0, r0, r1
@@ -359,7 +365,7 @@ ldr r0, =println_int_format
 bl printf
 ldr r0, =#4
 mov r1, r0
-ldr r0, [fp, #-56]
+ldr r0, [fp, #-72]
 sub r0, r1, r0
 ldr r4, =_t13
 str r0, [r4]
@@ -373,7 +379,7 @@ ldr r4, =_t14
 ldr r0, [r4]
 ldr r0, =#4
 mov r1, r0
-ldr r0, [fp, #-56]
+ldr r0, [fp, #-72]
 sub r0, r1, r0
 ldr r4, =_t16
 str r0, [r4]
@@ -384,16 +390,16 @@ mul r0, r0, r1
 ldr r4, =_t17
 str r0, [r4]
 mov r4, r0
-str r4, [fp, #-48]
+str r4, [fp, #-64]
+ldr r0, [fp, #-72]
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
+ldr r0, [fp, #-64]
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
 ldr r0, [fp, #-56]
-mov r1, r0
-ldr r0, =println_int_format
-bl printf
-ldr r0, [fp, #-48]
-mov r1, r0
-ldr r0, =println_int_format
-bl printf
-ldr r0, [fp, #-40]
 cmp r0, #1
 bne _false0
 _true0:
@@ -439,7 +445,7 @@ ldr r0, =print_str_format
 ldr r1, =bool_false
 bl printf
 _endif1:
-ldr r0, [fp, #-28]
+ldr r0, [fp, #-44]
 mov r1, r0
 ldr r0, =#0
 cmp r1, r0
@@ -529,7 +535,7 @@ ldr r0, =_strlt6
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
-ldr r0, [fp, #-48]
+ldr r0, [fp, #-64]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
@@ -537,9 +543,9 @@ ldr r0, =_strlt7
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
-ldr r0, [fp, #-56]
+ldr r0, [fp, #-72]
 mov r1, r0
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 add r0, r0, r1
 ldr r4, =_t26
 str r0, [r4]
@@ -550,15 +556,15 @@ ldr r0, =_strlt8
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
-ldr r0, [fp, #-56]
+ldr r0, [fp, #-72]
 mov r1, r0
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 mul r0, r0, r1
 ldr r4, =_t27
 str r0, [r4]
 ldr r4, =_t27
 ldr r1, [r4]
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 mov r1, r0
 ldr r0, =#1
 sub r0, r1, r0
@@ -572,31 +578,31 @@ str r0, [r4]
 mov r1, r0
 ldr r0, =print_int_format
 bl printf
-ldr r0, [fp, #-56]
+ldr r0, [fp, #-72]
 mov r1, r0
-ldr r0, [fp, #-24]
+ldr r0, [fp, #-40]
 add r0, r0, r1
 ldr r4, =_t30
 str r0, [r4]
 ldr r4, =_t30
 ldr r0, [r4]
-ldr r0, [fp, #-56]
+ldr r0, [fp, #-72]
 mov r1, r0
-ldr r0, [fp, #-24]
+ldr r0, [fp, #-40]
 add r0, r0, r1
 ldr r4, =_t32
 str r0, [r4]
 mov r4, r0
-str r4, [fp, #-56]
-ldr r0, [fp, #-56]
+str r4, [fp, #-72]
+ldr r0, [fp, #-72]
 mov r1, r0
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 mul r0, r0, r1
 ldr r4, =_t33
 str r0, [r4]
 ldr r4, =_t33
 ldr r1, [r4]
-ldr r0, [fp, #-20]
+ldr r0, [fp, #-36]
 mov r1, r0
 ldr r0, =#10
 sub r0, r1, r0
@@ -615,15 +621,15 @@ ldr r4, =_t36
 str r0, [r4]
 ldr r4, =_t36
 ldr r0, [r4]
-ldr r0, [fp, #-56]
+ldr r0, [fp, #-72]
 mov r1, r0
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 mul r0, r0, r1
 ldr r4, =_t38
 str r0, [r4]
 ldr r4, =_t38
 ldr r1, [r4]
-ldr r0, [fp, #-20]
+ldr r0, [fp, #-36]
 mov r1, r0
 ldr r0, =#10
 sub r0, r1, r0
@@ -641,12 +647,12 @@ add r0, r0, r1
 ldr r4, =_t41
 str r0, [r4]
 mov r4, r0
-str r4, [fp, #-48]
+str r4, [fp, #-64]
 ldr r0, =_strlt9
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
-ldr r0, [fp, #-24]
+ldr r0, [fp, #-40]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
@@ -654,7 +660,7 @@ ldr r0, =_strlt10
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
-ldr r0, [fp, #-20]
+ldr r0, [fp, #-36]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
@@ -662,7 +668,7 @@ ldr r0, =_strlt11
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
-ldr r0, [fp, #-48]
+ldr r0, [fp, #-64]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
@@ -670,9 +676,9 @@ ldr r0, =_strlt12
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
-ldr r0, [fp, #-56]
+ldr r0, [fp, #-72]
 mov r1, r0
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 add r0, r0, r1
 ldr r4, =_t42
 str r0, [r4]
@@ -683,15 +689,15 @@ ldr r0, =_strlt13
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
-ldr r0, [fp, #-56]
+ldr r0, [fp, #-72]
 mov r1, r0
-ldr r0, [fp, #-52]
+ldr r0, [fp, #-68]
 mul r0, r0, r1
 ldr r4, =_t43
 str r0, [r4]
 ldr r4, =_t43
 ldr r1, [r4]
-ldr r0, [fp, #-20]
+ldr r0, [fp, #-36]
 mov r1, r0
 ldr r0, =#1
 sub r0, r1, r0
@@ -860,25 +866,25 @@ mov r1, r0
 ldr r0, =println_str_format
 bl printf
 ldr r4, =obj
-ldr r0, =#28
+ldr r0, =#32
 bl malloc
 str r0, [r4]
-ldr r0, =#28
+ldr r0, =#32
 bl malloc
-ldr r0, =#28
+ldr r0, =#32
 bl malloc
 mov r4, r0
-str r4, [fp, #-4]
-ldr r0, [fp, #-4]
-ldr r0, [fp, #-4]
+str r4, [fp, #-16]
+ldr r0, [fp, #-20]
+ldr r0, [fp, #-20]
 mov r4, r0
-str r4, [fp, #-4]
+str r4, [fp, #-12]
 ldr r0, =#5
 ldr r0, =#5
 mov r2, r0
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#28
+ldr r1, =#32
 add r0, r4, r1
 str r2, [r0]
 ldr r0, =_strlt18
@@ -888,12 +894,12 @@ ldr r0, =_strlt19
 mov r2, r0
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#20
+ldr r1, =#24
 add r0, r4, r1
 str r2, [r0]
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#28
+ldr r1, =#32
 add r0, r4, r1
 ldr r0, [r0]
 mov r1, r0
@@ -901,7 +907,7 @@ ldr r0, =print_int_format
 bl printf
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#20
+ldr r1, =#24
 add r0, r4, r1
 ldr r0, [r0]
 mov r1, r0
@@ -927,9 +933,36 @@ mov r2, r7
 mov r1, r6
 mov r0, r5
 bl _AnotherClass_comp_stuff
+ldr r0, =#21
+mov r5, r0
+ldr r0, =_strlt20
+mov r6, r0
+mov r2, r7
+mov r1, r6
+mov r0, r5
+bl _AnotherClass_get_mult
+ldr r0, =_strlt21
+mov r1, r0
+ldr r0, =print_str_format
+bl printf
+ldr r0, [fp, #-8]
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
 mov sp, fp
 pop {fp}
 b __end__
+_AnotherClass_get_mult:
+push {fp, lr}
+mov fp, sp
+sub sp, sp, #12
+mov r2, r5
+str r2, [fp, #-8]
+mov r2, r6
+str r2, [fp, #-12]
+ldr r0, [fp, #-12]
+mov sp, fp
+pop {fp, pc}
 _AnotherClass_comp_stuff:
 push {fp, lr}
 mov fp, sp
@@ -975,7 +1008,7 @@ mov r2, r5
 str r2, [fp, #-8]
 mov r2, r6
 str r2, [fp, #-12]
-ldr r0, =_strlt20
+ldr r0, =_strlt22
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -993,7 +1026,7 @@ pop {fp, pc}
 _AnotherClass_doSomething:
 push {fp, lr}
 mov fp, sp
-sub sp, sp, #32
+sub sp, sp, #36
 ldr r2, =ab
 ldr r2, [r2]
 str r2, [fp, #-8]
@@ -1001,7 +1034,7 @@ ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, =_strlt21
+ldr r0, =_strlt23
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
