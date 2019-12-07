@@ -429,10 +429,11 @@ ClassDecl : K_CLASS ID Opt_Inheritance LEFT_BRACE VarDeclList MethodDeclList RIG
 			{
 				ListNode * node = (ListNode *) malloc(sizeof(ListNode));
 				node->value = it->id;
-				//node->real_value = it;
+				node->real_value = it;
 				node->symbol_type = METHOD;
 				node->type = it->type->type;
 				node->class_id = it->type->class_id;
+				node->arg_list = it->arg_list;
 				add_node_to_table(cl_scope->name_table, node);
 				//Update parent scope.
 				it->statement->scope->parent = cl_scope;
@@ -999,10 +1000,10 @@ MethodCall : LeftValue LEFT_PAR Opt_ExpressionList RIGHT_PAR
 		//assert(leaf->associated_class != NULL);
 		//leaf->data.method = (method_t *) malloc(sizeof(method_t));
 		//leaf->data.method->id = $1->data.var_name;
+		//leaf->data.left = $1; Gerek yok.
 		leaf->data.left = $1;
-		//left->data.right = FOR ARGUMENTS.
-		leaf->data.right = NULL;
-  		leaf->operation = $1->operation;
+		if($3 != NULL)
+			leaf->data.right = $3->head;
   		leaf->is_leaf = 0;
   		leaf->is_id = 1;
   		leaf->is_array = 0;
@@ -1387,9 +1388,17 @@ class_t * get_class_info(char * id)
 }
 
 //Wrapper code.
-int setup_execute(stmt_node_t * current)
+int setup_execute(stmt_node_t * current, int is_main)
 {
-	add_to(text_section, "push {fp}\n");
+	if(is_main)
+	{
+		add_to(text_section, "push {fp}\n");
+	}
+	else
+	{
+		add_to(text_section, "push {fp, lr}\n");
+	}
+
 	add_to(text_section, "mov fp, sp\n");
 
 	int current_method_size = calc_method_size(current);
@@ -1401,7 +1410,16 @@ int setup_execute(stmt_node_t * current)
 	execute(current);
 
 	add_to(text_section, "mov sp, fp\n");
-	add_to(text_section, "pop {fp}\n");
+	if(is_main)
+	{
+		add_to(text_section, "pop {fp}\n");
+	}
+	else
+	{
+		add_to(text_section, "pop {fp, sp}\n");
+	}
+
+
 
 }
 
@@ -1464,7 +1482,7 @@ int execute(stmt_node_t * list)
 	}
 	case LIST: 
 	{
-	    setup_execute(current);
+	    setup_execute(current, 1);
 	    break;
 	}
 	case IF:
@@ -1488,12 +1506,12 @@ int execute(stmt_node_t * list)
 	    sprintf(false_br, "beq %s\n", else_l);
 	    add_to(text_section, false_br);
 	    declare_label(if_l);
-	    setup_execute(node->if_list);
+	    setup_execute(node->if_list, 1);
             char true_jump[80];
 	    sprintf(true_jump, "b %s\n", endif_l);
 	    add_to(text_section, true_jump);
 	    declare_label(else_l);
-	    setup_execute(node->else_list);
+	    setup_execute(node->else_list, 1);
 	    declare_label(endif_l);
 	    break;
 	}
@@ -1566,8 +1584,6 @@ int execute(stmt_node_t * list)
 
 
 }
-
-
 
 /* Traverse expr tree. Every traversal updates the reference of the object.*/
 int traverse(struct exp_node * root)
@@ -2502,21 +2518,36 @@ void prop_codegen(struct exp_node * node)
   class_t * info = get_class_info(class_var_node->class_id);
 
   ListNode * var_node = llist_find_node(info->scope->name_table, prop_name);
+  if(var_node->symbol_type == PROPERTY)
+  {
+	  char read_var[80];
+	  sprintf(read_var, "ldr r4, =%s\n", var_name);
+	  add_to(text_section, read_var);
+	  add_to(text_section, "ldr r4, [r4]\n"); //Getting base address.
+	  int prop_offset = var_node->offset;
+	  char add_offset[80];
+	  sprintf(add_offset, "ldr r1, =#%d\n", prop_offset);
+	  //Now the address is in r0.
+	  add_to(text_section, add_offset);
+	  add_to(text_section, "add r0, r4, r1\n");
 
-  //Find offset of prop_name
-  char read_var[80];
-  sprintf(read_var, "ldr r4, =%s\n", var_name);
-  add_to(text_section, read_var);
-  add_to(text_section, "ldr r4, [r4]\n"); //Getting base address.
-  int prop_offset = var_node->offset;
-  char add_offset[80];
-  sprintf(add_offset, "ldr r1, =#%d\n", prop_offset);
-  //Now the address is in r0.
-  add_to(text_section, add_offset);
-  add_to(text_section, "add r0, r4, r1\n");
+	  //Update node
+	  node->type = var_node->type; //If type is not class.
 
-  //Update node
-  node->type = var_node->type; //If type is not class.
+  }
+  else if(var_node->symbol_type == METHOD)
+  {
+	int len = 3 + strlen(class_var_node->class_id) + strlen(var_node->value);
+	char method_label[len];
+	sprintf(method_label, "_%s_%s", class_var_node->class_id, var_node->value);
+	method_label[len-1] = 0;
+	
+	char branch_to[10 + len];
+	sprintf(branch_to, "bl %s\n", method_label);
+	add_to(text_section, branch_to);
+	//If return value, write to r0. 
+  }
+
 }
 
 
@@ -2980,8 +3011,16 @@ void expr_codegen(struct exp_node * node)
 {
   if(node == NULL) return;
 
-  if(node->operation == IN) //We have to catch properties first. 
+  if(node->is_method)
   {
+	//Left is calling property and right is arg_list.
+	struct exp_node * left = node->data.left;
+	prop_codegen(left);
+	//Result should be in r0.
+  }
+  else if(node->operation == IN) //We have to catch properties first. 
+  {
+	
 	//Put address to r0.
         prop_codegen(node);
 	add_to(text_section, "ldr r0, [r0]\n");
@@ -3289,6 +3328,11 @@ void method_first_codegen(stmt_node_t * list)
   while(it)
   {
     int current_offset = it->offset;
+    if(it->symbol_type == PROPERTY || it->symbol_type == METHOD)
+    {
+	it = it->next; //We don't have to write everything
+	continue;	
+    }
     char command[50];
     sprintf(command, "ldr r2, =%s\n", it->value); 
     add_to(text_section, command);
@@ -3385,9 +3429,6 @@ void logic_op_codegen(enum op op)
 			break;
 	}
 
-
-
-
 	add_to(text_section,"cmp r1, r0\n");
 	add_to(text_section, var_str);
 	char label_decl2[50];
@@ -3417,6 +3458,38 @@ void declare_label(char * label)
   add_to(text_section, decl);
 }
 
+//Writes the methods declared in other classes. 
+void other_classes_codegen()
+{
+	class_list_t * list = program->class_list;
+	class_t * class_it = list->head;
+	while(class_it)
+	{
+		LinkedList * name_table = class_it->scope->name_table;
+		ListNode * it = name_table->head;
+		while(it)
+		{
+			if(it->symbol_type == METHOD)
+			{
+				int str_len = 5 + strlen(class_it->id) + strlen(it->value);
+				char method_label[str_len];
+				sprintf(method_label, "_%s_%s:\n", class_it->id, it->value);
+				method_label[str_len - 1] = 0;
+				add_to(text_section, method_label);
+			  	method_t * method = (method_t *) it->real_value;
+				//Arguments?
+				construct_name_table = 1;
+				traverse_for_errors(method->statement); //Will fill up the name table.
+				construct_name_table = 0;
+				setup_execute(method->statement, 0); //Real value contains the stmt_node.
+			}
+			it = it->next;
+		}
+		class_it = class_it->next;
+	}
+
+}
+
 int main(int argc, char** argv)
 {
   #ifdef MYDEBUG
@@ -3431,6 +3504,7 @@ int main(int argc, char** argv)
   stmt_node_t * main_stmt_list = main_method->statement;
   current_scope = main_stmt_list->scope;
   traverse_for_errors(main_stmt_list);
+  
   construct_name_table = 0; //Stop doing the name tables.
   current_scope = main_stmt_list->scope;
 
@@ -3449,6 +3523,8 @@ int main(int argc, char** argv)
      * data_section = NULL;
      * text_section = NULL;
 
+     add_to(text_section, ".global main\n");
+     add_to(text_section, ".balign 4\n");
      //Main args should be the first var added to the main table.
      //If not, use llist_find
      ListNode * args_node = llist_find_node(main_stmt_list->scope->name_table, main_args_name);
@@ -3456,23 +3532,26 @@ int main(int argc, char** argv)
      char args_decl[80];
      sprintf(args_decl, "%s: .word 0\n", args_node->value);
      add_to(data_section, args_decl);
+     add_to(text_section, "main:\n");
      char args_call[80];
      sprintf(args_call, "ldr r4, =%s\n", args_node->value);
      add_to(text_section, args_call);
      add_to(text_section, "str r1, [r4]\n");
-    setup_execute(main_stmt_list);
+
+    setup_execute(main_stmt_list, 1);
+    add_to(text_section, "b __end__\n");
+     //Insert every method decl after creating the main program.
+     other_classes_codegen();
+
     fprintf(gen_file, ".section .data\n");
     init_data_section();
     if(data_section != NULL) fprintf(gen_file, *data_section);
     fprintf(gen_file, ".section .text\n");
-    fprintf(gen_file, ".global main\n");
-    fprintf(gen_file, ".balign 4\n");
-    //The start (main) routine.
-    fprintf(gen_file, "main: \n");
-    fprintf(gen_file, "push {lr}\n");
     if(text_section != NULL) fprintf(gen_file, *text_section);
     if(data_section != NULL) free(data_section);
     if(text_section != NULL) free(text_section);
+
+    fprintf(gen_file, "__end__:\n");
     fprintf(gen_file, "pop {pc}\n");
   }
   fclose(gen_file);

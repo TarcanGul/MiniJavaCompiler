@@ -25,14 +25,6 @@ typedef enum label_purpose
 } label_purpose_t;
   
 
-//Type info is the struct for Type and PrimeType. Can also tell if a type is array. 
-typedef struct type_info 
-{
-  int dim_len;
-  enum type type;
-  char * class_id; //Only useful when type is class.
-} type_info_t;
-
 /*Nodes*/
 struct exp_node
 {
@@ -132,18 +124,6 @@ struct var_decl_list_t
   char * class_id;
   type_info_t * type;
 };
-
-typedef struct argument
-{
-  char * id;
-  type_info_t * type;
-  struct argument * next;
-} argument_t;
-
-typedef struct argument_list
-{
-  argument_t * head;
-} argument_list_t;
 
 
 typedef struct method

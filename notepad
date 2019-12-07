@@ -29,11 +29,8 @@ Dive into 1D arrays and make it work both (hopefully by Friday).
 
 1D arrays => s_decl, s_asgn, array entries in expr_codegen
 NEXT: Objects. Should be similar to arrays. Malloc properties and method. Method is also a variable.
-
-Handle different types of assignments.
-GO TO Line 2950 for task.
-In assign, handle if left node is IN. generate code for IN where in r0 we get the resulting address already. 
-Method call, Integer.parseInt
+Write method_codegen(). It will be written using the execute method. The method will be called with bl.
+Method call(should be similar to properties), Integer.parseInt, array.length, constructor, inheritance.
 
 Reg allocation
 

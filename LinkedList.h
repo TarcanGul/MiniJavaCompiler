@@ -3,6 +3,29 @@
 
 typedef enum type {INT, STR, BOOL, CLASS, UNKNOWN};
 typedef enum symbol_type {VAR, METHOD, PROPERTY};
+
+
+//Type info is the struct for Type and PrimeType. Can also tell if a type is array. 
+typedef struct type_info 
+{
+  int dim_len;
+  enum type type;
+  char * class_id; //Only useful when type is class.
+} type_info_t;
+
+
+typedef struct argument
+{
+  char * id;
+  type_info_t * type;
+  struct argument * next;
+} argument_t;
+
+typedef struct argument_list
+{
+  argument_t * head;
+} argument_list_t;
+
 struct ListNode {
 	char* value;
 	void * real_value;
@@ -12,6 +35,7 @@ struct ListNode {
 	char * class_id;
 	struct ListNode * next;
 	enum symbol_type symbol_type;
+	argument_list_t * arg_list; //For methods.
 	int offset;
 };
 

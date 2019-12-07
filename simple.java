@@ -85,6 +85,8 @@ class simple {
             obj.another = "Hey from the other side!";
 	    System.out.print(obj.property);
 	    System.out.println(obj.another);
+
+  	    obj.doSomething(); //Basic method call.
     }
 }
 
@@ -93,4 +95,12 @@ class AnotherClass
   int property;
   int size;
   String another;
+
+
+  public int doSomething()
+  {
+	int ab = 345;
+	System.out.println(ab);
+	System.out.println("Called doSomething()");
+  }
 }
