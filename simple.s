@@ -918,7 +918,6 @@ ldr r0, =#23
 mov r5, r0
 ldr r0, =#42
 mov r6, r0
-mov r2, r7
 mov r1, r6
 mov r0, r5
 bl _AnotherClass_add
@@ -928,7 +927,6 @@ ldr r0, =#23
 mov r6, r0
 ldr r0, =#12
 mov r7, r0
-mov r3, r8
 mov r2, r7
 mov r1, r6
 mov r0, r5
@@ -937,7 +935,6 @@ ldr r0, =#21
 mov r5, r0
 ldr r0, =_strlt20
 mov r6, r0
-mov r2, r7
 mov r1, r6
 mov r0, r5
 bl _AnotherClass_get_mult
