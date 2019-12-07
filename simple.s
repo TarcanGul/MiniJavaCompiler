@@ -92,7 +92,6 @@ _strlt17: .asciz "Hey from the other side!"
 _t55: .word 0
 _strlt18: .asciz "Hey from the other side!"
 ab: .word 345
-ab: .word 345
 _strlt19: .asciz "Called doSomething()"
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
