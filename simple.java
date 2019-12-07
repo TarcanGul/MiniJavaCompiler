@@ -89,6 +89,10 @@ class simple {
   	    obj.doSomething(); //Basic method call.
 	    obj.add(23, 42);
 	    obj.comp_stuff(34, 23, 12);
+   
+            int resu = obj.get_mult(21, "soe");
+	    System.out.print("resu: ");
+	    System.out.println(resu);
     }
 }
 
@@ -116,5 +120,10 @@ class AnotherClass
   {
 	int v = a1 * a2;
 	System.out.println(v * (a3 - a1));
+  }
+
+  public int get_mult(int r1, String astring)
+  {
+	return r1;
   }
 }

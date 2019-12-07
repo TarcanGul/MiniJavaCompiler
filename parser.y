@@ -25,6 +25,7 @@
   void s_decl(void * arg);
   void s_asgn(void * arg);
   void s_invoke(void * arg);
+  void s_return(void * arg);
 
   //Expression prototypes.
   void * s_add(struct exp_node * op1, struct exp_node * op2, enum type type);
@@ -743,14 +744,29 @@ Opt_FormalList : FormalList {$$ = $1;} | /*empty*/ {$$ = NULL;};
 
 FormalList  : Type ID FormalListTailList
 {
+
+
 	argument_t * arg = (argument_t *) malloc(sizeof(argument_t));
-	if($3 != NULL)
-		arg->next = $3->head;
 	arg->type = $1;
 	arg->id = $2;
-	argument_list_t * list = (argument_list_t *) malloc(sizeof(argument_list_t));
-	list->head = arg;
-	$$ = list;
+
+	if($3 != NULL)
+	{
+		argument_t * it = $3->head;
+		while(it->next) it = it->next;
+		it->next = arg;
+		$$ = $3;
+	}
+	else
+	{
+		argument_list_t * list = (argument_list_t *) malloc(sizeof(argument_list_t));
+		list->head = arg;
+		$$ = list;
+
+	}
+
+
+
 };
 
 FormalListTail : COMMA Type ID
@@ -772,12 +788,14 @@ FormalListTailList :
 		}
 		else
 		{
-			argument_t * it = $1->head;
-			while(it->next)
+			//argument_t * it = $1->head;
+			$2->next = $1->head;
+			$1->head = $2;
+			/*while(it->next)
 			{
 				it = it->next;
 			}
-			it->next = $2;
+			it->next = $2;*/
 			$$ = $1;
 		}
 	}
@@ -987,7 +1005,14 @@ Statement :
 	  }
 	| K_RETURN Expression SEMICOLON
 	{
-		stack_push($2);
+		stmt_node_t * stmt = (stmt_node_t *) malloc(sizeof(stmt_node_t));
+		stmt->type = PRO;
+		stmt->arg_is_expr = 1;
+		stmt->line_no = yylineno;
+		stmt->invoke = s_return;
+		stmt->arg = $2; //Setting the method as the argument.
+		$$ = stmt;
+
 	}
 	| MethodCall SEMICOLON
 	{
@@ -1452,6 +1477,7 @@ int setup_execute(stmt_node_t * current, int is_main)
 int execute(stmt_node_t * list)
 {
   if(list == NULL) return 0;
+  int stop = 0;
   assert(list->type == LIST || list->type == PRO);
   stmt_node_t * current; 
   scope_t * prev_scope = NULL;
@@ -1488,7 +1514,7 @@ int execute(stmt_node_t * list)
   assert(current_scope != NULL);
 
 
-  while(current)
+  while(current && !stop)
   {
     switch(current->type)
     {
@@ -1502,6 +1528,7 @@ int execute(stmt_node_t * list)
 	      }
 	      if(current->invoke != s_invoke)
 	          current->invoke(current->arg);
+	      if(current->invoke == s_return) stop = 1;
 	    }
 	    break;
 	}
@@ -2703,6 +2730,9 @@ void s_decl(void * abstract_arg)
 						char var_decl[20 + strlen(id_leaf->data.var_name)];
 						sprintf(var_decl, "%s: .word 0\n", id_leaf->data.var_name);
 						add_to(data_section, var_decl);
+						char store[80];
+						sprintf(store, "str r0, [fp, #%d]\n", -1 * node->offset);
+						add_to(text_section, store);
 					}
 					
 					break;
@@ -2784,6 +2814,7 @@ void s_invoke(void * abstract_arg)
   execute(method_info->statement);*/
 }
 
+void s_return(void * abs_arg){} //Is not needed.
 
 //Fake executes to see if there is any error.
 int traverse_for_errors(stmt_node_t * list)
@@ -2970,7 +3001,7 @@ int check_stmt_errors(stmt_node_t * stmt)
 		return 1;
 	}
   } 
-  else if(stmt->invoke == s_invoke){}
+  else if(stmt->invoke == s_invoke || stmt->invoke == s_return){}
   else
   {
 	printf("methof not found\n");
@@ -3372,6 +3403,7 @@ int calc_method_size(stmt_node_t * list)
 	case CLASS:
 	{
 		//TODO: Allocate for objects
+	        current_offset += 4;
 		break;
 	}
 	default: assert(0);
