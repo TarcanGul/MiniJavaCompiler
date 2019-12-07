@@ -104,6 +104,7 @@ bool_false: .asciz "false"
 .global main
 .balign 4
 main:
+push {lr}
 ldr r4, =args
 str r1, [r4]
 push {fp}
@@ -317,7 +318,7 @@ bl strcat
 ldr r4, =_t10
 str r0, [r4]
 mov r1, r0
-ldr r0, =println_int_format
+ldr r0, =println_str_format
 bl printf
 ldr r0, [fp, #-36]
 mov r1, r0
