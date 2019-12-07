@@ -88,6 +88,7 @@ class simple {
 
   	    obj.doSomething(); //Basic method call.
 	    obj.add(23, 42);
+	    obj.comp_stuff(34, 23, 12);
     }
 }
 
@@ -109,5 +110,11 @@ class AnotherClass
   {
 	System.out.print("Addition result: ");
 	System.out.println(aa + bb);
+  }
+
+  public int comp_stuff(int a1, int a2, int a3)
+  {
+	int v = a1 * a2;
+	System.out.println(v * (a3 - a1));
   }
 }

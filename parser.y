@@ -2667,21 +2667,44 @@ void s_decl(void * abstract_arg)
 	}
 	else
 	{
-		add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, assign->current_value);
+		if(assign->current_value == NULL)
+		{
+			add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, NULL);
+
+
+		}
+		else
+		{
+			add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, assign->current_value);
+		}
+
 
 		if(!construct_name_table)
 		{
 			ListNode * node = (ListNode *) llist_find_node(current_scope->name_table, id_leaf->data.var_name);
-
+			if(assign->current_value == NULL)
+			{
+				expr_codegen(assign); //Calculate right side.  Result in r0. 
+			}
 			switch(id_leaf->type)
 			{
 				//TODO: Add others.
 				case BOOL:
 				case INT:
 				{
-					char var_decl[20 + strlen(id_leaf->data.var_name)];
-					sprintf(var_decl, "%s: .word %d\n", id_leaf->data.var_name, * (int *) assign->current_value);
-					add_to(data_section, var_decl);
+					if(assign->current_value != NULL)
+					{
+						char var_decl[20 + strlen(id_leaf->data.var_name)];
+						sprintf(var_decl, "%s: .word %d\n", id_leaf->data.var_name, * (int *) assign->current_value);
+						add_to(data_section, var_decl);
+					}
+					else
+					{
+						char var_decl[20 + strlen(id_leaf->data.var_name)];
+						sprintf(var_decl, "%s: .word 0\n", id_leaf->data.var_name);
+						add_to(data_section, var_decl);
+					}
+					
 					break;
 				}
 				case STR:
