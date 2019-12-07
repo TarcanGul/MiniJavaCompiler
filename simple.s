@@ -916,6 +916,17 @@ mov r2, r7
 mov r1, r6
 mov r0, r5
 bl _AnotherClass_add
+ldr r0, =#34
+mov r5, r0
+ldr r0, =#23
+mov r6, r0
+ldr r0, =#12
+mov r7, r0
+mov r3, r8
+mov r2, r7
+mov r1, r6
+mov r0, r5
+bl _AnotherClass_comp_stuff
 mov sp, fp
 pop {fp}
 b __end__
