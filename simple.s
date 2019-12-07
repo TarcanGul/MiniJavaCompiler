@@ -92,8 +92,12 @@ _t54: .word 0
 _strlt18: .asciz "Hey from the other side!"
 _t55: .word 0
 _strlt19: .asciz "Hey from the other side!"
-_strlt20: .asciz "Addition result: "
 _t56: .word 0
+v: .word 0
+_t57: .word 0
+_t58: .word 0
+_strlt20: .asciz "Addition result: "
+_t59: .word 0
 ab: .word 345
 _strlt21: .asciz "Called doSomething()"
 println_int_format: .asciz "%d\n"
@@ -856,12 +860,12 @@ mov r1, r0
 ldr r0, =println_str_format
 bl printf
 ldr r4, =obj
-ldr r0, =#24
+ldr r0, =#28
 bl malloc
 str r0, [r4]
-ldr r0, =#24
+ldr r0, =#28
 bl malloc
-ldr r0, =#24
+ldr r0, =#28
 bl malloc
 mov r4, r0
 str r4, [fp, #-4]
@@ -874,7 +878,7 @@ ldr r0, =#5
 mov r2, r0
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#24
+ldr r1, =#28
 add r0, r4, r1
 str r2, [r0]
 ldr r0, =_strlt18
@@ -884,12 +888,12 @@ ldr r0, =_strlt19
 mov r2, r0
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#16
+ldr r1, =#20
 add r0, r4, r1
 str r2, [r0]
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#24
+ldr r1, =#28
 add r0, r4, r1
 ldr r0, [r0]
 mov r1, r0
@@ -897,7 +901,7 @@ ldr r0, =print_int_format
 bl printf
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#16
+ldr r1, =#20
 add r0, r4, r1
 ldr r0, [r0]
 mov r1, r0
@@ -915,6 +919,43 @@ bl _AnotherClass_add
 mov sp, fp
 pop {fp}
 b __end__
+_AnotherClass_comp_stuff:
+push {fp, lr}
+mov fp, sp
+sub sp, sp, #20
+ldr r2, =v
+ldr r2, [r2]
+str r2, [fp, #-8]
+mov r2, r5
+str r2, [fp, #-12]
+mov r2, r6
+str r2, [fp, #-16]
+mov r2, r7
+str r2, [fp, #-20]
+ldr r0, [fp, #-20]
+mov r1, r0
+ldr r0, [fp, #-16]
+mul r0, r0, r1
+ldr r4, =_t56
+str r0, [r4]
+ldr r0, [fp, #-8]
+mov r1, r0
+ldr r0, [fp, #-12]
+mov r1, r0
+ldr r0, [fp, #-20]
+sub r0, r1, r0
+ldr r4, =_t57
+str r0, [r4]
+ldr r4, =_t57
+ldr r0, [r4]
+mul r0, r0, r1
+ldr r4, =_t58
+str r0, [r4]
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
+mov sp, fp
+pop {fp, pc}
 _AnotherClass_add:
 push {fp, lr}
 mov fp, sp
@@ -931,7 +972,7 @@ ldr r0, [fp, #-12]
 mov r1, r0
 ldr r0, [fp, #-8]
 add r0, r0, r1
-ldr r4, =_t56
+ldr r4, =_t59
 str r0, [r4]
 mov r1, r0
 ldr r0, =println_int_format
@@ -941,7 +982,7 @@ pop {fp, pc}
 _AnotherClass_doSomething:
 push {fp, lr}
 mov fp, sp
-sub sp, sp, #28
+sub sp, sp, #32
 ldr r2, =ab
 ldr r2, [r2]
 str r2, [fp, #-8]
