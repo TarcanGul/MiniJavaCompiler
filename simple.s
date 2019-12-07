@@ -102,6 +102,7 @@ bool_false: .asciz "false"
 .section .text
 .global main
 .balign 4
+main:
 ldr r4, =args
 str r1, [r4]
 push {fp}
@@ -873,7 +874,7 @@ ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
-bl _AnotherClass_do
+bl _AnotherClass_doSomething
 mov sp, fp
 pop {fp}
 b __end__
