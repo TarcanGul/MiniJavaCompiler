@@ -92,9 +92,9 @@ _t54: .word 0
 _strlt18: .asciz "Hey from the other side!"
 _t55: .word 0
 _strlt19: .asciz "Hey from the other side!"
-_strlt20: .asciz "heaeae"
+_strlt20: .asciz "soe"
 resu: .word 0
-_strlt21: .asciz "Resu: "
+_strlt21: .asciz "resu: "
 _t56: .word 0
 v: .word 0
 _t57: .word 0
@@ -918,6 +918,7 @@ ldr r0, =#23
 mov r5, r0
 ldr r0, =#42
 mov r6, r0
+mov r2, r7
 mov r1, r6
 mov r0, r5
 bl _AnotherClass_add
@@ -927,6 +928,7 @@ ldr r0, =#23
 mov r6, r0
 ldr r0, =#12
 mov r7, r0
+mov r3, r8
 mov r2, r7
 mov r1, r6
 mov r0, r5
@@ -935,9 +937,11 @@ ldr r0, =#21
 mov r5, r0
 ldr r0, =_strlt20
 mov r6, r0
+mov r2, r7
 mov r1, r6
 mov r0, r5
 bl _AnotherClass_get_mult
+str r0, [fp, =#-8]
 ldr r0, =_strlt21
 mov r1, r0
 ldr r0, =print_str_format
@@ -957,7 +961,7 @@ mov r2, r5
 str r2, [fp, #-8]
 mov r2, r6
 str r2, [fp, #-12]
-ldr r0, [fp, #-12]
+ldr r0, [fp, #-8]
 mov sp, fp
 pop {fp, pc}
 _AnotherClass_comp_stuff:
@@ -973,17 +977,18 @@ mov r2, r6
 str r2, [fp, #-16]
 mov r2, r7
 str r2, [fp, #-20]
-ldr r0, [fp, #-20]
+ldr r0, [fp, #-12]
 mov r1, r0
 ldr r0, [fp, #-16]
 mul r0, r0, r1
 ldr r4, =_t56
 str r0, [r4]
+str r0, [fp, =#-8]
 ldr r0, [fp, #-8]
 mov r1, r0
-ldr r0, [fp, #-12]
-mov r1, r0
 ldr r0, [fp, #-20]
+mov r1, r0
+ldr r0, [fp, #-12]
 sub r0, r1, r0
 ldr r4, =_t57
 str r0, [r4]
@@ -1009,9 +1014,9 @@ ldr r0, =_strlt22
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
-ldr r0, [fp, #-12]
-mov r1, r0
 ldr r0, [fp, #-8]
+mov r1, r0
+ldr r0, [fp, #-12]
 add r0, r0, r1
 ldr r4, =_t59
 str r0, [r4]
