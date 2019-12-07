@@ -920,10 +920,8 @@ push {fp, lr}
 mov fp, sp
 sub sp, sp, #12
 mov r2, r5
-ldr r2, [r2]
 str r2, [fp, #-8]
 mov r2, r6
-ldr r2, [r2]
 str r2, [fp, #-12]
 ldr r0, =_strlt20
 mov r1, r0
