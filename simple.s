@@ -873,7 +873,7 @@ ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
-bl _obj_doSomething
+bl _AnotherClass_do
 mov sp, fp
 pop {fp}
 b __end__
@@ -884,12 +884,6 @@ sub sp, sp, #24
 ldr r2, =ab
 ldr r2, [r2]
 str r2, [fp, #-8]
-ldr r2, =size
-ldr r2, [r2]
-str r2, [fp, #-12]
-ldr r2, =doSomething
-ldr r2, [r2]
-str r2, [fp, #-20]
 ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =println_int_format
