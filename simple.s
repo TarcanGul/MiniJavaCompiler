@@ -92,8 +92,10 @@ _t54: .word 0
 _strlt18: .asciz "Hey from the other side!"
 _t55: .word 0
 _strlt19: .asciz "Hey from the other side!"
+_strlt20: .asciz "Addition result: "
+_t56: .word 0
 ab: .word 345
-_strlt20: .asciz "Called doSomething()"
+_strlt21: .asciz "Called doSomething()"
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
 println_str_format: .asciz "%s\n"
@@ -854,12 +856,12 @@ mov r1, r0
 ldr r0, =println_str_format
 bl printf
 ldr r4, =obj
-ldr r0, =#20
+ldr r0, =#24
 bl malloc
 str r0, [r4]
-ldr r0, =#20
+ldr r0, =#24
 bl malloc
-ldr r0, =#20
+ldr r0, =#24
 bl malloc
 mov r4, r0
 str r4, [fp, #-4]
@@ -872,7 +874,7 @@ ldr r0, =#5
 mov r2, r0
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#20
+ldr r1, =#24
 add r0, r4, r1
 str r2, [r0]
 ldr r0, =_strlt18
@@ -882,12 +884,12 @@ ldr r0, =_strlt19
 mov r2, r0
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#12
+ldr r1, =#16
 add r0, r4, r1
 str r2, [r0]
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#20
+ldr r1, =#24
 add r0, r4, r1
 ldr r0, [r0]
 mov r1, r0
@@ -895,20 +897,53 @@ ldr r0, =print_int_format
 bl printf
 ldr r4, =obj
 ldr r4, [r4]
-ldr r1, =#12
+ldr r1, =#16
 add r0, r4, r1
 ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
 bl _AnotherClass_doSomething
+ldr r0, =#23
+mov r5, r0
+ldr r0, =#42
+mov r6, r0
+mov r2, r7
+mov r1, r6
+mov r0, r5
+bl _AnotherClass_add
 mov sp, fp
 pop {fp}
 b __end__
+_AnotherClass_add:
+push {fp, lr}
+mov fp, sp
+sub sp, sp, #12
+mov r2, r5
+ldr r2, [r2]
+str r2, [fp, #-8]
+mov r2, r6
+ldr r2, [r2]
+str r2, [fp, #-12]
+ldr r0, =_strlt20
+mov r1, r0
+ldr r0, =print_str_format
+bl printf
+ldr r0, [fp, #-12]
+mov r1, r0
+ldr r0, [fp, #-8]
+add r0, r0, r1
+ldr r4, =_t56
+str r0, [r4]
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
+mov sp, fp
+pop {fp, pc}
 _AnotherClass_doSomething:
 push {fp, lr}
 mov fp, sp
-sub sp, sp, #24
+sub sp, sp, #28
 ldr r2, =ab
 ldr r2, [r2]
 str r2, [fp, #-8]
@@ -916,7 +951,7 @@ ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, =_strlt20
+ldr r0, =_strlt21
 mov r1, r0
 ldr r0, =println_str_format
 bl printf
