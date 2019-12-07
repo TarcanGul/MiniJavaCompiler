@@ -920,6 +920,6 @@ mov r1, r0
 ldr r0, =println_str_format
 bl printf
 mov sp, fp
-pop {fp, sp}
+pop {fp, pc}
 __end__:
 pop {pc}
