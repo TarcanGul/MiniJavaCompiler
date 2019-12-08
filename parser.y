@@ -273,18 +273,16 @@ Expression :
 	}
 	| LeftValue DOT K_LENGTH
 	{
-		/*if(!$1->is_array)
-		{ 
-			ERROR; 
-		}
-		else
-		{*/
-		/* TODO: Edit here to have a exp node with int type.
-		    struct exp_node * node = create_exp_node(GR, $1, $3);
-		    node->type = $1->type;
-		    $$ = node;
-		  */
-		//}
+		struct exp_node * right = (struct exp_node *) malloc(sizeof(struct exp_node));
+		right->is_id = 1;
+		right->is_leaf = 1;
+		right->is_method = 0;
+		right->is_array_entry = 0;
+		right->operation = UNDEF;
+		right->data.var_name = "length";
+		struct exp_node * node = create_exp_node(IN, $1, right);
+		node->line_num = yylineno;
+		$$ = node;
 	}	
 	| K_NEW ID LEFT_PAR RIGHT_PAR
 	{
@@ -1839,7 +1837,7 @@ int traverse(struct exp_node * root)
 			}
 			else
 			{
-				s_find_property(root);
+				//s_find_property(root);
 				//if(root->current_value == NULL) return 1; //Type error. 
 				root->type = right->type;
 				break;
@@ -2029,8 +2027,8 @@ int s_find_property(struct exp_node * root)
 	struct exp_node * op2 = root->data.right;
 	//Find var from current scope.
 	ListNode * prop_node = llist_find_node(current_scope->name_table, op1->data.var_name);
-	assert(prop_node->type == CLASS);
-	assert(prop_node->class_id != NULL);
+	//assert(prop_node->type == CLASS);
+	//assert(prop_node->class_id != NULL);
 	//Somehow left should have class name.
 	class_t * info = get_class_info(prop_node->class_id);
   	assert(info != NULL);
@@ -2559,10 +2557,21 @@ void prop_codegen(struct exp_node * node)
 {
   char * var_name = node->data.left->data.var_name;
   char * prop_name = find_prop_name(node->data.right);
+
+
+  ListNode * current = llist_find_node(current_scope->name_table, var_name);
+  if(current != NULL && current->dim_capacity_list != NULL && !strcmp(node->data.right->data.var_name, "length"))
+  {
+	//array.length
+	index_list_t * list = current->dim_capacity_list;
+	index_t * ind = list->sentinel;
+	expr_codegen(ind->size);
+	return;
+  }
   ListNode * class_var_node = llist_find_node(current_scope->name_table, var_name);
   class_t * info = get_class_info(class_var_node->class_id);
-
   ListNode * var_node = llist_find_node(info->scope->name_table, prop_name);
+
   if(var_node->symbol_type == PROPERTY)
   {
 	  char read_var[80];
@@ -2629,6 +2638,7 @@ void s_decl(void * abstract_arg)
 	if(construct_name_table)
 	{
 		add_var_to_table(current_scope->name_table, id_leaf->data.var_name, id_leaf->type, NULL); //The value is null because we don't know the pointer until runtime.
+		id_leaf->is_array = 1;
 	}	
 	else
 	{
@@ -3132,22 +3142,10 @@ void expr_codegen(struct exp_node * node)
   }
   else if(node->operation == IN) //We have to catch properties first. 
   {
-  	if(node->data.left->is_array && !strcmp(node->data.right->data.var_name, "length"))
-	{
-		//array.length
-		index_list_t * list = node->data.left->data.dimensions;
-		index_t * ind = list->sentinel;
-		expr_codegen(ind->size);
-	}
-	else
-	{
 		//Put address to r0.
         	prop_codegen(node);
 		add_to(text_section, "ldr r0, [r0]\n");
 		return;
-
-	}	
-
   }
   else if(node->is_leaf)
   {
