@@ -54,9 +54,7 @@ class simple {
             System.out.println(b);
             System.out.print("z = ");
             System.out.println(z);
-            System.out.print("x+y = ");
             System.out.println(x+y);
-            System.out.print("x*y-(b-1) = ");
             System.out.println(x*y-(b-1));
 	    int[] array = new int[5];
 	    array[2] = 45;
@@ -74,15 +72,8 @@ class simple {
 	    array3[1] = "Hello";
 	    array3[2] = " world!";
 	    System.out.println(array3[1]);
-	    System.out.println(array3[2]);
 
 	    AnotherClass obj = new AnotherClass();
-	    AnotherClass obj2;
-	    AnotherClass obj3;
-
-	    obj2 = new AnotherClass();
-	    obj3 = obj;	    
-
 	    obj.property = 5;
             obj.another = "Hey from the other side!";
 	    System.out.print(obj.property);
