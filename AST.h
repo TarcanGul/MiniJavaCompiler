@@ -147,6 +147,7 @@ typedef struct class_s
   //struct var_decl_list * properties;
   //method_list_t * methods;
   char * id;
+  char * parent;
   method_t * constructor;
   struct scope * scope;
   struct class_s * next;

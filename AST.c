@@ -333,6 +333,7 @@ void scope_inherit(scope_t * parent, scope_t * child)
     node->dim_capacity_list = it->dim_capacity_list;
     node->type = it->type;
     node->next = it->next;
+    node->arg_list = it->arg_list;
     node->symbol_type = it->symbol_type;
     llist_add_node(child->name_table, node);
     it=it->next;

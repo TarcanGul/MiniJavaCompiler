@@ -1,5 +1,4 @@
 .section .data
-args: .word 0
 x: .word 1
 y: .word 100
 z: .word 0
@@ -114,8 +113,6 @@ bool_false: .asciz "false"
 .balign 4
 main:
 push {lr}
-ldr r4, =args
-str r1, [r4]
 push {fp}
 mov fp, sp
 sub sp, sp, #76

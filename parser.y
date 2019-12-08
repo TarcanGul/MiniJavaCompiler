@@ -395,9 +395,6 @@ ClassDeclList :
 
 ClassDecl : K_CLASS ID Opt_Inheritance LEFT_BRACE VarDeclList MethodDeclList RIGHT_BRACE
 {
-	//No inheritance.
-	if($3 == NULL)
-	{
 		class_t * cl = (class_t *) malloc(sizeof(class_t));
 		scope_t * cl_scope = (scope_t *) malloc(sizeof(scope_t));	
   		LinkedList * name_table = (LinkedList *) malloc(sizeof(LinkedList));
@@ -463,12 +460,8 @@ ClassDecl : K_CLASS ID Opt_Inheritance LEFT_BRACE VarDeclList MethodDeclList RIG
 		//cl->properties = $5;
 		cl->scope = cl_scope;
 		cl->id = $2;
+		cl->parent = $3;
 		$$ = cl;
-	}
-	else
-	{
-		printf("Inheritance: to be implemented");
-	}
 };
 
 VarDeclList : 
@@ -3597,6 +3590,21 @@ void declare_label(char * label)
   add_to(text_section, decl);
 }
 
+void update_inheritance()
+{
+	class_list_t * list = program->class_list;
+	class_t * class_it = list->head;
+	while(class_it)
+	{
+		if(class_it->parent != NULL)
+		{
+			class_t * info = get_class_info(class_it->parent);
+			scope_inherit(info->scope, class_it->scope);
+		}
+		class_it = class_it->next;
+	}
+}
+
 //Writes the methods declared in other classes. 
 void other_classes_codegen()
 {
@@ -3661,22 +3669,22 @@ int main(int argc, char** argv)
      text_section = (char **) malloc(sizeof(char *));
      * data_section = NULL;
      * text_section = NULL;
-
+     update_inheritance();
      add_to(text_section, ".global main\n");
      add_to(text_section, ".balign 4\n");
      //Main args should be the first var added to the main table.
      //If not, use llist_find
      ListNode * args_node = llist_find_node(main_stmt_list->scope->name_table, main_args_name);
      assert(args_node != NULL);
-     char args_decl[80];
+     /*char args_decl[80];
      sprintf(args_decl, "%s: .word 0\n", args_node->value);
-     add_to(data_section, args_decl);
+     add_to(data_section, args_decl);*/
      add_to(text_section, "main:\n");
      add_to(text_section, "push {lr}\n");
-     char args_call[80];
+    /* char args_call[80];
      sprintf(args_call, "ldr r4, =%s\n", args_node->value);
      add_to(text_section, args_call);
-     add_to(text_section, "str r1, [r4]\n");
+     add_to(text_section, "str r1, [r4]\n");*/
 
     setup_execute(main_stmt_list, 1);
     add_to(text_section, "b __end__\n");
