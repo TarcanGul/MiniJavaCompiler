@@ -1073,6 +1073,10 @@ mov r9, r5
 str r9, [fp, #-8]
 mov r9, r6
 str r9, [fp, #-12]
+ldr r0, [fp, #-12]
+mov r1, r0
+ldr r0, =println_str_format
+bl printf
 ldr r0, [fp, #-8]
 mov sp, fp
 pop {fp, pc}

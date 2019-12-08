@@ -124,6 +124,7 @@ class AnotherClass
 
   public int get_mult(int r1, String astring)
   {
+	System.out.println(astring);
 	return r1;
   }
 }

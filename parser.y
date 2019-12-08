@@ -3147,6 +3147,7 @@ void expr_codegen(struct exp_node * node)
   }
   else if(node->is_leaf)
   {
+
   	if(node->is_id)
   	{
 		ListNode * entry = llist_find_node(current_scope->name_table, node->data.var_name);
@@ -3255,7 +3256,10 @@ void expr_codegen(struct exp_node * node)
 	} 
 	if(right != NULL)
 	{
+	        add_to(text_section, "push {r1}\n"); //Save r1 before war.
 		expr_codegen(right);
+	        add_to(text_section, "pop {r1}\n");
+
 		if(right->has_temp_var)
 		{
 		     char * var = right->temp_var;
@@ -3460,22 +3464,22 @@ void method_first_codegen(stmt_node_t * list)
     char command[50];
     if(it->symbol_type == ARG)
     {
-    	sprintf(command, "mov r2, r%d\n", cor_register++); //Hopefully the first argument added the first. 
+    	sprintf(command, "mov r9, r%d\n", cor_register++); //Hopefully the first argument added the first. 
     	add_to(text_section, command);
 
     }
     else
     {
-    	sprintf(command, "ldr r2, =%s\n", it->value); 
+    	sprintf(command, "ldr r9, =%s\n", it->value); 
     	add_to(text_section, command);
     	//We are storing the value in stack, thus we have to dereference the address before storing.
-    	add_to(text_section, "ldr r2, [r2]\n");
+    	add_to(text_section, "ldr r9, [r9]\n");
 
     }
 
 
     char command2[50];
-    sprintf(command2, "str r2, [fp, #%d]\n", -1 * current_offset); 
+    sprintf(command2, "str r9, [fp, #%d]\n", -1 * current_offset); 
     add_to(text_section, command2);
     it = it->next;
   }

@@ -29,9 +29,8 @@ Dive into 1D arrays and make it work both (hopefully by Friday).
 
 1D arrays => s_decl, s_asgn, array entries in expr_codegen
 NEXT: Objects. Should be similar to arrays. Malloc properties and method. Method is also a variable.
-Method call(should be similar to properties), Integer.parseInt, array.length, constructor, inheritance.
+Method call(should be similar to properties), Integer.parseInt, array.length, inheritance.
 
-Method call without args work.
-//Reg allocation IF YOU HAVE ENERGY
-
-Also don't forget compiler hw
+Method call with args work.
+Return work
+There is something wrong in expr. Fix that. 
