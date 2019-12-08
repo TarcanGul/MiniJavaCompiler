@@ -10,6 +10,10 @@ class simple {
 	
         int a = Integer.parseInt("55");
         System.out.println(a);
+
+
+        System.out.println(Integer.parseInt("45"));
+
     }
 }
 

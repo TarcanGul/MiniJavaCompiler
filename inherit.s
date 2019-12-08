@@ -5,10 +5,11 @@ _t0: .word 0
 _t1: .word 0
 _strlt0: .asciz "55"
 a: .word 0
+_strlt1: .asciz "45"
 _t2: .word 0
-_strlt1: .asciz "Addition result: "
-_t3: .word 0
 _strlt2: .asciz "Addition result: "
+_t3: .word 0
+_strlt3: .asciz "Addition result: "
 _t4: .word 0
 _t5: .word 0
 println_int_format: .asciz "%d\n"
@@ -77,6 +78,11 @@ ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
+ldr r0, =_strlt1
+bl atoi
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
 mov sp, fp
 pop {fp}
 b __end__
@@ -102,7 +108,7 @@ mov r9, r5
 str r9, [fp, #-8]
 mov r9, r6
 str r9, [fp, #-12]
-ldr r0, =_strlt1
+ldr r0, =_strlt2
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -127,7 +133,7 @@ mov r9, r5
 str r9, [fp, #-8]
 mov r9, r6
 str r9, [fp, #-12]
-ldr r0, =_strlt2
+ldr r0, =_strlt3
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
