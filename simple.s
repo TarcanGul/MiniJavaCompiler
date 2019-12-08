@@ -119,60 +119,60 @@ str r1, [r4]
 push {fp}
 mov fp, sp
 sub sp, sp, #76
-ldr r2, =resu
-ldr r2, [r2]
-str r2, [fp, #-8]
-ldr r2, =obj3
-ldr r2, [r2]
-str r2, [fp, #-12]
-ldr r2, =obj2
-ldr r2, [r2]
-str r2, [fp, #-16]
-ldr r2, =obj
-ldr r2, [r2]
-str r2, [fp, #-20]
-ldr r2, =array3
-ldr r2, [r2]
-str r2, [fp, #-24]
-ldr r2, =array2
-ldr r2, [r2]
-str r2, [fp, #-28]
-ldr r2, =array
-ldr r2, [r2]
-str r2, [fp, #-32]
-ldr r2, =b
-ldr r2, [r2]
-str r2, [fp, #-36]
-ldr r2, =a
-ldr r2, [r2]
-str r2, [fp, #-40]
-ldr r2, =i
-ldr r2, [r2]
-str r2, [fp, #-44]
-ldr r2, =concat
-ldr r2, [r2]
-str r2, [fp, #-48]
-ldr r2, =hello
-ldr r2, [r2]
-str r2, [fp, #-52]
-ldr r2, =abra
-ldr r2, [r2]
-str r2, [fp, #-56]
-ldr r2, =bale
-ldr r2, [r2]
-str r2, [fp, #-60]
-ldr r2, =z
-ldr r2, [r2]
-str r2, [fp, #-64]
-ldr r2, =y
-ldr r2, [r2]
-str r2, [fp, #-68]
-ldr r2, =x
-ldr r2, [r2]
-str r2, [fp, #-72]
-ldr r2, =args
-ldr r2, [r2]
-str r2, [fp, #-76]
+ldr r9, =resu
+ldr r9, [r9]
+str r9, [fp, #-8]
+ldr r9, =obj3
+ldr r9, [r9]
+str r9, [fp, #-12]
+ldr r9, =obj2
+ldr r9, [r9]
+str r9, [fp, #-16]
+ldr r9, =obj
+ldr r9, [r9]
+str r9, [fp, #-20]
+ldr r9, =array3
+ldr r9, [r9]
+str r9, [fp, #-24]
+ldr r9, =array2
+ldr r9, [r9]
+str r9, [fp, #-28]
+ldr r9, =array
+ldr r9, [r9]
+str r9, [fp, #-32]
+ldr r9, =b
+ldr r9, [r9]
+str r9, [fp, #-36]
+ldr r9, =a
+ldr r9, [r9]
+str r9, [fp, #-40]
+ldr r9, =i
+ldr r9, [r9]
+str r9, [fp, #-44]
+ldr r9, =concat
+ldr r9, [r9]
+str r9, [fp, #-48]
+ldr r9, =hello
+ldr r9, [r9]
+str r9, [fp, #-52]
+ldr r9, =abra
+ldr r9, [r9]
+str r9, [fp, #-56]
+ldr r9, =bale
+ldr r9, [r9]
+str r9, [fp, #-60]
+ldr r9, =z
+ldr r9, [r9]
+str r9, [fp, #-64]
+ldr r9, =y
+ldr r9, [r9]
+str r9, [fp, #-68]
+ldr r9, =x
+ldr r9, [r9]
+str r9, [fp, #-72]
+ldr r9, =args
+ldr r9, [r9]
+str r9, [fp, #-76]
 mov r0, #6
 bl malloc
 ldr r4, =hello
@@ -464,33 +464,33 @@ beq _endwhile0
 push {fp}
 mov fp, sp
 sub sp, sp, #40
-ldr r2, =args
-ldr r2, [r2]
-str r2, [fp, #-8]
-ldr r2, =x
-ldr r2, [r2]
-str r2, [fp, #-12]
-ldr r2, =y
-ldr r2, [r2]
-str r2, [fp, #-16]
-ldr r2, =z
-ldr r2, [r2]
-str r2, [fp, #-20]
-ldr r2, =bale
-ldr r2, [r2]
-str r2, [fp, #-24]
-ldr r2, =abra
-ldr r2, [r2]
-str r2, [fp, #-28]
-ldr r2, =hello
-ldr r2, [r2]
-str r2, [fp, #-32]
-ldr r2, =concat
-ldr r2, [r2]
-str r2, [fp, #-36]
-ldr r2, =i
-ldr r2, [r2]
-str r2, [fp, #-40]
+ldr r9, =args
+ldr r9, [r9]
+str r9, [fp, #-8]
+ldr r9, =x
+ldr r9, [r9]
+str r9, [fp, #-12]
+ldr r9, =y
+ldr r9, [r9]
+str r9, [fp, #-16]
+ldr r9, =z
+ldr r9, [r9]
+str r9, [fp, #-20]
+ldr r9, =bale
+ldr r9, [r9]
+str r9, [fp, #-24]
+ldr r9, =abra
+ldr r9, [r9]
+str r9, [fp, #-28]
+ldr r9, =hello
+ldr r9, [r9]
+str r9, [fp, #-32]
+ldr r9, =concat
+ldr r9, [r9]
+str r9, [fp, #-36]
+ldr r9, =i
+ldr r9, [r9]
+str r9, [fp, #-40]
 _while0:
 ldr r0, =#420
 mov r1, r0
@@ -941,7 +941,7 @@ mov r2, r7
 mov r1, r6
 mov r0, r5
 bl _AnotherClass_get_mult
-str r0, [fp, =#-8]
+str r0, [fp, #-8]
 ldr r0, =_strlt21
 mov r1, r0
 ldr r0, =print_str_format
@@ -957,10 +957,10 @@ _AnotherClass_get_mult:
 push {fp, lr}
 mov fp, sp
 sub sp, sp, #12
-mov r2, r5
-str r2, [fp, #-8]
-mov r2, r6
-str r2, [fp, #-12]
+mov r9, r5
+str r9, [fp, #-8]
+mov r9, r6
+str r9, [fp, #-12]
 ldr r0, [fp, #-8]
 mov sp, fp
 pop {fp, pc}
@@ -968,22 +968,22 @@ _AnotherClass_comp_stuff:
 push {fp, lr}
 mov fp, sp
 sub sp, sp, #20
-ldr r2, =v
-ldr r2, [r2]
-str r2, [fp, #-8]
-mov r2, r5
-str r2, [fp, #-12]
-mov r2, r6
-str r2, [fp, #-16]
-mov r2, r7
-str r2, [fp, #-20]
+ldr r9, =v
+ldr r9, [r9]
+str r9, [fp, #-8]
+mov r9, r5
+str r9, [fp, #-12]
+mov r9, r6
+str r9, [fp, #-16]
+mov r9, r7
+str r9, [fp, #-20]
 ldr r0, [fp, #-12]
 mov r1, r0
 ldr r0, [fp, #-16]
 mul r0, r0, r1
 ldr r4, =_t56
 str r0, [r4]
-str r0, [fp, =#-8]
+str r0, [fp, #-8]
 ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, [fp, #-20]
@@ -1006,10 +1006,10 @@ _AnotherClass_add:
 push {fp, lr}
 mov fp, sp
 sub sp, sp, #12
-mov r2, r5
-str r2, [fp, #-8]
-mov r2, r6
-str r2, [fp, #-12]
+mov r9, r5
+str r9, [fp, #-8]
+mov r9, r6
+str r9, [fp, #-12]
 ldr r0, =_strlt22
 mov r1, r0
 ldr r0, =print_str_format
@@ -1029,9 +1029,9 @@ _AnotherClass_doSomething:
 push {fp, lr}
 mov fp, sp
 sub sp, sp, #36
-ldr r2, =ab
-ldr r2, [r2]
-str r2, [fp, #-8]
+ldr r9, =ab
+ldr r9, [r9]
+str r9, [fp, #-8]
 ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =println_int_format
