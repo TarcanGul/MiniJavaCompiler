@@ -827,6 +827,7 @@ ldr r0, =_strlt12
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
+ldr r0, =#5
 ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_int_format

@@ -4561,7 +4561,7 @@ void prop_codegen(struct exp_node * node)
   {
 	//array.length
 	index_list_t * list = current->dim_capacity_list;
-	index_t * ind = list->sentinel;
+	index_t * ind = list->sentinel->next;
 	expr_codegen(ind->size);
 	return;
   }
