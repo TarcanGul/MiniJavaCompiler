@@ -2602,6 +2602,7 @@ void prop_codegen(struct exp_node * node)
 	//If return value, write to r0. 
   }
 
+  add_to(text_section, "ldr r0, [r0]\n");
 }
 
 
@@ -3144,7 +3145,6 @@ void expr_codegen(struct exp_node * node)
   {
 		//Put address to r0.
         	prop_codegen(node);
-		add_to(text_section, "ldr r0, [r0]\n");
 		return;
   }
   else if(node->is_leaf)

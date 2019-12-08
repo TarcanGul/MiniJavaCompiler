@@ -828,7 +828,6 @@ mov r1, r0
 ldr r0, =print_str_format
 bl printf
 ldr r0, =#5
-ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
@@ -953,6 +952,7 @@ ldr r4, =obj
 ldr r4, [r4]
 ldr r1, =#32
 add r0, r4, r1
+ldr r0, [r0]
 str r2, [r0]
 push {r1}
 ldr r0, =_strlt17
@@ -965,6 +965,7 @@ ldr r4, =obj
 ldr r4, [r4]
 ldr r1, =#24
 add r0, r4, r1
+ldr r0, [r0]
 str r2, [r0]
 ldr r4, =obj
 ldr r4, [r4]
@@ -983,6 +984,7 @@ mov r1, r0
 ldr r0, =println_str_format
 bl printf
 bl _AnotherClass_doSomething
+ldr r0, [r0]
 ldr r0, =#23
 mov r5, r0
 ldr r0, =#42
@@ -991,6 +993,7 @@ mov r2, r7
 mov r1, r6
 mov r0, r5
 bl _AnotherClass_add
+ldr r0, [r0]
 ldr r0, =#34
 mov r5, r0
 ldr r0, =#23
@@ -1002,6 +1005,7 @@ mov r2, r7
 mov r1, r6
 mov r0, r5
 bl _AnotherClass_comp_stuff
+ldr r0, [r0]
 ldr r0, =#21
 mov r5, r0
 ldr r0, =_strlt19
@@ -1010,6 +1014,7 @@ mov r2, r7
 mov r1, r6
 mov r0, r5
 bl _AnotherClass_get_mult
+ldr r0, [r0]
 str r0, [fp, #-8]
 ldr r0, =_strlt20
 mov r1, r0
