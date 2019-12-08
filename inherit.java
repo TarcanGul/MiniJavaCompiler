@@ -7,8 +7,9 @@ class simple {
 	AnotherClass tryr = new AnotherClass();
 	tryr.property = 5;
 	tryr.size = 2;
-	int price = tryr.getPrice();
-	System.out.println(price);
+	
+        int a = Integer.parseInt("55");
+        System.out.println(a);
     }
 }
 

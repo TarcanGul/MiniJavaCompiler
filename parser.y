@@ -328,17 +328,14 @@ Expression :
 	}
 	| K_PARSEINT LEFT_PAR Expression RIGHT_PAR
 	{
-/*		switch($3.type)
-		{
-			case INT: 
-				$$.value = $3.value;
-				$$.type =  INT;
-				break;
-			case STR:
-				$$.value = atoi(extractString($3.text));
-				$$.type = INT;
-				break;
-		}*/
+	  struct exp_node * node = (struct exp_node *) malloc(sizeof(struct exp_node));
+	  node->is_leaf = 1;
+	  node->type = INT;
+	  node->is_parse_int = 1;
+	  node->data.left = $3;
+	  node->line_num = yylineno;
+	  $$ = node;
+		
 	}
 
 	;
@@ -3085,6 +3082,18 @@ void expr_codegen(struct exp_node * node)
 {
   if(node == NULL) return;
 
+
+  if(node->is_parse_int)
+  {
+	struct exp_node * input = node->data.left;
+	expr_codegen(input);
+	if(input->type == STR)
+	{
+		//Call atoi.
+		add_to(text_section, "bl atoi\n");
+	}
+	return;
+  }
   if(node->is_method)
   {
 	//Left is calling property and right is arg_list.
