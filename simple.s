@@ -72,36 +72,37 @@ _t45: .word 0
 array: .word 0
 _t46: .word 0
 _t47: .word 0
+_strlt14: .asciz "array length: "
 array2: .word 0
 _t48: .word 0
 _t49: .word 0
 array3: .word 0
-_strlt14: .asciz "Hello"
-_t50: .word 0
 _strlt15: .asciz "Hello"
-_strlt16: .asciz " world!"
-_t51: .word 0
+_t50: .word 0
+_strlt16: .asciz "Hello"
 _strlt17: .asciz " world!"
+_t51: .word 0
+_strlt18: .asciz " world!"
 obj: .word 0
 obj2: .word 0
 obj3: .word 0
 _t52: .word 0
 _t53: .word 0
 _t54: .word 0
-_strlt18: .asciz "Hey from the other side!"
-_t55: .word 0
 _strlt19: .asciz "Hey from the other side!"
-_strlt20: .asciz "soe"
+_t55: .word 0
+_strlt20: .asciz "Hey from the other side!"
+_strlt21: .asciz "soe"
 resu: .word 0
-_strlt21: .asciz "resu: "
+_strlt22: .asciz "resu: "
 _t56: .word 0
 v: .word 0
 _t57: .word 0
 _t58: .word 0
-_strlt22: .asciz "Addition result: "
+_strlt23: .asciz "Addition result: "
 _t59: .word 0
 ab: .word 345
-_strlt23: .asciz "Called doSomething()"
+_strlt24: .asciz "Called doSomething()"
 println_int_format: .asciz "%d\n"
 print_int_format: .asciz "%d"
 println_str_format: .asciz "%s\n"
@@ -842,6 +843,14 @@ ldr r0, [r0]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
+ldr r0, =_strlt14
+mov r1, r0
+ldr r0, =print_str_format
+bl printf
+ldr r0, [fp, #-32]
+mov r1, r0
+ldr r0, =println_int_format
+bl printf
 ldr r0, =#24
 bl malloc
 ldr r4, =array2
@@ -913,9 +922,9 @@ bl malloc
 ldr r4, =array3
 str r0, [r4]
 push {r1}
-ldr r0, =_strlt14
+ldr r0, =_strlt15
 pop {r1}
-ldr r4, =_strlt14
+ldr r4, =_strlt15
 mov r0, r4
 ldr r4, =array3
 ldr r4, [r4]
@@ -924,12 +933,12 @@ ldr r2, =#8
 mul r1, r0, r2
 add r0, r4, r1
 mov r1, r0
-ldr r0, =_strlt15
+ldr r0, =_strlt16
 str r0, [r1]
 push {r1}
-ldr r0, =_strlt16
+ldr r0, =_strlt17
 pop {r1}
-ldr r4, =_strlt16
+ldr r4, =_strlt17
 mov r0, r4
 ldr r4, =array3
 ldr r4, [r4]
@@ -938,7 +947,7 @@ ldr r2, =#8
 mul r1, r0, r2
 add r0, r4, r1
 mov r1, r0
-ldr r0, =_strlt17
+ldr r0, =_strlt18
 str r0, [r1]
 ldr r4, =array3
 ldr r4, [r4]
@@ -989,11 +998,11 @@ ldr r1, =#32
 add r0, r4, r1
 str r2, [r0]
 push {r1}
-ldr r0, =_strlt18
-pop {r1}
-ldr r4, =_strlt18
-mov r0, r4
 ldr r0, =_strlt19
+pop {r1}
+ldr r4, =_strlt19
+mov r0, r4
+ldr r0, =_strlt20
 mov r2, r0
 ldr r4, =obj
 ldr r4, [r4]
@@ -1038,14 +1047,14 @@ mov r0, r5
 bl _AnotherClass_comp_stuff
 ldr r0, =#21
 mov r5, r0
-ldr r0, =_strlt20
+ldr r0, =_strlt21
 mov r6, r0
 mov r2, r7
 mov r1, r6
 mov r0, r5
 bl _AnotherClass_get_mult
 str r0, [fp, #-8]
-ldr r0, =_strlt21
+ldr r0, =_strlt22
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -1123,7 +1132,7 @@ mov r9, r5
 str r9, [fp, #-8]
 mov r9, r6
 str r9, [fp, #-12]
-ldr r0, =_strlt22
+ldr r0, =_strlt23
 mov r1, r0
 ldr r0, =print_str_format
 bl printf
@@ -1151,7 +1160,7 @@ ldr r0, [fp, #-8]
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
-ldr r0, =_strlt23
+ldr r0, =_strlt24
 mov r1, r0
 ldr r0, =println_str_format
 bl printf

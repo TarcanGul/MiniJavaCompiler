@@ -63,6 +63,8 @@ class simple {
 	    array[4] = 34343; 
             System.out.println(array[2]);
             System.out.println(array[4]);
+	    System.out.print("array length: ");
+	    System.out.println(array.length);
 	    boolean[] array2 = new boolean[6];
 	    array2[5] = true;
 	    array2[4] = false;

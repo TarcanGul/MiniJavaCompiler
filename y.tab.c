@@ -5129,11 +5129,22 @@ void expr_codegen(struct exp_node * node)
   }
   else if(node->operation == IN) //We have to catch properties first. 
   {
-	
-	//Put address to r0.
-        prop_codegen(node);
-	add_to(text_section, "ldr r0, [r0]\n");
-	return;
+  	if(node->data.left->is_array && !strcmp(node->data.right->data.var_name, "length"))
+	{
+		//array.length
+		index_list_t * list = node->data.left->data.dimensions;
+		index_t * ind = list->sentinel;
+		expr_codegen(ind->size);
+	}
+	else
+	{
+		//Put address to r0.
+        	prop_codegen(node);
+		add_to(text_section, "ldr r0, [r0]\n");
+		return;
+
+	}	
+
   }
   else if(node->is_leaf)
   {
