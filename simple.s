@@ -115,7 +115,7 @@ main:
 push {lr}
 push {fp}
 mov fp, sp
-sub sp, sp, #76
+sub sp, sp, #72
 ldr r9, =resu
 ldr r9, [r9]
 str r9, [fp, #-8]
@@ -167,9 +167,6 @@ str r9, [fp, #-68]
 ldr r9, =x
 ldr r9, [r9]
 str r9, [fp, #-72]
-ldr r9, =args
-ldr r9, [r9]
-str r9, [fp, #-76]
 mov r0, #6
 bl malloc
 ldr r4, =hello
@@ -504,41 +501,38 @@ cmp r0, #0
 beq _endwhile0
 push {fp}
 mov fp, sp
-sub sp, sp, #40
-ldr r9, =args
-ldr r9, [r9]
-str r9, [fp, #-8]
+sub sp, sp, #36
 ldr r9, =x
 ldr r9, [r9]
-str r9, [fp, #-12]
+str r9, [fp, #-8]
 ldr r9, =y
 ldr r9, [r9]
-str r9, [fp, #-16]
+str r9, [fp, #-12]
 ldr r9, =z
 ldr r9, [r9]
-str r9, [fp, #-20]
+str r9, [fp, #-16]
 ldr r9, =bale
 ldr r9, [r9]
-str r9, [fp, #-24]
+str r9, [fp, #-20]
 ldr r9, =abra
 ldr r9, [r9]
-str r9, [fp, #-28]
+str r9, [fp, #-24]
 ldr r9, =hello
 ldr r9, [r9]
-str r9, [fp, #-32]
+str r9, [fp, #-28]
 ldr r9, =concat
 ldr r9, [r9]
-str r9, [fp, #-36]
+str r9, [fp, #-32]
 ldr r9, =i
 ldr r9, [r9]
-str r9, [fp, #-40]
+str r9, [fp, #-36]
 _while0:
 ldr r0, =#420
 mov r1, r0
 ldr r0, =println_int_format
 bl printf
 push {r1}
-ldr r0, [fp, #-40]
+ldr r0, [fp, #-36]
 mov r1, r0
 push {r1}
 ldr r0, =#1
@@ -549,7 +543,7 @@ str r0, [r4]
 pop {r1}
 ldr r4, =_t22
 ldr r0, [r4]
-ldr r0, [fp, #-40]
+ldr r0, [fp, #-36]
 mov r1, r0
 push {r1}
 ldr r0, =#1
@@ -558,8 +552,8 @@ sub r0, r1, r0
 ldr r4, =_t24
 str r0, [r4]
 mov r4, r0
-str r4, [fp, #-40]
-ldr r0, [fp, #-40]
+str r4, [fp, #-36]
+ldr r0, [fp, #-36]
 mov r1, r0
 push {r1}
 ldr r0, =#0

@@ -17,13 +17,10 @@ main:
 push {lr}
 push {fp}
 mov fp, sp
-sub sp, sp, #12
+sub sp, sp, #8
 ldr r9, =child
 ldr r9, [r9]
 str r9, [fp, #-8]
-ldr r9, =args
-ldr r9, [r9]
-str r9, [fp, #-12]
 ldr r4, =child
 ldr r0, =#20
 bl malloc

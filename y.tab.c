@@ -1936,7 +1936,7 @@ yyreduce:
 		main_method->statement = (yyvsp[-2].stmt_node); 
 		main_method->statement->scope = main_scope;
 		main_args_name = (yyvsp[-5].string_val);
-		add_var_to_table(main_scope->name_table, main_args_name, STR, NULL);
+		//add_var_to_table(main_scope->name_table, main_args_name, STR, NULL);
 		update_scope_hierarchy(main_method->statement);
 		//method_list_t * method_list = (method_list_t *) malloc(sizeof(method_list_t));
 		add_var_to_table(class_scope->name_table, "main", UNDEF, main_method); 
@@ -5671,8 +5671,8 @@ int main(int argc, char** argv)
      add_to(text_section, ".balign 4\n");
      //Main args should be the first var added to the main table.
      //If not, use llist_find
-     ListNode * args_node = llist_find_node(main_stmt_list->scope->name_table, main_args_name);
-     assert(args_node != NULL);
+     //ListNode * args_node = llist_find_node(main_stmt_list->scope->name_table, main_args_name);
+     //assert(args_node != NULL);
      /*char args_decl[80];
      sprintf(args_decl, "%s: .word 0\n", args_node->value);
      add_to(data_section, args_decl);*/
